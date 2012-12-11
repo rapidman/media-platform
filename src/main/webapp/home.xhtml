@@ -1,0 +1,67 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="head">
+
+    </ui:define>
+
+
+
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:panelGrid columns="2">
+            <rich:panel header="Новое">
+                <h:form>
+                    <rich:dataGrid id="latestContentGrid" value="#{contentManager.latestContentList}" var="content" columns="3" elements="9" width="600px" border="0">
+                        <rich:panel bodyClass="pbody">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Name:" styleClass="label"></h:outputText>
+                                <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
+                                    <rich:contextMenu mode="server" target="contentId" >
+                                        <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
+                                                       mode="server" icon="/images/icons/edit.gif" />
+                                    </rich:contextMenu>
+                                </h:commandLink>
+
+                                <h:outputText value="Desc:" styleClass="label"></h:outputText>
+                                <h:outputText value="#{content.description}" />
+                            </h:panelGrid>
+                        </rich:panel>
+                    </rich:dataGrid>
+                </h:form>
+            </rich:panel>
+
+            <rich:panel header="Популярное">
+                <h:form>
+                    <rich:dataGrid id="popularContentGrid" value="#{contentManager.popularContentList}" var="content" columns="3" elements="9" width="600px" border="0">
+                        <rich:panel bodyClass="pbody">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Name:" styleClass="label"></h:outputText>
+                                <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
+                                    <rich:contextMenu mode="server" target="contentId" >
+                                        <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
+                                                       mode="server" icon="/images/icons/edit.gif" />
+                                    </rich:contextMenu>
+                                </h:commandLink>
+
+                                <h:outputText value="Desc:" styleClass="label"></h:outputText>
+                                <h:outputText value="#{content.description}" />
+                            </h:panelGrid>
+                        </rich:panel>
+                    </rich:dataGrid>
+                </h:form>
+            </rich:panel>
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition>

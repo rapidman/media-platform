@@ -1,0 +1,116 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
+
+
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+
+    </ui:define>
+
+    <ui:define name="content">
+        <h:outputStylesheet>
+            .top {
+                height: auto;
+                width: auto;
+                vertical-align: top;
+            }
+
+            .info {
+                height: auto;
+                overflow: auto;
+            }
+            .rf-fu{
+                height: 100px;
+                width: 250px;
+            }
+
+        </h:outputStylesheet>
+        <rich:panel header="Edit #{catalogManager.selectedCatalog.title}" rendered="#{!empty catalogManager.selectedCatalog}" styleClass="editFormPanel" style="width:100%">
+            <h:form id="editCatalogForm">
+                <h:panelGrid columns="3">
+                    <h:outputText value="Title:"/>
+                    <h:inputText label="Title" id="title" required="true"
+                                 value="#{catalogManager.selectedCatalog.title}">
+                        <f:validateLength minimum="3"/>
+                    </h:inputText>
+                    <rich:message for="title" ajaxRendered="false"/>
+
+                    <h:outputText value="Description:"/>
+                    <h:inputTextarea label="Description" id="desc" required="true"
+                                 value="#{catalogManager.selectedCatalog.description}"/>
+                    <rich:message for="desc" ajaxRendered="false"/>
+
+                    <h:outputText value="Icon:"/>
+                    <h:graphicImage value="#{catalogManager.getIconUrl('16x.jpg')}" rendered="#{!empty catalogManager.getIconUrl('16x.jpg')}"/>
+                    <h:outputText value="empty" rendered="#{empty catalogManager.getIconUrl('16x.jpg')}"/>
+                    <h:panelGroup/>
+
+
+                    <f:facet name="footer">
+                        <h:commandButton value="Save" action="#{catalogManager.update}" />
+                        &nbsp;&nbsp;
+                        <h:commandButton value="Delete" >
+                            <rich:componentControl target="popup" operation="show" />
+                        </h:commandButton>
+                        <h:commandButton id="delBtn" action="#{catalogManager.delete}" style="display: none;"/>
+
+                    </f:facet>
+                </h:panelGrid>
+                <h:panelGrid columns="2" columnClasses="top,top">
+                    <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" id="upload" acceptedTypes="jpg, gif, png, bmp" render="info"  title="Icon"
+                                     ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" >
+                        <!--<a4j:ajax event="uploadcomplete" execute="@none"  render="info" />-->
+                    </rich:fileUpload>
+                    <h:panelGroup id="info" layout="block">
+                        <rich:panel bodyClass="info">
+                            <f:facet name="header">
+                                <h:outputText value="Uploaded Files Info" />
+                            </f:facet>
+                            <h:outputText value="No files currently uploaded" rendered="#{fileUploadBean.size==0}" />
+                            <rich:dataGrid columns="1" value="#{fileUploadBean.files}" var="file" rowKeyVar="row">
+                                <rich:panel bodyClass="rich-laguna-panel-no-header">
+                                    <h:panelGrid columns="2">
+                                        <a4j:mediaOutput element="img" mimeType="image/jpeg" createContent="#{fileUploadBean.paint}"
+                                                         value="#{row}" style="width:100px; height:100px;" cacheable="false">
+                                            <f:param value="#{fileUploadBean.timeStamp}" name="time" />
+                                        </a4j:mediaOutput>
+                                    </h:panelGrid>
+                                </rich:panel>
+                            </rich:dataGrid>
+                        </rich:panel>
+                        <br />
+                        <a4j:commandButton action="#{fileUploadBean.clearUploadData}" render="info, upload" value="Clear Uploaded Data"
+                                           rendered="#{fileUploadBean.size>0}" />
+                    </h:panelGroup>
+
+                </h:panelGrid>
+            </h:form>
+        </rich:panel>
+        <h:outputText value="Catalog not selected" rendered="#{empty catalogManager.selectedCatalog}"/>
+        <rich:popupPanel id="popup" modal="true" autosized="false" resizeable="false" width="500">
+            <f:facet name="header">
+                <h:outputText value="Deleting #{catalogManager.selectedCatalog.title} and all it's children." />
+            </f:facet>
+            <f:facet name="controls">
+                <h:outputLink value="#" onclick="#{rich:component('popup')}.hide(); return false;">
+                    X
+                </h:outputLink>
+            </f:facet>
+            <p>Are you sure?</p>
+
+            <h:panelGrid columns="2" cellpadding="5">
+                <a id="yesLink" href="#" onclick="#{rich:component('popup')}.hide(); jQuery('#editCatalogForm\\:delBtn').click();">Yes</a>
+                <a href="#" onclick="#{rich:component('popup')}.hide();">No</a>
+            </h:panelGrid>
+        </rich:popupPanel>
+    </ui:define>
+
+</ui:composition>
+

@@ -1,0 +1,48 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                 xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <h:outputStylesheet>
+        .top{
+        vertical-align: top;
+        width: 50%;
+        }
+        .bold{
+        font-weight: bold;
+        }
+        .rf-ctx-lbl{
+            z-index: 9999;
+            position: fixed;
+        }
+
+    </h:outputStylesheet>
+    <h:panelGrid columns="1" columnClasses="top">
+        <h:form>
+            <rich:tree id="tree" nodeType="#{node.type}" var="node" value="#{catalogTreeBean.rootNodes}" toggleType="client">
+                <rich:treeNode type="catalog" expanded="#{node.expanded}" id="nodeId"
+                               iconCollapsed="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '16x.jpg')}"
+                               iconExpanded="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '16x.jpg')}"
+                               iconLeaf="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '16x.jpg')}">
+                    <h:outputText value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}"/>
+                    <h:commandLink action="#{contentManager.viewByCatalogId(node.id)}" value="#{node.title}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                   rendered="#{!catalogTreeBean.isSelected(node)}"/>
+                    &nbsp;<h:outputText value="[#{node.childrenSize}]" rendered="#{node.childrenSize > 0}"/>
+                    <rich:contextMenu mode="server" target="nodeId" >
+                        <rich:menuItem label="Edit" render="popupContent" action="#{catalogManager.editCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                       mode="server" icon="/images/icons/edit.gif" />
+                        <rich:menuItem label="View content list" render="popupContent" action="#{contentManager.viewByCatalogId(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                       mode="server" icon="/images/icons/edit.gif" />
+                    </rich:contextMenu>
+                </rich:treeNode>
+            </rich:tree>
+        </h:form>
+    </h:panelGrid>
+
+
+</ui:composition>
