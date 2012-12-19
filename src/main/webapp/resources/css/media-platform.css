@@ -212,12 +212,12 @@ a.show,a.hide {
 }
 
 .left-menu .rf-pm .rf-pm-top-gr-hdr {
-    background: #c6cacc url(../images/pmenu_bg.png) left top repeat-x;
+    background: #c6cacc url(#{facesContext.externalContext.requestContextPath}/images/pmenu_bg.png) left top repeat-x;
     padding: 3px 1px 2px 3px;
 }
 
 .left-menu .rf-pm .rf-pm-top-gr-hdr:hover {
-    background: #c6cacc url(../images/pmenu_bg.png) left top repeat-x;
+    background: #c6cacc url(#{facesContext.externalContext.requestContextPath}/images/pmenu_bg.png) left top repeat-x;
 }
 
 .left-menu .rf-pm .rf-pm-top-gr-ico {
@@ -295,7 +295,7 @@ a.show,a.hide {
 }
 
 .navigation .rf-tab-hdr-inact {
-    background: #c6cacc url(../images/pmenu_bg.png) left top repeat-x;
+    background: #c6cacc url(#{facesContext.externalContext.requestContextPath}/images/pmenu_bg.png) left top repeat-x;
     border: 1px solid #bec3c7;
 }
 
@@ -354,4 +354,10 @@ textarea[disabled],input[type="text"][disabled],input[type="password"][disabled]
 
 #messages li {
     margin-left: 0;
+}
+
+p.twitter-login {
+    background: url(#{facesContext.externalContext.requestContextPath}/images/social-icons.png) no-repeat 0px -42px;
+    margin: 0px 0px 5px 0px;
+    padding: 3px 0px 3px 25px;
 }

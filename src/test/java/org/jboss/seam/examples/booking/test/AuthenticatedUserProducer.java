@@ -4,8 +4,8 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.seam.examples.booking.account.Authenticated;
-import org.jboss.seam.examples.booking.model.User;
+import com.mediaplatform.account.Authenticated;
+import com.mediaplatform.model.User;
 
 public class AuthenticatedUserProducer {
     @PersistenceContext

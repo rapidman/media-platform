@@ -25,7 +25,7 @@
 
     <ss:IdentityImpl>
         <ee:modifies/>
-        <ss:authenticatorName>bookingAuthenticator</ss:authenticatorName>
+        <ss:authenticatorName>platformAuthenticator</ss:authenticatorName>
     </ss:IdentityImpl>
 
 </beans>

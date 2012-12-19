@@ -26,15 +26,15 @@
 //
 //import org.jboss.arquillian.api.Deployment;
 //import org.jboss.arquillian.junit.Arquillian;
-//import org.jboss.seam.examples.booking.account.Authenticated;
+//import com.mediaplatform.account.Authenticated;
 //import org.jboss.seam.examples.booking.booking.BookingAgent;
 //import org.jboss.seam.examples.booking.booking.Confirmed;
-//import org.jboss.seam.examples.booking.i18n.DefaultBundleKey;
-//import org.jboss.seam.examples.booking.log.BookingLog;
-//import org.jboss.seam.examples.booking.model.Booking;
-//import org.jboss.seam.examples.booking.model.CreditCardType;
-//import org.jboss.seam.examples.booking.model.Hotel;
-//import org.jboss.seam.examples.booking.model.User;
+//import com.mediaplatform.i18n.DefaultBundleKey;
+//import com.mediaplatform.log.BookingLog;
+//import com.mediaplatform.model.Booking;
+//import com.mediaplatform.model.CreditCardType;
+//import com.mediaplatform.model.Hotel;
+//import com.mediaplatform.model.User;
 //import org.jboss.shrinkwrap.api.ShrinkWrap;
 //import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 //import org.jboss.shrinkwrap.api.spec.WebArchive;

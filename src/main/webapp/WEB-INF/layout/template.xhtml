@@ -82,10 +82,14 @@
                         </h:panelGrid>
 
 
-                        <div class="buttonBox">
+                        <h:panelGrid columns="2">
                             <h:commandButton id="login" action="#{identity.login}" value="#{bundles.messages.home_loginAction}"/>
-                            <h:outputLink onclick="#{rich:component('lp')}.hide(event); return false;" value="#">Close</h:outputLink>
-                        </div>
+                            <input type="button" value="Cancel" onclick="#{rich:component('lp')}.hide(event); return false;"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="1">
+                            <h:commandLink action="#{twitterBean.login}"><h:graphicImage url="/images/social/twitter_icon4.jpg" height="16" width="16"/></h:commandLink>
+                        </h:panelGrid>
 
                         <div align="center">
                             <div class="notes" align="left">

@@ -1,0 +1,28 @@
+
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet type="text/xsl" href="stat.xsl" ?>
+<rtmp>
+    <version>1.3.9</version>
+    <compiler>gcc 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5) </compiler>
+    <built>Dec  6 2012 22:01:48</built>
+    <pid>8258</pid>
+    <uptime>61201</uptime>
+    <in>26719639</in>
+    <out>50691994</out>
+    <bwin>0</bwin>
+    <bwout>0</bwout>
+    <server>
+        <application>
+            <name>myapp</name>
+            <live>
+                <nclients>0</nclients>
+            </live>
+        </application>
+        <application>
+            <name>vod</name>
+            <live>
+                <nclients>0</nclients>
+            </live>
+        </application>
+    </server>
+</rtmp>

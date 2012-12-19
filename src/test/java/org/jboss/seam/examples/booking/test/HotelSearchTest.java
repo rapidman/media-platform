@@ -30,9 +30,9 @@ import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.seam.examples.booking.inventory.HotelSearch;
-import org.jboss.seam.examples.booking.inventory.SearchCriteria;
-import org.jboss.seam.examples.booking.model.Hotel;
+import com.mediaplatform.inventory.HotelSearch;
+import com.mediaplatform.inventory.SearchCriteria;
+import com.mediaplatform.model.Hotel;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;

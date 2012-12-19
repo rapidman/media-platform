@@ -6,10 +6,10 @@
     <persistence-unit name="booking">
         <!-- DataSource configured in adjacent sun-resources.xml -->
         <jta-data-source>jdbc/arquillian</jta-data-source>
-        <class>org.jboss.seam.examples.booking.model.User</class>
-        <class>org.jboss.seam.examples.booking.model.Hotel</class>
-        <class>org.jboss.seam.examples.booking.model.Booking</class>
-        <class>org.jboss.seam.examples.booking.model.Content</class>
+        <class>com.mediaplatform.model.User</class>
+        <class>com.mediaplatform.model.Hotel</class>
+        <class>com.mediaplatform.model.Booking</class>
+        <class>com.mediaplatform.model.Content</class>
         <exclude-unlisted-classes/>
         <properties>
             <!-- Properties for EclipseLink (default provider for GlassFish) -->

@@ -51,7 +51,7 @@
 
     <servlet>
         <servlet-name>Resource Servlet</servlet-name>
-        <servlet-class>org.jboss.seam.examples.booking.web.ResourceServlet</servlet-class>
+        <servlet-class>com.mediaplatform.web.ResourceServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

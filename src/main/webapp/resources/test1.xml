@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet type="text/xsl" href="stat.xsl" ?>
+<rtmp>
+    <version>1.3.9</version>
+    <compiler>gcc 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)</compiler>
+    <built>Dec 6 2012 22:01:48</built>
+    <pid>8258</pid>
+    <uptime>61598</uptime>
+    <in>47690678</in>
+    <out>56621223</out>
+    <bwin>689112</bwin>
+    <bwout>64</bwout>
+    <server>
+        <application>
+            <name>myapp</name>
+            <live>
+                <stream>
+                    <name>BMW-F30-320d-First-Autobahn-Test-1080p-FULL-HD</name>
+                    <time>231056</time>
+                    <in>18866819</in>
+                    <out>0</out>
+                    <bwin>742072</bwin>
+                    <bwout>0</bwout>
+                    <client>
+                        <id>65</id>
+                        <address>127.0.0.1</address>
+                        <time>231097</time>
+                        <dropped>0/0</dropped>
+                        <avsync>-4</avsync>
+                        <flashver>FMLE/3.0 (compatible; Lavf53.21</flashver>
+                        <publishing/>
+                        <active/>
+                    </client>
+                    <meta>
+                        <width>640</width>
+                        <height>360</height>
+                        <framerate>29</framerate>
+                        <video>H264</video>
+                        <audio>AAC</audio>
+                    </meta>
+                    <nclients>1</nclients>
+                    <publishing/>
+                    <active/>
+                </stream>
+                <stream>
+                    <name>clipcanvas_14348_offline</name>
+                    <time>4536</time>
+                    <in>1728684</in>
+                    <out>0</out>
+                    <bwin>0</bwin>
+                    <bwout>0</bwout>
+                    <client>
+                        <id>81</id>
+                        <address>127.0.0.1</address>
+                        <time>4582</time>
+                        <dropped>0/0</dropped>
+                        <avsync>36</avsync>
+                        <flashver>FMLE/3.0 (compatible; Lavf53.21</flashver>
+                        <publishing/>
+                        <active/>
+                    </client>
+                    <meta>
+                        <width>1024</width>
+                        <height>576</height>
+                        <framerate>25</framerate>
+                        <video>H264</video>
+                        <audio>AAC</audio>
+                    </meta>
+                    <nclients>1</nclients>
+                    <publishing/>
+                    <active/>
+                </stream>
+                <nclients>2</nclients>
+            </live>
+        </application>
+        <application>
+            <name>vod</name>
+            <live>
+                <nclients>0</nclients>
+            </live>
+        </application>
+    </server>
+</rtmp>
