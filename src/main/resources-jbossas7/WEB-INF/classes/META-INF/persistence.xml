@@ -5,6 +5,7 @@
              version="2.0">
     <persistence-unit name="booking">
         <jta-data-source>java:jboss/datasources/PostgresqlDS</jta-data-source>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <!-- Properties for Hibernate (default provider for JBoss AS) -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
@@ -12,6 +13,13 @@
             <!-- Only format when you need to debug, because it slows things down -->
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.show_sql" value="true"/>
+
+            <property name="hibernate.generate_statistics" value="true"/>
+
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
+            <property name="hibernate.cache.infinispan.cachemanager" value="java:jboss/infinispan/hibernate"/>
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.infinispan.JndiInfinispanRegionFactory"/>
         </properties>
     </persistence-unit>
 </persistence>

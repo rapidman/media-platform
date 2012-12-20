@@ -36,11 +36,6 @@ import org.jboss.solder.logging.Logger;
 import org.picketlink.idm.impl.api.PasswordCredential;
 import org.picketlink.idm.impl.api.model.SimpleUser;
 
-/**
- * This implementation of a <strong>Authenticator</strong> that uses Seam security.
- *
- * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo freitas</a>
- */
 @Stateful
 @LocalBean
 @Named("platformAuthenticator")
@@ -66,21 +61,29 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     private TwitterProfile twUser;
 
     public void authenticate() {
-        log.info("Logging in " + credentials.getUsername());
         User user;
-        if(twUser != null){
-            user = em.find(User.class, twUser.getScreenName());
-            if(user != null){
-                authenticate(user);
-                return;
+        try {
+            if(twUser != null){
+                log.info("Logging in " + twUser.getScreenName());
+                user = em.find(User.class, twUser.getScreenName());
+                if(user != null){
+                    authenticate(user);
+                    return;
+                }
+            }else{
+                log.info("Logging in " + credentials.getUsername());
+                user = em.find(User.class, credentials.getUsername());
+                if (user != null && credentials.getCredential() instanceof PasswordCredential &&
+                        user.getPassword().equals(((PasswordCredential) credentials.getCredential()).getValue())) {
+                    if(user.getUserInfo() != null && user.getUserInfo().getSocialNetType() != null){
+                        throw new IllegalStateException("User with social type " + user.getUserInfo().getSocialNetType() + " can't login from web login form");
+                    }
+                    authenticate(user);
+                    return;
+                }
             }
-        }else{
-            user = em.find(User.class, credentials.getUsername());
-            if (user != null && credentials.getCredential() instanceof PasswordCredential &&
-                    user.getPassword().equals(((PasswordCredential) credentials.getCredential()).getValue())) {
-                authenticate(user);
-                return;
-            }
+        } catch (Exception e) {
+            log.error(e);
         }
 
         messages.error(new DefaultBundleKey("identity_loginFailed")).defaults("Invalid username or password");

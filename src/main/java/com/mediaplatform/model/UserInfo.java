@@ -12,6 +12,7 @@ import java.util.Date;
  * Date: 12/17/12
  * Time: 6:41 PM
  */
+@Cacheable
 @Entity
 @Table(name = "user_info")
 @Veto

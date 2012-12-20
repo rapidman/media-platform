@@ -11,6 +11,7 @@ import java.util.List;
  * Date: 11/26/12
  * Time: 2:28 PM
  */
+@Cacheable
 @Entity
 @Table(name = "catalog")
 @Veto

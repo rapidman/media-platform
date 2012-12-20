@@ -34,6 +34,7 @@ import org.jboss.solder.core.Veto;
  * @author Gavin King
  * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
  */
+@Cacheable
 @Entity
 @Table(name = "platform_user")
 @Veto
