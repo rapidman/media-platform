@@ -66,6 +66,8 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     @Named("fbUser")
     private UserProfile fbUser;
 
+    private boolean admin;
+
 
     public void authenticate() {
         User user;
@@ -111,6 +113,10 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
                 .params(user.getName());
         setStatus(AuthenticationStatus.SUCCESS);
         setUser(new SimpleUser(user.getUsername())); //TODO confirm the need for this set method
+        admin = user.isAdmin();
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
 }

@@ -55,6 +55,10 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
+                            <h:commandLink action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
+                        </rich:toolbarGroup>
+
+                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
                             <pretty:link mappingId="logout">#{bundles.messages.template_linkLogout}</pretty:link>
                         </rich:toolbarGroup>
 

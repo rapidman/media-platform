@@ -93,9 +93,15 @@
             <to-view-id>/content/viewContentList.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <!-- content actions end-->
 
+        <navigation-case>
+            <from-action>#{userList.show}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/user/viewUserList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
 
-        <!-- content actions start-->
 
     </navigation-rule>
 

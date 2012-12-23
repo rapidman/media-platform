@@ -1,0 +1,80 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
+
+
+    <ui:define name="content">
+        <h:form id="form">
+            <rich:dataTable value="#{userList.users}" var="user" iterationStatusVar="it" id="usersTable"
+                            rows="15">
+                <rich:column>
+                    <f:facet name="header">#</f:facet>
+                    #{it.index}
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Name</f:facet>
+                    <h:outputText value="#{user.name}"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">username</f:facet>
+                    <h:outputText value="#{user.username}"/>
+                </rich:column>
+                <rich:column>
+                    <a4j:commandLink styleClass="no-decor" execute="@this" render="@none"
+                                     oncomplete="#{rich:component('confirmPane')}.show()">
+                        <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
+                        <a4j:param value="#{it.index}" assignTo="#{userList.currentUserIdx}"/>
+                    </a4j:commandLink>
+                    <a4j:commandLink styleClass="no-decor" render="editGrid" execute="@this"
+                                     oncomplete="#{rich:component('editPane')}.show()">
+                        <h:graphicImage value="/images/icons/edit.gif" alt="edit"/>
+                        <a4j:param value="#{it.index}" assignTo="#{userList.currentUserIdx}"/>
+                        <f:setPropertyActionListener target="#{userList.currentUser}" value="#{user}"/>
+                    </a4j:commandLink>
+                </rich:column>
+                <f:facet name="footer">
+                    <rich:dataScroller for="usersTable" />
+                </f:facet>
+            </rich:dataTable>
+
+            <a4j:jsFunction name="remove" action="#{userList.remove}" render="usersTable" execute="@this"
+                            oncomplete="#{rich:component('confirmPane')}.hide();"/>
+
+            <rich:popupPanel id="statPane" autosized="true">
+                <h:graphicImage value="/images/ai.gif" alt="ai"/>
+                Please wait...
+            </rich:popupPanel>
+
+            <rich:popupPanel id="confirmPane" autosized="true">
+                Are you sure you want to delete the row?
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('confirmPane')}.hide(); return false;"/>
+                <a4j:commandButton value="Delete" onclick="remove(); return false;"/>
+            </rich:popupPanel>
+
+            <rich:popupPanel header="Edit User" id="editPane" domElementAttachment="parent" width="400"
+                             height="170">
+                <h:panelGrid columns="2" id="editGrid">
+                    <h:outputText value="Name"/>
+                    <h:outputText value="#{userList.currentUser.name}"/>
+
+                    <h:outputText value="UserName"/>
+                    <h:outputText value="#{userList.currentUser.username}"/>
+
+                    <h:outputText value="Admin"/>
+                    <h:selectBooleanCheckbox value="#{userList.currentUser.admin}"/>
+                </h:panelGrid>
+                <a4j:commandButton value="Save" action="#{userList.save}" render="usersTable" execute="editPane"
+                                   oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}"/>
+                <a4j:commandButton value="Cancel" onclick="#{rich:component('editPane')}.hide(); return false;"/>
+            </rich:popupPanel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+

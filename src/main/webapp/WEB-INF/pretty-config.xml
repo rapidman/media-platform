@@ -86,6 +86,11 @@
         <view-id>/account.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="users">
+        <pattern value="/user-list"></pattern>
+        <view-id>/user/viewUserList.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping>
         <pattern value="/password"></pattern>
         <view-id>/password.xhtml</view-id>

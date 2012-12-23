@@ -10,7 +10,7 @@
 
 
     <ui:define name="content">
-        <rich:panel header="Edit #{contentManager.selectedContent.title}">
+        <rich:panel header="Edit #{contentManager.selectedContent.title}" rendered="#{platformAuthenticator.admin}">
             <h:form id="editContentForm">
                 <h:panelGrid columns="3">
                     <h:outputText value="Title:"/>

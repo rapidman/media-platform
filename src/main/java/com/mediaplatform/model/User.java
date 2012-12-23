@@ -45,6 +45,7 @@ public class User implements Serializable {
     private String name;
     private String email;
     private UserInfo userInfo;
+    private boolean admin;
 
     public User() {
     }
@@ -116,8 +117,17 @@ public class User implements Serializable {
         this.userInfo = userInfo;
     }
 
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
     @Override
     public String toString() {
         return "User(" + username + ")";
     }
+
 }

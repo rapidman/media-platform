@@ -113,7 +113,7 @@
             <groupId>org.jboss.seam.social</groupId>
             <artifactId>seam-social</artifactId>
             <version>${seam.version}</version>
-            <scope>compile</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -127,7 +127,7 @@
             <artifactId>seam-social-facebook</artifactId>
             <version>${seam.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.picketlink.idm</groupId>
             <artifactId>picketlink-idm-core</artifactId>
