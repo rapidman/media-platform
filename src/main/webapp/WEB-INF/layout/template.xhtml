@@ -55,7 +55,8 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
-                            <h:commandLink action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
+                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/user/viewUserList.xhtml'}" action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
+                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/user/viewUserList.xhtml'}" value="#{bundles.messages.template_users}"/>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">

@@ -22,8 +22,12 @@
                     <h:outputText value="#{user.name}"/>
                 </rich:column>
                 <rich:column>
-                    <f:facet name="header">username</f:facet>
+                    <f:facet name="header">Username</f:facet>
                     <h:outputText value="#{user.username}"/>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">Admin</f:facet>
+                    <h:outputText value="#{user.admin ? 'Yes' : 'No'}"/>
                 </rich:column>
                 <rich:column>
                     <a4j:commandLink styleClass="no-decor" execute="@this" render="@none"
