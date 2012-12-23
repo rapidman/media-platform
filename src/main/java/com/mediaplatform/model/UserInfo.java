@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.jboss.seam.social.UserProfile;
 import org.jboss.seam.social.twitter.model.TwitterProfile;
 import org.jboss.solder.core.Veto;
 
@@ -43,6 +44,14 @@ public class UserInfo extends AbstractEntity {
         this.location = twUser.getLocation();
         this.createdDate = new Date();
         this.language = twUser.getLanguage();
+    }
+
+    public UserInfo(UserProfile fbUser) {
+        this();
+        socialNetType = SocialNetType.TW;
+        this.screenName = fbUser.getFullName();
+        this.profileImageUrl = fbUser.getProfileImageUrl();
+        this.createdDate = new Date();
     }
 
     public String getScreenName() {

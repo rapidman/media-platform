@@ -2,16 +2,12 @@ package com.mediaplatform.social;
 
 import com.mediaplatform.model.User;
 import com.mediaplatform.model.UserInfo;
-import com.mediaplatform.security.PlatformAuthenticator;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.international.status.Messages;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.social.Twitter;
+import org.jboss.seam.social.Facebook;
+import org.jboss.seam.social.UserProfile;
+import org.jboss.seam.social.facebook.FacebookService;
 import org.jboss.seam.social.oauth.OAuthApplication;
-import org.jboss.seam.social.twitter.TwitterService;
-import org.jboss.seam.social.twitter.jackson.TwitterServiceJackson;
-import org.jboss.seam.social.twitter.model.TwitterProfile;
 import org.jboss.solder.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
@@ -29,27 +25,31 @@ import java.io.Serializable;
  * Date: 12/16/12
  * Time: 4:34 PM
  */
-@Named("twitterBean")
+@Named
 @SessionScoped
-@Twitter
-public class TwitterBean extends AbstractSocialBean {
+public class FacebookBean extends AbstractSocialBean {
+
     @Inject
-    @Twitter
-    private TwitterService service;
+    @Facebook
+    private FacebookService service;
 
     @Produces
-    @Named("twUser")
-    private TwitterProfile twUser;
+    @Named("fbUser")
+    private UserProfile fbUser;
 
-    @OAuthApplication(apiKey = "YajUl0D4ZJhfXawKwNjWzQ", apiSecret = "QWi1vHsJzsInr4Y3Bcfv7LcTiCoHB3n9hjsfggKA8", callback = "http://timur.asuscomm.com:8080/media-platform/social/twitterCallback.xhtml")
-    @Twitter
+    @OAuthApplication(apiKey = "135636733179752", apiSecret = "9fd8e67d6a8ed31d606aeac39e3e0189", callback = "http://timur.asuscomm.com:8080/media-platform/social/facebookCallback.xhtml")
+    @Facebook
     @Produces
-    public TwitterService twitterServiceProducer(TwitterService ts) {
-        return ts;
+    public FacebookService facebookServiceProducer(FacebookService fs) {
+        return fs;
+    }
+
+    public FacebookService getService() {
+        return service;
     }
 
     public String getFullName() {
-        TwitterProfile user = service.getMyProfile();
+        UserProfile user = service.getMyProfile();
         String fullName = user.getFullName();
         return fullName;
     }
@@ -61,19 +61,20 @@ public class TwitterBean extends AbstractSocialBean {
 
     @Override
     protected User findUser() {
-        twUser = service.getMyProfile();
-        return appEm.find(User.class, twUser.getScreenName());
+        fbUser = service.getMyProfile();
+        User user = appEm.find(User.class, fbUser.getId());
+        return user;
     }
 
     @Override
     protected UserInfo createUserInfo() {
-        return new UserInfo(twUser);
+        return new UserInfo(fbUser);
     }
 
     @Override
     protected void assignProps(User user) {
-        user.setUsername(twUser.getScreenName());
-        user.setName(twUser.getName());
+        user.setUsername(fbUser.getId());
+        user.setName(fbUser.getFullName());
     }
 
     @Override
@@ -81,7 +82,4 @@ public class TwitterBean extends AbstractSocialBean {
         service.initAccessToken();
     }
 
-    public TwitterService getService() {
-        return service;
-    }
 }

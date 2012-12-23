@@ -113,7 +113,7 @@
             <groupId>org.jboss.seam.social</groupId>
             <artifactId>seam-social</artifactId>
             <version>${seam.version}</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

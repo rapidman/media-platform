@@ -87,8 +87,9 @@
                             <input type="button" value="Cancel" onclick="#{rich:component('lp')}.hide(event); return false;"/>
                         </h:panelGrid>
 
-                        <h:panelGrid columns="1">
+                        <h:panelGrid columns="2">
                             <h:commandLink action="#{twitterBean.login}"><h:graphicImage url="/images/social/twitter_icon4.jpg" height="16" width="16"/></h:commandLink>
+                            <h:commandLink action="#{facebookBean.login}"><h:graphicImage url="/images/social/facebookicon.png" height="16" width="16"/></h:commandLink>
                         </h:panelGrid>
 
                         <div align="center">

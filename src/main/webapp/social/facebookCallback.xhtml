@@ -1,0 +1,31 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/WEB-INF/layout/template.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="#{facebookBean.service.verifierParamName}"
+                     value="#{facebookBean.service.verifier}"
+                     required="true"
+                     requiredMessage="Error with Twitter. Retry later"/>
+        <f:event type="preRenderView"
+                 listener="#{facebookBean.authenticate()}"/>
+    </f:metadata>
+
+    <ui:define name="head"></ui:define>
+
+
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+    </ui:define>
+
+    <ui:define name="content">
+        Full Name #{facebookBean.fullName}
+    </ui:define>
+
+</ui:composition>

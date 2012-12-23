@@ -31,6 +31,7 @@ import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Authenticator;
 import org.jboss.seam.security.BaseAuthenticator;
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.social.UserProfile;
 import org.jboss.seam.social.twitter.model.TwitterProfile;
 import org.jboss.solder.logging.Logger;
 import org.picketlink.idm.impl.api.PasswordCredential;
@@ -58,7 +59,13 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     private Event<User> loginEventSrc;
 
     @Inject
+    @Named("twUser")
     private TwitterProfile twUser;
+
+    @Inject
+    @Named("fbUser")
+    private UserProfile fbUser;
+
 
     public void authenticate() {
         User user;
@@ -66,6 +73,13 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
             if(twUser != null){
                 log.info("Logging in " + twUser.getScreenName());
                 user = em.find(User.class, twUser.getScreenName());
+                if(user != null){
+                    authenticate(user);
+                    return;
+                }
+            }else if(fbUser != null){
+                log.info("Logging in " + fbUser.getId());
+                user = em.find(User.class, fbUser.getId());
                 if(user != null){
                     authenticate(user);
                     return;
