@@ -59,6 +59,7 @@ public class ApplicationInitializer {
 
     public ApplicationInitializer() {
         users.addAll(Arrays.asList(
+                new User("admin", "admin", "admin@example.com", "admin"),
                 new User("Shane Bryzak", "shane", "shane@example.com", "brisbane"),
                 new User("Dan Allen", "dan", "dan@example.com", "laurel"),
                 new User("Lincoln Baxter III", "lincoln", "lincoln@example.com", "charlotte"),

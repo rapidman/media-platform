@@ -31,6 +31,7 @@ import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Authenticator;
 import org.jboss.seam.security.BaseAuthenticator;
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.social.UserProfile;
 import org.jboss.seam.social.twitter.model.TwitterProfile;
 import org.jboss.solder.logging.Logger;
@@ -66,7 +67,8 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     @Named("fbUser")
     private UserProfile fbUser;
 
-    private boolean admin;
+    @Inject
+    private Identity identity;
 
 
     public void authenticate() {
@@ -95,6 +97,9 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
                         throw new IllegalStateException("User with social type " + user.getUserInfo().getSocialNetType() + " can't login from web login form");
                     }
                     authenticate(user);
+                    if("admin".equals(user.getUsername())){
+                        identity.addRole("admin", "USERS", "GROUP");
+                    }
                     return;
                 }
             }
@@ -112,11 +117,6 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
         messages.info(new DefaultBundleKey("identity_loggedIn"), user.getName()).defaults("You're signed in as {0}")
                 .params(user.getName());
         setStatus(AuthenticationStatus.SUCCESS);
-        setUser(new SimpleUser(user.getUsername())); //TODO confirm the need for this set method
-        admin = user.isAdmin();
-    }
-
-    public boolean isAdmin() {
-        return admin;
+        setUser(new SimpleUser(user.getUsername()));
     }
 }

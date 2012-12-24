@@ -54,7 +54,7 @@
                             <pretty:link mappingId="account">#{bundles.messages.template_linkAccount}</pretty:link>
                         </rich:toolbarGroup>
 
-                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
+                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
                             <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/user/viewUserList.xhtml'}" action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
                             <h:outputText rendered="#{facesContext.viewRoot.viewId == '/user/viewUserList.xhtml'}" value="#{bundles.messages.template_users}"/>
                         </rich:toolbarGroup>

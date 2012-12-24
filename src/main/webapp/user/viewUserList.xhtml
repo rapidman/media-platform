@@ -26,10 +26,6 @@
                     <h:outputText value="#{user.username}"/>
                 </rich:column>
                 <rich:column>
-                    <f:facet name="header">Admin</f:facet>
-                    <h:outputText value="#{user.admin ? 'Yes' : 'No'}"/>
-                </rich:column>
-                <rich:column>
                     <a4j:commandLink styleClass="no-decor" execute="@this" render="@none"
                                      oncomplete="#{rich:component('confirmPane')}.show()">
                         <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
@@ -70,8 +66,6 @@
                     <h:outputText value="UserName"/>
                     <h:outputText value="#{userList.currentUser.username}"/>
 
-                    <h:outputText value="Admin"/>
-                    <h:selectBooleanCheckbox value="#{userList.currentUser.admin}"/>
                 </h:panelGrid>
                 <a4j:commandButton value="Save" action="#{userList.save}" render="usersTable" execute="editPane"
                                    oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}"/>
