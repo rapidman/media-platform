@@ -16,21 +16,31 @@
  */
 package com.mediaplatform.exceptioncontrol;
 
+import com.mediaplatform.util.jsf.FacesUtil;
+import org.jboss.seam.international.status.Messages;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.solder.logging.Logger;
 import org.jboss.solder.exception.control.CaughtException;
 import org.jboss.solder.exception.control.Handles;
 import org.jboss.solder.exception.control.HandlesExceptions;
 
-/**
- * Logs all exceptions and allows the to propagate
- *
- * @author <a href="http://community.jboss.org/people/spinner">Jose Freitas</a>
- */
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+
 @HandlesExceptions
 public class GeneralExceptionHandler {
+    @Inject
+    Messages messages;
 
     public void printExceptionMessage(@Handles CaughtException<Throwable> event, Logger log) {
         log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
         event.rethrow();
+    }
+
+    public void handleAuthorizationException(@Handles CaughtException<AuthorizationException> evt) {
+        evt.handled();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You do not have the necessary permissions to perform that operation", null));
+        FacesUtil.redirectToDeniedPage();
     }
 }

@@ -36,7 +36,7 @@
                         <h:outputText value="Name:" styleClass="label"></h:outputText>
                         <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
                             <rich:contextMenu mode="server" target="contentId" >
-                                <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
+                                <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
                                                mode="server" icon="/images/icons/edit.gif" />
                             </rich:contextMenu>
                         </h:commandLink>

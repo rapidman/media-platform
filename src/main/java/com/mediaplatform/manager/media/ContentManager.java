@@ -3,6 +3,7 @@ package com.mediaplatform.manager.media;
 import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateContentEvent;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.RtmpPublishFormat;
 import com.mediaplatform.util.ViewHelper;
@@ -103,6 +104,7 @@ public class ContentManager extends AbstractContentManager {
         view(id);
     }
 
+    @Admin
     public void editContent(Long id) {
         view(id);
     }
@@ -113,6 +115,7 @@ public class ContentManager extends AbstractContentManager {
         selectedCatalog = catalogManager.getById(selectedContent.getCatalog().getId());
     }
 
+    @Admin
     public void update() {
         FileEntry mediaFile = null;
         if (fileUploadBean.getSize() > 0) {
@@ -126,6 +129,7 @@ public class ContentManager extends AbstractContentManager {
         updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
     }
 
+    @Admin
     public void delete() {
         super.delete(selectedContent);
         messages.info("Deleted successfull!");
@@ -142,6 +146,7 @@ public class ContentManager extends AbstractContentManager {
         selectedContent = null;
     }
 
+    @Admin
     public void publish(boolean highQuality){
         String absFilePath = fileStorageManager.getMediaFileUrl(selectedContent.getMediaFile(), true);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
@@ -150,10 +155,12 @@ public class ContentManager extends AbstractContentManager {
         messages.info("Published successfull!");
     }
 
+    @Admin
     public void publish(){
        publish(true);
     }
 
+    @Admin
     public void dropStream(String streamName){
         RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
         selectedContent.setPublished(false);

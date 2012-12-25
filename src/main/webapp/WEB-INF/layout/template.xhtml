@@ -16,10 +16,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>#{bundles.messages.template_title}</title>
         <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-
         <h:outputStylesheet library="css" name="media-platform.css" target="head" />
         <ui:insert name="head"/>
     </h:head>
+
+
     <h:body styleClass="#{empty pageClass ? 'page' : 'home'}">
         <div id="document" align="center">
             <div id="header" align="right">
@@ -106,10 +107,8 @@
                             <div class="subnotes" align="left">
                                 #{bundles.messages.home_useDemoAccount}
                                 <ul>
+                                    <li>admin/admin</li>
                                     <li>shane/brisbane</li>
-                                    <li>dan/laurel</li>
-                                    <li>lincoln/charlotte</li>
-                                    <li>jose/brazil</li>
                                 </ul>
                             </div>
                         </div>
@@ -123,7 +122,7 @@
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">
-                            <h:messages globalOnly="true" errorStyle="color: #a52a2a;"/>
+                            <div align="center"><h:messages globalOnly="true" errorStyle="color: #a52a2a;"/></div>
                             <div id="content"><ui:insert name="content"/></div>
                         </td>
                     </tr>

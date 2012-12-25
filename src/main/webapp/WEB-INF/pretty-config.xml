@@ -46,6 +46,11 @@
         <action>#{identity.logout}</action>
     </url-mapping>
 
+    <url-mapping id="denied">
+        <pattern value="/denied"></pattern>
+        <view-id>/denied.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="login">
         <pattern value="/login"></pattern>
         <view-id>/login.xhtml</view-id>

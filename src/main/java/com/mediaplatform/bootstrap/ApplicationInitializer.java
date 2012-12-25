@@ -37,12 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * An alternative bean used to import seed data into the database when the application is being initialized.
- *
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
- */
 // @Stateless // can't use EJB since they are not yet available for lookup when initialized event is fired
 @Alternative
 public class ApplicationInitializer {
@@ -60,10 +54,8 @@ public class ApplicationInitializer {
     public ApplicationInitializer() {
         users.addAll(Arrays.asList(
                 new User("admin", "admin", "admin@example.com", "admin"),
-                new User("Shane Bryzak", "shane", "shane@example.com", "brisbane"),
-                new User("Dan Allen", "dan", "dan@example.com", "laurel"),
-                new User("Lincoln Baxter III", "lincoln", "lincoln@example.com", "charlotte"),
-                new User("Jose Freitas", "jose", "jose.freitas@example.com", "brazil")));
+                new User("Shane Bryzak", "shane", "shane@example.com", "brisbane")
+        ));
     }
 
     /**
@@ -156,11 +148,11 @@ public class ApplicationInitializer {
 
     private void createCatalog(Catalog parent, List<TwoTuple<Catalog, List<Content>>> tuples) {
         entityManager.persist(parent);
-        for(TwoTuple<Catalog, List<Content>> tuple:tuples){
+        for (TwoTuple<Catalog, List<Content>> tuple : tuples) {
             Catalog child = tuple.getFirst();
             entityManager.persist(child);
             List<Content> contentList = tuple.getSecond();
-            for(Content content:contentList){
+            for (Content content : contentList) {
                 content.setCatalog(child);
                 entityManager.persist(content);
                 child.getContentList().add(content);

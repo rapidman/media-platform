@@ -35,7 +35,7 @@
                     &nbsp;<h:outputText value="[#{node.childrenSize}]" rendered="#{node.childrenSize > 0}"/>
                     <rich:contextMenu mode="server" target="nodeId" >
                         <rich:menuItem label="Edit" render="popupContent" action="#{catalogManager.editCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
-                                       mode="server" icon="/images/icons/edit.gif" />
+                                       mode="server" icon="/images/icons/edit.gif" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}" />
                         <rich:menuItem label="View content list" render="popupContent" action="#{contentManager.viewByCatalogId(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
                                        mode="server" icon="/images/icons/edit.gif" />
                     </rich:contextMenu>

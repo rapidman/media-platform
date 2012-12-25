@@ -2,6 +2,7 @@ package com.mediaplatform.social;
 
 import com.mediaplatform.model.User;
 import com.mediaplatform.model.UserInfo;
+import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Identity;
 import org.jboss.solder.logging.Logger;
@@ -50,7 +51,7 @@ public abstract class AbstractSocialBean implements Serializable {
             String message = "Can't authenticate";
             log.error(message, e);
             messages.error(message);
-            redirectToLoginPage();
+            FacesUtil.redirectToLoginPage();
             return;
         }
         User user = findUser();
@@ -67,10 +68,10 @@ public abstract class AbstractSocialBean implements Serializable {
             appEm.merge(userInfo);
         }
         if (Identity.RESPONSE_LOGIN_SUCCESS.equals(identity.login())) {
-            redirectToHomePage();
+            FacesUtil.redirectToHomePage();
         } else {
             messages.error("Login via social account is failed");
-            redirectToLoginPage();
+            FacesUtil.redirectToLoginPage();
         }
     }
 
@@ -82,21 +83,5 @@ public abstract class AbstractSocialBean implements Serializable {
 
     protected abstract void initAccessToken();
 
-    private void redirectToLoginPage() {
-        redirect("login");
-    }
 
-    private void redirectToHomePage() {
-        redirect("");
-    }
-
-    private void redirect(String page) {
-        try {
-            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            String redirect = externalContext.getRequestContextPath() + "/" + page;
-            externalContext.redirect(redirect);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
