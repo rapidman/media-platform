@@ -51,10 +51,7 @@ public class ContentManager extends AbstractContentManager {
     @Inject
     private ViewHelper viewHelper;
 
-    private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
 
-    @Inject
-    private MediaServerApiManager apiManager;
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
@@ -108,18 +105,6 @@ public class ContentManager extends AbstractContentManager {
 
     public void viewVideoOnDemand(Long id) {
         view(id);
-    }
-
-    public void viewLiveVideoByName(String name) {
-        RtmpDTO info = getLiveVideoInfo();
-        for (ApplicationDTO app : info.getServer().getApplications()) {
-            for (StreamDTO stream : app.getLive().getStreams()) {
-                if (stream.getName().equals(name)) {
-                    this.currStreamInfo = new TwoTuple<ApplicationDTO, StreamDTO>(app, stream);
-                    break;
-                }
-            }
-        }
     }
 
     @Admin
@@ -199,16 +184,5 @@ public class ContentManager extends AbstractContentManager {
         return viewHelper.getVideoUrl(selectedContent.getMediaFile());
     }
 
-    public RtmpDTO getLiveVideoInfo() {
-        return apiManager.getStatInfo();
-    }
-
-    public List<StreamDTO> getLiveStreams() {
-        return getLiveVideoInfo().getServer().getLiveApp() == null ? null : getLiveVideoInfo().getServer().getLiveApp().getLive().getStreams();
-    }
-
-    public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
-        return currStreamInfo;
-    }
 }
 
