@@ -10,6 +10,20 @@ body {
     height: 100%;
 }
 
+* {
+    margin: 0;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -4em;
+}
+.footer, .push {
+    height: 4em;
+}
+
 fieldset {
     margin: 0;
 }
@@ -360,4 +374,9 @@ p.twitter-login {
     background: url(#{facesContext.externalContext.requestContextPath}/images/social-icons.png) no-repeat 0px -42px;
     margin: 0px 0px 5px 0px;
     padding: 3px 0px 3px 25px;
+}
+
+.treeCatalog{
+    width: 225px;
+    overflow-x: auto;
 }

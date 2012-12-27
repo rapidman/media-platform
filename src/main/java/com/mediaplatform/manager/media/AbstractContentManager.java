@@ -46,4 +46,8 @@ public class AbstractContentManager extends AbstractManager {
     public List<Content> findPopularList(int maxResult) {
         return appEm.createQuery("select c from Content c order by c.id desc").setMaxResults(maxResult).getResultList();
     }
+
+    public Content findContentByFileName(String name) {
+        return (Content) appEm.createQuery("select c from Content c where c.mediaFile.name = :name").setParameter("name", name).getSingleResult();
+    }
 }

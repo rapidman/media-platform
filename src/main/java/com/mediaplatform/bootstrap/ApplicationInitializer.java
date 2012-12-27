@@ -40,145 +40,145 @@ import java.util.List;
 // @Stateless // can't use EJB since they are not yet available for lookup when initialized event is fired
 @Alternative
 public class ApplicationInitializer {
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Inject
-    private UserTransaction utx;
-
-    @Inject
-    private Logger log;
-
-    private final List<User> users = new ArrayList<User>();
-
-    public ApplicationInitializer() {
-        users.addAll(Arrays.asList(
-                new User("admin", "admin", "admin@example.com", "admin"),
-                new User("Shane Bryzak", "shane", "shane@example.com", "brisbane")
-        ));
-    }
-
-    /**
-     * Import seed data when Seam Servlet fires an event notifying observers that the web application is being initialized.
-     */
-    public void importData(@Observes @Initialized WebApplication webapp) {
-        log.info("Importing seed data for application " + webapp.getName());
-        // use manual transaction control since this is a managed bean
-        try {
-            utx.begin();
-            // AS7-2045
-            entityManager.createQuery("delete from Booking").executeUpdate();
-            entityManager.createQuery("delete from Hotel").executeUpdate();
-            entityManager.createQuery("delete from User").executeUpdate();
-
-            entityManager.createQuery("delete from Content").executeUpdate();
-            entityManager.createQuery("delete from Catalog").executeUpdate();
-
-            persist(users);
-
-            createCatalog(new Catalog("Видео", "Категория Видео"),
-                    Arrays.asList(
-                            new TwoTuple<Catalog, List<Content>>(
-                                    new Catalog("Документальные фильмы", "Подкатегория Документальные фильмы"),
-                                    Arrays.asList(
-                                            new Content("Анатомия власти", "DVD рип", null),
-                                            new Content("Мировые войны", "DVD рип", null)
-                                    )
-                            ),
-                            new TwoTuple<Catalog, List<Content>>(
-                                    new Catalog("Мобильное видео", "Подкатегория Мобильное видео"),
-                                    Arrays.asList(
-                                            new Content("Видео с концерта Земфиры ", "DVD рип", null)
-                                    )
-                            )
-                    )
-            );
-            createCatalog(new Catalog("Кино", "Категория Кино"),
-                    Arrays.asList(
-                            new TwoTuple<Catalog, List<Content>>(
-                                    new Catalog("Зарубежные фильмы", "подкатегория Зарубежные фильмы"),
-                                    Arrays.asList(new Content("Человек паук", "DVD рип", null))
-                            )
-                    )
-            );
-            createCatalog(new Catalog("Анимация", "Категория Анимация"),
-                    Arrays.asList(
-                            new TwoTuple<Catalog, List<Content>>(
-                                    new Catalog("Зарубежные мультфильмы", "подкатегория Зарубежные мультфильмы"),
-                                    Arrays.asList(
-                                            new Content("Черепашки ниндзя1", "DVD рип", null),
-                                            new Content("Черепашки ниндзя2", "DVD рип", null),
-                                            new Content("Черепашки ниндзя3", "DVD рип", null),
-                                            new Content("Черепашки ниндзя4", "DVD рип", null),
-                                            new Content("Черепашки ниндзя5", "DVD рип", null),
-                                            new Content("Черепашки ниндзя6", "DVD рип", null),
-                                            new Content("Черепашки ниндзя7", "DVD рип", null),
-                                            new Content("Черепашки ниндзя8", "DVD рип", null),
-                                            new Content("Черепашки ниндзя9", "DVD рип", null),
-                                            new Content("Черепашки ниндзя10", "DVD рип", null),
-                                            new Content("Черепашки ниндзя11", "DVD рип", null),
-                                            new Content("Черепашки ниндзя12", "DVD рип", null),
-                                            new Content("Черепашки ниндзя13", "DVD рип", null),
-                                            new Content("Черепашки ниндзя14", "DVD рип", null),
-                                            new Content("Черепашки ниндзя15", "DVD рип", null),
-                                            new Content("Черепашки ниндзя16", "DVD рип", null),
-                                            new Content("Черепашки ниндзя17", "DVD рип", null)
-
-                                    )
-                            )
-                    )
-            );
-
-            utx.commit();
-            log.info("Seed data successfully imported");
-        } catch (Exception e) {
-            log.error("Import failed. Seed data will not be available.", e);
-            try {
-                if (utx.getStatus() == Status.STATUS_ACTIVE) {
-                    try {
-                        utx.rollback();
-                    } catch (Exception rbe) {
-                        log.error("Error rolling back transaction", rbe);
-                    }
-                }
-            } catch (Exception se) {
-            }
-        }
-    }
-
-    private void createCatalog(Catalog parent, List<TwoTuple<Catalog, List<Content>>> tuples) {
-        entityManager.persist(parent);
-        for (TwoTuple<Catalog, List<Content>> tuple : tuples) {
-            Catalog child = tuple.getFirst();
-            entityManager.persist(child);
-            List<Content> contentList = tuple.getSecond();
-            for (Content content : contentList) {
-                content.setCatalog(child);
-                entityManager.persist(content);
-                child.getContentList().add(content);
-            }
-            parent.getChildren().add(child);
-            child.setParent(parent);
-        }
-
-    }
-
-    private void persist(List<?> entities) {
-        for (Object e : entities) {
-            persist(e);
-        }
-    }
-
-    private void persist(Object entity) {
-        // use a try-catch block here so we can capture identity
-        // of entity that fails to persist
-        try {
-            entityManager.persist(entity);
-            entityManager.flush();
-        } catch (ConstraintViolationException e) {
-            throw new PersistenceException("Cannot persist invalid entity: " + entity, e);
-        } catch (PersistenceException e) {
-            throw new PersistenceException("Error persisting entity: " + entity, e);
-        }
-    }
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    @Inject
+//    private UserTransaction utx;
+//
+//    @Inject
+//    private Logger log;
+//
+//    private final List<User> users = new ArrayList<User>();
+//
+//    public ApplicationInitializer() {
+//        users.addAll(Arrays.asList(
+//                new User("admin", "admin", "admin@example.com", "admin"),
+//                new User("Shane Bryzak", "shane", "shane@example.com", "brisbane")
+//        ));
+//    }
+//
+//    /**
+//     * Import seed data when Seam Servlet fires an event notifying observers that the web application is being initialized.
+//     */
+//    public void importData(@Observes @Initialized WebApplication webapp) {
+//        log.info("Importing seed data for application " + webapp.getName());
+//        // use manual transaction control since this is a managed bean
+//        try {
+//            utx.begin();
+//            // AS7-2045
+//            entityManager.createQuery("delete from Booking").executeUpdate();
+//            entityManager.createQuery("delete from Hotel").executeUpdate();
+//            entityManager.createQuery("delete from User").executeUpdate();
+//
+//            entityManager.createQuery("delete from Content").executeUpdate();
+//            entityManager.createQuery("delete from Catalog").executeUpdate();
+//
+//            persist(users);
+//
+//            createCatalog(new Catalog("Видео", "Категория Видео"),
+//                    Arrays.asList(
+//                            new TwoTuple<Catalog, List<Content>>(
+//                                    new Catalog("Документальные фильмы", "Подкатегория Документальные фильмы"),
+//                                    Arrays.asList(
+//                                            new Content("Анатомия власти", "DVD рип", null),
+//                                            new Content("Мировые войны", "DVD рип", null)
+//                                    )
+//                            ),
+//                            new TwoTuple<Catalog, List<Content>>(
+//                                    new Catalog("Мобильное видео", "Подкатегория Мобильное видео"),
+//                                    Arrays.asList(
+//                                            new Content("Видео с концерта Земфиры ", "DVD рип", null)
+//                                    )
+//                            )
+//                    )
+//            );
+//            createCatalog(new Catalog("Кино", "Категория Кино"),
+//                    Arrays.asList(
+//                            new TwoTuple<Catalog, List<Content>>(
+//                                    new Catalog("Зарубежные фильмы", "подкатегория Зарубежные фильмы"),
+//                                    Arrays.asList(new Content("Человек паук", "DVD рип", null))
+//                            )
+//                    )
+//            );
+//            createCatalog(new Catalog("Анимация", "Категория Анимация"),
+//                    Arrays.asList(
+//                            new TwoTuple<Catalog, List<Content>>(
+//                                    new Catalog("Зарубежные мультфильмы", "подкатегория Зарубежные мультфильмы"),
+//                                    Arrays.asList(
+//                                            new Content("Черепашки ниндзя1", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя2", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя3", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя4", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя5", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя6", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя7", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя8", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя9", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя10", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя11", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя12", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя13", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя14", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя15", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя16", "DVD рип", null),
+//                                            new Content("Черепашки ниндзя17", "DVD рип", null)
+//
+//                                    )
+//                            )
+//                    )
+//            );
+//
+//            utx.commit();
+//            log.info("Seed data successfully imported");
+//        } catch (Exception e) {
+//            log.error("Import failed. Seed data will not be available.", e);
+//            try {
+//                if (utx.getStatus() == Status.STATUS_ACTIVE) {
+//                    try {
+//                        utx.rollback();
+//                    } catch (Exception rbe) {
+//                        log.error("Error rolling back transaction", rbe);
+//                    }
+//                }
+//            } catch (Exception se) {
+//            }
+//        }
+//    }
+//
+//    private void createCatalog(Catalog parent, List<TwoTuple<Catalog, List<Content>>> tuples) {
+//        entityManager.persist(parent);
+//        for (TwoTuple<Catalog, List<Content>> tuple : tuples) {
+//            Catalog child = tuple.getFirst();
+//            entityManager.persist(child);
+//            List<Content> contentList = tuple.getSecond();
+//            for (Content content : contentList) {
+//                content.setCatalog(child);
+//                entityManager.persist(content);
+//                child.getContentList().add(content);
+//            }
+//            parent.getChildren().add(child);
+//            child.setParent(parent);
+//        }
+//
+//    }
+//
+//    private void persist(List<?> entities) {
+//        for (Object e : entities) {
+//            persist(e);
+//        }
+//    }
+//
+//    private void persist(Object entity) {
+//        // use a try-catch block here so we can capture identity
+//        // of entity that fails to persist
+//        try {
+//            entityManager.persist(entity);
+//            entityManager.flush();
+//        } catch (ConstraintViolationException e) {
+//            throw new PersistenceException("Cannot persist invalid entity: " + entity, e);
+//        } catch (PersistenceException e) {
+//            throw new PersistenceException("Error persisting entity: " + entity, e);
+//        }
+//    }
 }

@@ -104,6 +104,9 @@ public class RtmpDTO {
     }
 
     public ServerDTO getServer() {
+        if(server == null){
+            server = new ServerDTO();
+        }
         return server;
     }
 

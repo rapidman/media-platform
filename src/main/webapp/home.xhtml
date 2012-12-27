@@ -20,16 +20,31 @@
 
     <ui:define name="content">
         <h:panelGrid columns="2">
-            <rich:panel header="Новое">
+            <rich:panel header="Live Video">
+                <h:form rendered="#{contentManager.liveStreams.size() > 0}">
+                    <rich:dataGrid id="liveContentGrid" value="#{contentManager.liveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
+                        <rich:panel bodyClass="pbody">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Name:" styleClass="label"></h:outputText>
+                                <h:commandLink action="#{contentManager.viewLiveVideoByName(stream.name)}" value="#{stream.name}"  />
+                            </h:panelGrid>
+                        </rich:panel>
+                    </rich:dataGrid>
+                </h:form>
+                <h:outputText value="Live streams not found" rendered="#{contentManager.liveStreams.size() == 0}"/>
+            </rich:panel>
+        </h:panelGrid>
+
+        <h:panelGrid columns="2">
+            <rich:panel header="Latest">
                 <h:form>
                     <rich:dataGrid id="latestContentGrid" value="#{contentManager.latestContentList}" var="content" columns="3" elements="9" width="600px" border="0">
                         <rich:panel bodyClass="pbody">
                             <h:panelGrid columns="2">
                                 <h:outputText value="Name:" styleClass="label"></h:outputText>
                                 <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                                    <rich:contextMenu mode="server" target="contentId" >
+                                    <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
                                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
-                                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
                                                        mode="server" icon="/images/icons/edit.gif" />
                                     </rich:contextMenu>
                                 </h:commandLink>
@@ -42,14 +57,14 @@
                 </h:form>
             </rich:panel>
 
-            <rich:panel header="Популярное">
+            <rich:panel header="Popular">
                 <h:form>
                     <rich:dataGrid id="popularContentGrid" value="#{contentManager.popularContentList}" var="content" columns="3" elements="9" width="600px" border="0">
                         <rich:panel bodyClass="pbody">
                             <h:panelGrid columns="2">
                                 <h:outputText value="Name:" styleClass="label"></h:outputText>
                                 <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                                    <rich:contextMenu mode="server" target="contentId" >
+                                    <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
                                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
                                                        mode="server" icon="/images/icons/edit.gif" />
                                     </rich:contextMenu>

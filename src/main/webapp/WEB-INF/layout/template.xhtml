@@ -22,7 +22,7 @@
 
 
     <h:body styleClass="#{empty pageClass ? 'page' : 'home'}">
-        <div id="document" align="center">
+        <div id="document" align="center" class="wrapper">
             <div id="header" align="right">
                 <div id="title" >
                     <!--<h:graphicImage value="/img/hdr.title.gif" alt="JBoss Suites banner"/>-->
@@ -116,27 +116,29 @@
                 </rich:popupPanel>
             </div>
             <div id="container" align="left">
-                <table cellpadding="10px">
+                <table cellpadding="10px" width="100%" style="height: 100%">
                     <tr>
-                        <td valign="top">
+                        <td valign="top" height="100%">
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">
-                            <div align="center"><h:messages globalOnly="true" errorStyle="color: #a52a2a;"/></div>
+                            <div align="left"><h:messages globalOnly="true" errorStyle="color: #a52a2a;"/></div>
                             <div id="content"><ui:insert name="content"/></div>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div id="footer" align="center">
-                Media Platform &copy;   <br/>
-                #{bundles.messages.template_createdWith}<br/>
-                #{bundles.messages.template_projectStage}: #{initParam['javax.faces.PROJECT_STAGE']}
-                #{' | '}
-                #{bundles.messages.template_currentConversation}:
-                #{conversation.transient ? 'transient' : 'long-running, id: '.concat(conversation.id)}
-            </div>
+            <div class="push"></div>
         </div>
+        <div id="footer" align="center" class="footer">
+            Media Platform &copy;   <br/>
+            #{bundles.messages.template_createdWith}<br/>
+            #{bundles.messages.template_projectStage}: #{initParam['javax.faces.PROJECT_STAGE']}
+            #{' | '}
+            #{bundles.messages.template_currentConversation}:
+            #{conversation.transient ? 'transient' : 'long-running, id: '.concat(conversation.id)}
+        </div>
+
     </h:body>
 </f:view>
 </html>

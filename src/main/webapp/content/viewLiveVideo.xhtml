@@ -5,6 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:pretty="http://ocpsoft.com/prettyfaces"
                 xmlns:h="http://java.sun.com/jsf/html">
 
 
@@ -19,13 +20,16 @@
                     src:"#{request.contextPath}/jwplayer/old/player.swf",
                     config:{
                         bufferlength:1,
-                        file:"#{contentManager.mediaFileName}",
-                        streamer:"rtmp://localhost/myapp",
+                        file:"#{contentManager.currStreamInfo.second.name}",
+                        streamer:"rtmp://localhost/#{contentManager.currStreamInfo.first.name}",
                         provider:"rtmp",
                     }
                 }
             ]
         });
     </script>
+
+    <br/>
+    <pretty:link mappingId="home">Back</pretty:link>
 </ui:composition>
 

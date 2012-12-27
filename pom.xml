@@ -29,6 +29,7 @@
 
     <properties>
         <jpamodelgen.version>1.1.1.Final</jpamodelgen.version>
+        <hibernate-search.version>4.1.1.Final</hibernate-search.version>
         <seam.version>3.1.0.Final</seam.version>
         <org.richfaces.bom.version>4.2.3.Final</org.richfaces.bom.version>
     </properties>
@@ -79,6 +80,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-search</artifactId>-->
+            <!--<version>${hibernate-search.version}</version>-->
+        <!--</dependency>-->
     
         <dependency>
             <groupId>org.jboss.seam.faces</groupId>

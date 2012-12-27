@@ -1,8 +1,12 @@
 package com.mediaplatform.manager.media;
 
+import com.mediaplatform.data.stat.ApplicationDTO;
+import com.mediaplatform.data.stat.RtmpDTO;
+import com.mediaplatform.data.stat.StreamDTO;
 import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateContentEvent;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.manager.MediaServerApiManager;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.RtmpPublishFormat;
@@ -15,6 +19,7 @@ import com.mediaplatform.util.TwoTuple;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.HashSet;
@@ -45,6 +50,11 @@ public class ContentManager extends AbstractContentManager {
     private FileStorageManager fileStorageManager;
     @Inject
     private ViewHelper viewHelper;
+
+    private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
+
+    @Inject
+    private MediaServerApiManager apiManager;
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
@@ -96,12 +106,20 @@ public class ContentManager extends AbstractContentManager {
         return "/view-content-list";
     }
 
-    public void viewLiveVideo(Long id) {
+    public void viewVideoOnDemand(Long id) {
         view(id);
     }
 
-    public void viewVideoOnDemand(Long id) {
-        view(id);
+    public void viewLiveVideoByName(String name) {
+        RtmpDTO info = getLiveVideoInfo();
+        for (ApplicationDTO app : info.getServer().getApplications()) {
+            for (StreamDTO stream : app.getLive().getStreams()) {
+                if (stream.getName().equals(name)) {
+                    this.currStreamInfo = new TwoTuple<ApplicationDTO, StreamDTO>(app, stream);
+                    break;
+                }
+            }
+        }
     }
 
     @Admin
@@ -140,14 +158,14 @@ public class ContentManager extends AbstractContentManager {
             parent = parent.getParent();
         }
         deleteEvent.fire(new DeleteContentEvent(selectedContent.getId(), expandedCatalogIds));
-        if(contentList != null){
+        if (contentList != null) {
             contentList.remove(selectedContent);
         }
         selectedContent = null;
     }
 
     @Admin
-    public void publish(boolean highQuality){
+    public void publish(boolean highQuality) {
         String absFilePath = fileStorageManager.getMediaFileUrl(selectedContent.getMediaFile(), true);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
         selectedContent.setPublished(true);
@@ -156,12 +174,12 @@ public class ContentManager extends AbstractContentManager {
     }
 
     @Admin
-    public void publish(){
-       publish(true);
+    public void publish() {
+        publish(true);
     }
 
     @Admin
-    public void dropStream(String streamName){
+    public void dropStream(String streamName) {
         RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
         selectedContent.setPublished(false);
         super.update(selectedContent);
@@ -176,9 +194,21 @@ public class ContentManager extends AbstractContentManager {
         return findPopularList(HOME_PAGE_LIST_MAX_SIZE);
     }
 
-    public String getVideoUrl(){
-        if(selectedContent == null || selectedContent.getMediaFile() == null) return "";
+    public String getVideoUrl() {
+        if (selectedContent == null || selectedContent.getMediaFile() == null) return "";
         return viewHelper.getVideoUrl(selectedContent.getMediaFile());
+    }
+
+    public RtmpDTO getLiveVideoInfo() {
+        return apiManager.getStatInfo();
+    }
+
+    public List<StreamDTO> getLiveStreams() {
+        return getLiveVideoInfo().getServer().getLiveApp() == null ? null : getLiveVideoInfo().getServer().getLiveApp().getLive().getStreams();
+    }
+
+    public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
+        return currStreamInfo;
     }
 }
 

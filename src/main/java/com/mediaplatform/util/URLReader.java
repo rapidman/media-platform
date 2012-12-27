@@ -22,7 +22,7 @@ public class URLReader {
         try {
             URL oracle = new URL(url);
             in = new BufferedReader(
-                    new InputStreamReader(oracle.openStream()));
+                    new InputStreamReader(oracle.openStream(), "UTF-8"));
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
