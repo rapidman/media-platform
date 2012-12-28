@@ -6,12 +6,14 @@ import com.mediaplatform.data.stat.StreamDTO;
 import com.mediaplatform.manager.MediaServerApiManager;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.TwoTuple;
+import org.jboss.seam.international.status.Messages;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -22,8 +24,11 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class LiveStreamManager {
+public class LiveStreamManager implements Serializable{
     private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
+
+    @Inject
+    protected Messages messages;
 
     @Inject
     private MediaServerApiManager apiManager;
@@ -33,6 +38,10 @@ public class LiveStreamManager {
 
     public void show(){
 
+    }
+
+    public void publish(){
+        messages.info("Published");
     }
 
     public void viewLiveVideoByName(String name) {

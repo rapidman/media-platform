@@ -57,7 +57,10 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
-                            <pretty:link mappingId="account">#{bundles.messages.template_linkAccount}</pretty:link>
+                            <h:panelGroup rendered="#{facesContext.viewRoot.viewId != '/account.xhtml'}">
+                                <pretty:link mappingId="account">#{bundles.messages.template_linkAccount}</pretty:link>
+                            </h:panelGroup>
+                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/account.xhtml'}" value="#{bundles.messages.template_linkAccount}"/>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">

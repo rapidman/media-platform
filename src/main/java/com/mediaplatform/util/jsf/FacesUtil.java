@@ -37,7 +37,6 @@ public class FacesUtil {
             ExternalContext externalContext = facesContext.getExternalContext();
             FacesUtil.saveMessages(facesContext);
             String redirect = externalContext.getRequestContextPath() + "/" + page;
-            externalContext.getFlash().setKeepMessages(true);
             externalContext.redirect(redirect);
         } catch (IOException e) {
             throw new RuntimeException(e);

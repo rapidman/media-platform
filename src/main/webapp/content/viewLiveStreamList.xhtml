@@ -23,9 +23,39 @@
                         </h:panelGrid>
                     </rich:panel>
                 </rich:dataGrid>
+                <h:panelGrid columns="1">
+                    <h:outputLink value="#" id="ll">
+                        <rich:componentControl event="click" operation="show" target="lp">
+                            <a4j:param name="event" value="event" noEscape="true"/>
+                            <rich:hashParam>
+                                <a4j:param noEscape="true" name="top"
+                                           value="jQuery(#{rich:element('ll')}.parentNode).offset().top + jQuery(#{rich:element('ll')}.parentNode).height()"/>
+                                <a4j:param noEscape="true" name="left"
+                                           value="jQuery(#{rich:element('ll')}.parentNode).offset().left"/>
+                            </rich:hashParam>
+                        </rich:componentControl>
+                        Add live video
+                    </h:outputLink>
+                </h:panelGrid>
             </h:form>
             <h:outputText value="Live streams not found" rendered="#{liveStreamManager.liveStreams.size() == 0}"/>
         </rich:panel>
+
+
+        <rich:popupPanel id="lp" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false">
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="url" value="Url" style="width: 70px; text-align: left"/>
+                    <h:inputText id="url" value="#{credentials.username}" style="width: 220px;"/>
+                </h:panelGrid>
+
+
+                <h:panelGrid columns="2">
+                    <h:commandButton id="publish" action="#{liveStreamManager.publish}" value="Publish"/>
+                    <input type="button" value="Cancel" onclick="#{rich:component('lp')}.hide(event); return false;"/>
+                </h:panelGrid>
+            </h:form>
+        </rich:popupPanel>
     </ui:define>
 
 </ui:composition>

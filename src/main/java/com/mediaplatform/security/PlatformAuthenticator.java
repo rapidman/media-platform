@@ -19,6 +19,8 @@ package com.mediaplatform.security;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.enterprise.event.Event;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -27,6 +29,7 @@ import javax.persistence.PersistenceContext;
 import com.mediaplatform.account.Authenticated;
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.model.User;
+import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Authenticator;
 import org.jboss.seam.security.BaseAuthenticator;
@@ -118,5 +121,12 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
                 .params(user.getName());
         setStatus(AuthenticationStatus.SUCCESS);
         setUser(new SimpleUser(user.getUsername()));
+    }
+
+    public void checkAuthenticated(){
+        if(!identity.isLoggedIn()){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login required", null));
+            FacesUtil.redirectToLoginPage();
+        }
     }
 }
