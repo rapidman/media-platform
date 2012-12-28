@@ -96,6 +96,11 @@
         <view-id>/user/viewUserList.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="view-live-streams">
+        <pattern value="/view-live-streams"></pattern>
+        <view-id>/content/viewLiveStreamList.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping>
         <pattern value="/password"></pattern>
         <view-id>/password.xhtml</view-id>

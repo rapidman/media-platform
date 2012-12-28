@@ -98,7 +98,12 @@
             <redirect/>
         </navigation-case>
 
-
+        <navigation-case>
+            <from-action>#{liveStreamManager.show}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/content/viewLiveStreamList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 
     <!--<navigation-rule>-->

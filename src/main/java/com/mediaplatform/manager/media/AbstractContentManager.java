@@ -24,8 +24,8 @@ public class AbstractContentManager extends AbstractManager {
     public void update(Content content, FileEntry mediaFile) {
         if(mediaFile != null){
             appEm.persist(mediaFile);
+            content.setMediaFile(mediaFile);
         }
-        content.setMediaFile(mediaFile);
         appEm.merge(content);
     }
 

@@ -4,9 +4,11 @@ import com.mediaplatform.data.stat.ApplicationDTO;
 import com.mediaplatform.data.stat.RtmpDTO;
 import com.mediaplatform.data.stat.StreamDTO;
 import com.mediaplatform.manager.MediaServerApiManager;
+import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.TwoTuple;
 
 import javax.ejb.Stateful;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,8 +28,15 @@ public class LiveStreamManager {
     @Inject
     private MediaServerApiManager apiManager;
 
+    @Inject
+    protected Conversation conversation;
+
+    public void show(){
+
+    }
 
     public void viewLiveVideoByName(String name) {
+        ConversationUtils.safeBegin(conversation);
         RtmpDTO info = getLiveVideoInfo();
         for (ApplicationDTO app : info.getServer().getApplications()) {
             for (StreamDTO stream : app.getLive().getStreams()) {
@@ -37,6 +46,7 @@ public class LiveStreamManager {
                 }
             }
         }
+
     }
 
     public RtmpDTO getLiveVideoInfo() {

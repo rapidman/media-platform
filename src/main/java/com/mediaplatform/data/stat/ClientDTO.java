@@ -1,6 +1,7 @@
 package com.mediaplatform.data.stat;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * User: timur
@@ -19,6 +20,10 @@ public class ClientDTO {
     private PublishingDTO publishing;
     @XStreamAlias("active")
     private ActiveDTO active;
+    @XStreamAsAttribute
+    private String pageurl;
+    @XStreamAsAttribute
+    private String swfurl;
 
     public String getId() {
         return id;
@@ -82,5 +87,21 @@ public class ClientDTO {
 
     public void setActive(ActiveDTO active) {
         this.active = active;
+    }
+
+    public String getPageurl() {
+        return pageurl;
+    }
+
+    public void setPageurl(String pageurl) {
+        this.pageurl = pageurl;
+    }
+
+    public String getSwfurl() {
+        return swfurl;
+    }
+
+    public void setSwfurl(String swfurl) {
+        this.swfurl = swfurl;
     }
 }

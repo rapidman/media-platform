@@ -51,6 +51,11 @@
                             <pretty:link mappingId="home">#{bundles.messages.template_linkHome}</pretty:link>
                         </rich:toolbarGroup>
 
+                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
+                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/content/viewLiveStreamList.xhtml'}" action="#{liveStreamManager.show}">#{bundles.messages.template_live_streams}</h:commandLink>
+                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml'}" value="#{bundles.messages.template_live_streams}"/>
+                        </rich:toolbarGroup>
+
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
                             <pretty:link mappingId="account">#{bundles.messages.template_linkAccount}</pretty:link>
                         </rich:toolbarGroup>
