@@ -66,9 +66,9 @@ public class LiveStreamManager extends AbstractManager {
     }
 
     @Admin
-    public void edit(LiveStream currentStream){
+    public void edit(LiveStream stream){
         ConversationUtils.safeBegin(conversation);
-        this.currentStream = currentStream;
+        this.currentStream = stream;
     }
 
     @Admin
@@ -83,10 +83,11 @@ public class LiveStreamManager extends AbstractManager {
     }
 
     @Admin
-    public void remove(LiveStream currentStream){
-        appEm.remove(appEm.find(LiveStream.class, currentStream.getId()));
+    public void remove(LiveStream stream){
+        appEm.remove(appEm.find(LiveStream.class, stream.getId()));
         ConversationUtils.safeEnd(conversation);
         show();
+        this.currentStream = null;
     }
 
     @Admin

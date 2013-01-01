@@ -23,25 +23,19 @@
 
     <h:body styleClass="#{empty pageClass ? 'page' : 'home'}">
         <div id="document" align="center" class="wrapper">
+            <a4j:status>
+                <f:facet name="start">
+                    <h:graphicImage  value="/images/ai.gif" style="position: absolute; top: 300px; z-index: 999"/>
+                </f:facet>
+            </a4j:status>
+
             <div id="header" align="right">
                 <div id="title" >
                     <!--<h:graphicImage value="/img/hdr.title.gif" alt="JBoss Suites banner"/>-->
                 </div>
+
                 <h:form id="menuForm">
                     <rich:toolbar height="26px" itemSeparator="line">
-                        <h:outputLink value="#" id="ll" rendered="#{not identity.loggedIn and facesContext.viewRoot.viewId != '/login.xhtml'}" >
-                            <rich:componentControl event="click" operation="show" target="lp">
-                                <a4j:param name="event" value="event" noEscape="true"/>
-                                <rich:hashParam>
-                                    <a4j:param noEscape="true" name="top"
-                                               value="jQuery(#{rich:element('ll')}.parentNode).offset().top + jQuery(#{rich:element('ll')}.parentNode).height()"/>
-                                    <a4j:param noEscape="true" name="left"
-                                               value="jQuery(#{rich:element('ll')}.parentNode).offset().left"/>
-                                </rich:hashParam>
-                            </rich:componentControl>
-                            Login
-                        </h:outputLink>
-
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
                             <h:outputText value="(#{currentUser.name})"
                                           styleClass="user"/>
@@ -78,6 +72,20 @@
                                            value="#{bundles.messages.template_linkReset}"/>
                         </rich:toolbarGroup>
 
+                        <rich:toolbarGroup location="right" rendered="#{not identity.loggedIn and facesContext.viewRoot.viewId != '/login.xhtml'}">
+                            <h:outputLink value="#" id="ll">
+                                <rich:componentControl event="click" operation="show" target="lp">
+                                    <a4j:param name="event" value="event" noEscape="true"/>
+                                    <rich:hashParam>
+                                        <a4j:param noEscape="true" name="top"
+                                                   value="jQuery(#{rich:element('ll')}.parentNode).offset().top + jQuery(#{rich:element('ll')}.parentNode).height()"/>
+                                        <a4j:param noEscape="true" name="left"
+                                                   value="jQuery(#{rich:element('ll')}.parentNode).offset().left"/>
+                                    </rich:hashParam>
+                                </rich:componentControl>
+                                Login
+                            </h:outputLink>
+                        </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
                             <h:inputText styleClass="barsearch"/>
@@ -124,6 +132,7 @@
                 </rich:popupPanel>
             </div>
             <div id="container" align="left">
+
                 <table cellpadding="10px" width="100%" style="height: 100%">
                     <tr>
                         <td valign="top" height="100%">
