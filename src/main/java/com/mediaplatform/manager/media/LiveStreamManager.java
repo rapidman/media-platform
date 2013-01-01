@@ -3,9 +3,13 @@ package com.mediaplatform.manager.media;
 import com.mediaplatform.data.stat.ApplicationDTO;
 import com.mediaplatform.data.stat.RtmpDTO;
 import com.mediaplatform.data.stat.StreamDTO;
+import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.manager.MediaServerApiManager;
+import com.mediaplatform.model.LiveStream;
+import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.TwoTuple;
+import org.jboss.seam.faces.context.conversation.End;
 import org.jboss.seam.international.status.Messages;
 
 import javax.ejb.Stateful;
@@ -24,11 +28,8 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class LiveStreamManager implements Serializable{
+public class LiveStreamManager extends AbstractManager {
     private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
-
-    @Inject
-    protected Messages messages;
 
     @Inject
     private MediaServerApiManager apiManager;
@@ -36,12 +37,67 @@ public class LiveStreamManager implements Serializable{
     @Inject
     protected Conversation conversation;
 
-    public void show(){
+    private String url;
 
+    private List<LiveStream> liveStreams;
+
+    private LiveStream currentStream;
+
+    public List<LiveStream> getLiveStreams(){
+        if(liveStreams == null){
+            liveStreams = appEm.createQuery("select s from LiveStream s").getResultList();
+        }
+        return liveStreams;
     }
 
+    public LiveStream getCurrentStream() {
+        if(currentStream == null){
+            currentStream = new LiveStream();
+        }
+        return currentStream;
+    }
+
+    public void setCurrentStream(LiveStream currentStream) {
+        this.currentStream = currentStream;
+    }
+
+    public void show(){
+        liveStreams = null;
+    }
+
+    @Admin
+    public void edit(LiveStream currentStream){
+        ConversationUtils.safeBegin(conversation);
+        this.currentStream = currentStream;
+    }
+
+    @Admin
+    public void save(){
+        if(currentStream.getId() == null){
+            appEm.persist(currentStream);
+        }else{
+            appEm.merge(currentStream);
+        }
+        show();
+        ConversationUtils.safeEnd(conversation);
+    }
+
+    @Admin
+    public void remove(LiveStream currentStream){
+        appEm.remove(appEm.find(LiveStream.class, currentStream.getId()));
+        ConversationUtils.safeEnd(conversation);
+        show();
+    }
+
+    @Admin
     public void publish(){
         messages.info("Published");
+    }
+
+    @Admin
+    public void add(){
+        ConversationUtils.safeBegin(conversation);
+        currentStream = new LiveStream();
     }
 
     public void viewLiveVideoByName(String name) {
@@ -62,11 +118,23 @@ public class LiveStreamManager implements Serializable{
         return apiManager.getStatInfo();
     }
 
-    public List<StreamDTO> getLiveStreams() {
+    public List<StreamDTO> getLiveStreamsFromService() {
         return getLiveVideoInfo().getServer().getLiveApp() == null ? null : getLiveVideoInfo().getServer().getLiveApp().getLive().getStreams();
     }
 
     public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
         return currStreamInfo;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
     }
 }

@@ -25,8 +25,8 @@
                     <rich:dataGrid id="liveContentGrid" value="#{liveStreamManager.liveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
                         <rich:panel bodyClass="pbody">
                             <h:panelGrid columns="2">
-                                <h:outputText value="Name:" styleClass="label"></h:outputText>
-                                <h:commandLink action="#{liveStreamManager.viewLiveVideoByName(stream.name)}" value="#{stream.name}"  />
+                                <h:outputText value="Url:" styleClass="label"></h:outputText>
+                                <h:commandLink action="#{liveStreamManager.viewLiveVideoByName(stream.name)}" value="#{stream.url}"  />
                             </h:panelGrid>
                         </rich:panel>
                     </rich:dataGrid>

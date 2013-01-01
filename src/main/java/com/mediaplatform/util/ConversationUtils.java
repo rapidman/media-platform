@@ -11,9 +11,13 @@ public class ConversationUtils {
     private ConversationUtils(){}
 
     public static void safeBegin(Conversation conversation) {
+        safeEnd(conversation);
+        conversation.begin();
+    }
+
+    public static void safeEnd(Conversation conversation) {
         if(!conversation.isTransient()){
             conversation.end();
         }
-        conversation.begin();
     }
 }

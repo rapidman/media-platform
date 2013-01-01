@@ -9,10 +9,9 @@ import java.util.List;
  * Time: 8:10 PM
  */
 public enum RtmpPublishFormat {
-    FLV_LOW(Arrays.asList("-i", "%MEDIA_FILE%",
-            "-scodec", "copy", "-f", "flv", "-vb", "400k", "rtmp://localhost/myapp/%s")),
-    FLV_HIGH(Arrays.asList("-re", "-i", "%MEDIA_FILE%",
-            "-acodec", "copy", "-vcodec", "copy", "-f", "flv", "rtmp://localhost/myapp/%s"));
+    FLV_LOW(Arrays.asList("-i", "%SOURCE%", "-scodec", "copy", "-f", "flv", "-vb", "400k", "rtmp://localhost/myapp/%s")),
+    FLV_HIGH(Arrays.asList("-re", "-i", "%SOURCE%", "-acodec", "copy", "-vcodec", "copy", "-f", "flv", "rtmp://localhost/myapp/%s")),
+    HLS_TO_RTMP_FLV(Arrays.asList("-re", "-i", "%SOURCE%", "-c", "copy", "-f", "flv", "rtmp://localhost/myapp/%s"));
 
     private List<String> args;
 

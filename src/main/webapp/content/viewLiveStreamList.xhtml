@@ -14,48 +14,78 @@
 
     <ui:define name="content">
         <rich:panel header="Live Video">
-            <h:form rendered="#{liveStreamManager.liveStreams.size() > 0}">
-                <rich:dataGrid id="liveContentGrid" value="#{liveStreamManager.liveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
-                    <rich:panel bodyClass="pbody">
-                        <h:panelGrid columns="2">
-                            <h:outputText value="Name:" styleClass="label"></h:outputText>
-                            <h:commandLink action="#{liveStreamManager.viewLiveVideoByName(stream.name)}" value="#{stream.name}"  />
-                        </h:panelGrid>
-                    </rich:panel>
-                </rich:dataGrid>
+            <h:form id="form">
+                <rich:dataTable value="#{liveStreamManager.liveStreams}" var="stream" iterationStatusVar="it" id="liveStreamsTable"
+                                rows="15">
+                    <rich:column>
+                        <f:facet name="header">#</f:facet>
+                        #{it.index}
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Url</f:facet>
+                        <h:outputText value="#{stream.url}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Title</f:facet>
+                        <h:outputText value="#{stream.title}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{stream.description}"/>
+                    </rich:column>
+                    <rich:column>
+                        <a4j:commandLink styleClass="no-decor" execute="@this" render="confirmPane" actionListener="#{liveStreamManager.edit(stream)}"
+                                         oncomplete="#{rich:component('confirmPane')}.show()">
+                            <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
+                        </a4j:commandLink>
+                        <a4j:commandLink styleClass="no-decor" render="editPane" execute="@this" actionListener="#{liveStreamManager.edit(stream)}"
+                                         oncomplete="#{rich:component('editPane')}.show()">
+                            <h:graphicImage value="/images/icons/edit.gif" alt="edit"/>
+                        </a4j:commandLink>
+                    </rich:column>
+                    <f:facet name="footer">
+                        <rich:dataScroller for="liveStreamsTable" />
+                    </f:facet>
+                </rich:dataTable>
                 <h:panelGrid columns="1">
-                    <h:outputLink value="#" id="ll">
-                        <rich:componentControl event="click" operation="show" target="lp">
-                            <a4j:param name="event" value="event" noEscape="true"/>
-                            <rich:hashParam>
-                                <a4j:param noEscape="true" name="top"
-                                           value="jQuery(#{rich:element('ll')}.parentNode).offset().top + jQuery(#{rich:element('ll')}.parentNode).height()"/>
-                                <a4j:param noEscape="true" name="left"
-                                           value="jQuery(#{rich:element('ll')}.parentNode).offset().left"/>
-                            </rich:hashParam>
-                        </rich:componentControl>
-                        Add live video
-                    </h:outputLink>
+                    <a4j:commandButton value="Add" execute="@this" oncomplete="#{rich:component('editPane')}.show()" actionListener="#{liveStreamManager.add}"/>
                 </h:panelGrid>
+
+                <rich:popupPanel id="statPane" autosized="true">
+                    <h:graphicImage value="/images/ai.gif" alt="ai"/>
+                    Please wait...
+                </rich:popupPanel>
+
+                <rich:popupPanel id="confirmPane" autosized="true">
+                    Are you sure you want to delete the #{liveStreamManager.currentStream.url}?
+                    <a4j:commandButton value="Cancel" onclick="#{rich:component('confirmPane')}.hide(); return false;"/>
+                    <a4j:commandButton value="Delete" action="#{liveStreamManager.remove(liveStreamManager.currentStream)}" render="liveStreamsTable" execute="confirmPane"
+                                       oncomplete="#{rich:component('confirmPane')}.hide();">
+                        <a4j:param name="cid" value="#{liveStreamManager.conversation.id}" />
+                    </a4j:commandButton>
+                </rich:popupPanel>
+
+                <rich:popupPanel header="Edit Stream" id="editPane" domElementAttachment="parent" width="400"
+                                 height="170">
+                    <h:panelGrid columns="2" id="editGrid">
+                        <h:outputText value="Url"/>
+                        <h:inputText value="#{liveStreamManager.currentStream.url}"/>
+
+                        <h:outputText value="Description"/>
+                        <h:inputText value="#{liveStreamManager.currentStream.description}"/>
+
+                        <h:outputText value="Title"/>
+                        <h:inputText value="#{liveStreamManager.currentStream.title}"/>
+                    </h:panelGrid>
+                    <a4j:commandButton value="Save" action="#{liveStreamManager.save}" render="liveStreamsTable" execute="editPane"
+                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}">
+                        <a4j:param name="cid" value="#{liveStreamManager.conversation.id}" />
+                    </a4j:commandButton>
+                    <a4j:commandButton value="Cancel" onclick="#{rich:component('editPane')}.hide(); return false;"/>
+                </rich:popupPanel>
             </h:form>
-            <h:outputText value="Live streams not found" rendered="#{liveStreamManager.liveStreams.size() == 0}"/>
         </rich:panel>
 
-
-        <rich:popupPanel id="lp" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false">
-            <h:form>
-                <h:panelGrid columns="2">
-                    <h:outputLabel for="url" value="Url" style="width: 70px; text-align: left"/>
-                    <h:inputText id="url" value="#{credentials.username}" style="width: 220px;"/>
-                </h:panelGrid>
-
-
-                <h:panelGrid columns="2">
-                    <h:commandButton id="publish" action="#{liveStreamManager.publish}" value="Publish"/>
-                    <input type="button" value="Cancel" onclick="#{rich:component('lp')}.hide(event); return false;"/>
-                </h:panelGrid>
-            </h:form>
-        </rich:popupPanel>
     </ui:define>
 
 </ui:composition>

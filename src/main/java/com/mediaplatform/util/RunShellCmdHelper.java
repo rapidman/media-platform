@@ -30,7 +30,7 @@ public class RunShellCmdHelper {
                     List<String> commands = new ArrayList<String>();
                     commands.add(COMMAND);
                     for(String arg: format.getArgs()){
-                        if(arg.equals("%MEDIA_FILE%")){
+                        if(arg.equals("%SOURCE%")){
                             commands.add(mediaFilePath);
                         }else if(arg.startsWith("rtmp")){
                             commands.add(String.format(arg, streamName));
