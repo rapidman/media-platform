@@ -22,7 +22,7 @@ public class RunShellCmdHelper {
     private RunShellCmdHelper() {
     }
 
-    public static void publish(final String mediaFilePath,final String streamName, final RtmpPublishFormat format) {
+    public static void publish(final String source,final String streamName, final RtmpPublishFormat format) {
         service.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -31,7 +31,7 @@ public class RunShellCmdHelper {
                     commands.add(COMMAND);
                     for(String arg: format.getArgs()){
                         if(arg.equals("%SOURCE%")){
-                            commands.add(mediaFilePath);
+                            commands.add(source);
                         }else if(arg.startsWith("rtmp")){
                             commands.add(String.format(arg, streamName));
                         }else{

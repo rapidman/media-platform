@@ -19,7 +19,6 @@ public class Content extends AbstractEntity{
     private String description;
     private Catalog catalog;
     private FileEntry mediaFile;
-    private boolean published;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -67,11 +66,4 @@ public class Content extends AbstractEntity{
         this.mediaFile = mediaFile;
     }
 
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
 }

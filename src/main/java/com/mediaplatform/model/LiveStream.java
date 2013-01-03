@@ -16,21 +16,29 @@ import javax.persistence.Table;
 @Table(name = "live_stream")
 @Veto
 public class LiveStream extends AbstractEntity{
-    private String url;
+    private String source;
     private String title;
     private String description;
     private boolean published;
+
+    public LiveStream(String source, String title, String description, boolean published) {
+        this();
+        this.source = source;
+        this.title = title;
+        this.description = description;
+        this.published = published;
+    }
 
     public LiveStream() {
         super(EntityType.LIVE_STREAM);
     }
 
-    public String getUrl() {
-        return url;
+    public String getSource() {
+        return source;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getTitle() {

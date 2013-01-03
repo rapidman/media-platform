@@ -35,10 +35,6 @@
                         &nbsp;&nbsp;
                         <h:commandButton value="Publish LowQuality" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
                         &nbsp;&nbsp;
-                        <h:commandButton value="Drop Stream" action="#{contentManager.dropStream(contentManager.mediaFileName)}" disabled="#{empty contentManager.selectedContent.mediaFile and !contentManager.selectedContent.published}"/>
-                        &nbsp;&nbsp;
-                        <h:commandButton value="View Live Video" action="#{contentManager.viewLiveVideo(contentManager.selectedContent.id)}" disabled="#{empty contentManager.selectedContent.mediaFile and !contentManager.selectedContent.published}"/>
-                        &nbsp;&nbsp;
                         <h:commandButton value="View On Demand" action="#{contentManager.viewVideoOnDemand(contentManager.selectedContent.id)}" disabled="#{empty contentManager.selectedContent.mediaFile}" />
                         &nbsp;&nbsp;
                         <h:commandButton value="Delete" >

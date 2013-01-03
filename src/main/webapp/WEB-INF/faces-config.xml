@@ -56,7 +56,7 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{liveStreamManager.viewLiveVideoByName(stream.name)}</from-action>
+            <from-action>#{liveStreamManager.viewLiveVideo(stream)}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveVideo.xhtml</to-view-id>
             <redirect/>
@@ -102,6 +102,20 @@
             <from-action>#{liveStreamManager.show}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveStreamList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-action>#{eventManager.show}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/event/viewEventList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-action>#{mainPageManager.show}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/home.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

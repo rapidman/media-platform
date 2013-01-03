@@ -20,8 +20,8 @@
                     src:"#{request.contextPath}/jwplayer/old/player.swf",
                     config:{
                         bufferlength:1,
-                        file:"#{liveStreamManager.currStreamInfo.second.name}",
-                        streamer:"rtmp://localhost/#{liveStreamManager.currStreamInfo.first.name}",
+                        file:"#{liveStreamManager.currentStream.title}?#{liveStreamManager.callbackQueryParams}",
+                        streamer:"rtmp://localhost/myapp",
                         provider:"rtmp",
                     }
                 }

@@ -17,6 +17,11 @@
         <title>#{bundles.messages.template_title}</title>
         <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
         <h:outputStylesheet library="css" name="media-platform.css" target="head" />
+        <h:outputScript>
+            A4J.AJAX.onError = function(req, status, message){
+                window.alert("Custom onError handler "+message);
+            }
+        </h:outputScript>
         <ui:insert name="head"/>
     </h:head>
 
@@ -42,12 +47,19 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
-                            <pretty:link mappingId="home">#{bundles.messages.template_linkHome}</pretty:link>
+                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/home.xhtml'}" action="#{mainPageManager.show}">#{bundles.messages.template_linkHome}</h:commandLink>
+                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/home.xhtml'}" value="#{bundles.messages.template_linkHome}"/>
                         </rich:toolbarGroup>
+
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
                             <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/content/viewLiveStreamList.xhtml'}" action="#{liveStreamManager.show}">#{bundles.messages.template_live_streams}</h:commandLink>
                             <h:outputText rendered="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml'}" value="#{bundles.messages.template_live_streams}"/>
+                        </rich:toolbarGroup>
+
+                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
+                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">Events</h:commandLink>
+                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="Events"/>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
@@ -132,14 +144,13 @@
                 </rich:popupPanel>
             </div>
             <div id="container" align="left">
-
-                <table cellpadding="10px" width="100%" style="height: 100%">
+                <table cellpadding="5px" width="100%" style="height: 100%">
                     <tr>
                         <td valign="top" height="100%">
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">
-                            <div align="left"><h:messages globalOnly="true" errorStyle="color: #a52a2a;"/></div>
+                            <div align="left"><h:messages globalOnly="true" errorStyle="color: #a52a2a;" id="globalMessages"/></div>
                             <div id="content"><ui:insert name="content"/></div>
                         </td>
                     </tr>

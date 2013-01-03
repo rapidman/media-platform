@@ -20,7 +20,7 @@
                     src:"#{request.contextPath}/jwplayer/old/player.swf",
                     config:{
                         bufferlength:1,
-                        file:"#{contentManager.mediaFileFullName}",
+                        file:"#{contentManager.mediaFileFullName}?#{contentManager.callbackQueryParams}",
                         streamer:"rtmp://localhost/vod",
                         provider:"rtmp",
                     }

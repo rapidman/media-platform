@@ -1,0 +1,62 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
+
+
+    <ui:define name="sidebar">
+    </ui:define>
+
+    <ui:define name="content">
+        <rich:panel header="Events">
+            <h:form id="form">
+                <rich:dataTable value="#{eventManager.events}" var="event" iterationStatusVar="it" id="eventsTable"
+                                rows="15">
+                    <rich:column>
+                        <f:facet name="header">#</f:facet>
+                        #{it.index}
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Type</f:facet>
+                        <h:outputText value="#{event.type}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">App</f:facet>
+                        <h:outputText value="#{event.app}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Addr</f:facet>
+                        <h:outputText value="#{event.addr}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">User Name</f:facet>
+                        <h:outputText value="#{event.userName}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Content Name</f:facet>
+                        <h:outputText value="#{event.contentName}"/>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">Create Date</f:facet>
+                        <h:outputText value="#{event.createDateTime}"/>
+                    </rich:column>
+                    <f:facet name="footer">
+                        <rich:dataScroller for="eventsTable" />
+                    </f:facet>
+                </rich:dataTable>
+                <h:panelGrid columns="1">
+                    <a4j:commandButton value="Refresh" execute="@this" render="eventsTable" actionListener="#{eventManager.show}"/>
+                </h:panelGrid>
+
+            </h:form>
+        </rich:panel>
+
+    </ui:define>
+
+</ui:composition>
+

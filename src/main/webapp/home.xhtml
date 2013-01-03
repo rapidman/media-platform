@@ -21,17 +21,17 @@
     <ui:define name="content">
         <h:panelGrid columns="2">
             <rich:panel header="Live Video">
-                <h:form rendered="#{liveStreamManager.liveStreams.size() > 0}">
-                    <rich:dataGrid id="liveContentGrid" value="#{liveStreamManager.liveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
+                <h:form rendered="#{mainPageManager.publishedLiveStreams.size() > 0}">
+                    <rich:dataGrid id="liveContentGrid" value="#{mainPageManager.publishedLiveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
                         <rich:panel bodyClass="pbody">
                             <h:panelGrid columns="2">
-                                <h:outputText value="Url:" styleClass="label"></h:outputText>
-                                <h:commandLink action="#{liveStreamManager.viewLiveVideoByName(stream.name)}" value="#{stream.url}"  />
+                                <h:outputText value="Source:" styleClass="label"></h:outputText>
+                                <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{stream.source}"  />
                             </h:panelGrid>
                         </rich:panel>
                     </rich:dataGrid>
                 </h:form>
-                <h:outputText value="Live streams not found" rendered="#{liveStreamManager.liveStreams.size() == 0}"/>
+                <h:outputText value="Published Live Streams not found" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
             </rich:panel>
         </h:panelGrid>
 

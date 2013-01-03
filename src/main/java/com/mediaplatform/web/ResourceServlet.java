@@ -18,9 +18,6 @@ import java.io.*;
  */
 public class ResourceServlet extends HttpServlet {
     @Inject
-    private BeanManager beanManager;
-
-    @Inject
     private ConfigBean configBean;
 
     @Inject

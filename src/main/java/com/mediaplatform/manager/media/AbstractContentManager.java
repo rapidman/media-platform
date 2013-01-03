@@ -7,13 +7,15 @@ import com.mediaplatform.model.FileEntry;
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 import java.util.List;
+import static com.mediaplatform.web.NotificationListenerServlet.*;
 
 /**
  * User: timur
  * Date: 12/3/12
  * Time: 9:18 PM
  */
-public class AbstractContentManager extends AbstractManager {
+public abstract class AbstractContentManager extends AbstractManager {
+
     @Inject
     protected Conversation conversation;
 
@@ -50,4 +52,15 @@ public class AbstractContentManager extends AbstractManager {
     public Content findContentByFileName(String name) {
         return (Content) appEm.createQuery("select c from Content c where c.mediaFile.name = :name").setParameter("name", name).getSingleResult();
     }
+
+    public String getCallbackQueryParams(){
+        String out = CONTENT_NAME_PARAM_NAME + "=" + getCurrentContentName();
+        if(identity.isLoggedIn()){
+            out+="&" + UNAME_PARAM_NAME + "=" + identity.getUser().getId();
+        }
+        return out;
+    }
+
+    protected abstract String getCurrentContentName();
+
 }

@@ -152,23 +152,15 @@ public class ContentManager extends AbstractContentManager {
     @Admin
     public void publish(boolean highQuality) {
         String absFilePath = fileStorageManager.getMediaFileUrl(selectedContent.getMediaFile(), true);
+        LiveStream liveStream = new LiveStream(absFilePath, selectedContent.getMediaFile().getName(), selectedContent.getDescription(), true);
+        appEm.persist(liveStream);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
-        selectedContent.setPublished(true);
-        super.update(selectedContent);
         messages.info("Published successfull!");
     }
 
     @Admin
     public void publish() {
         publish(true);
-    }
-
-    @Admin
-    public void dropStream(String streamName) {
-        RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
-        selectedContent.setPublished(false);
-        super.update(selectedContent);
-        messages.info(streamName + "is dropped");
     }
 
     public List<Content> getLatestContentList() {
@@ -184,5 +176,9 @@ public class ContentManager extends AbstractContentManager {
         return viewHelper.getVideoUrl(selectedContent.getMediaFile());
     }
 
+    @Override
+    protected String getCurrentContentName() {
+        return getMediaFileFullName();
+    }
 }
 

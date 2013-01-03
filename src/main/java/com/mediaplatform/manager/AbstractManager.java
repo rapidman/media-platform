@@ -8,6 +8,7 @@ import org.jboss.solder.logging.Logger;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 
@@ -31,6 +32,7 @@ public class AbstractManager implements Serializable{
     protected Instance<User> currentUserInstance;
 
     @Inject
+    @Named(value = "appEm")
     protected EntityManager appEm;
 
     @Inject

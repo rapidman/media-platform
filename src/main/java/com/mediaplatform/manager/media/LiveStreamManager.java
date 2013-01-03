@@ -1,23 +1,19 @@
 package com.mediaplatform.manager.media;
 
-import com.mediaplatform.data.stat.ApplicationDTO;
 import com.mediaplatform.data.stat.RtmpDTO;
 import com.mediaplatform.data.stat.StreamDTO;
-import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.manager.MediaServerApiManager;
 import com.mediaplatform.model.LiveStream;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
-import com.mediaplatform.util.TwoTuple;
-import org.jboss.seam.faces.context.conversation.End;
-import org.jboss.seam.international.status.Messages;
+import com.mediaplatform.util.RtmpPublishFormat;
+import com.mediaplatform.util.RunShellCmdHelper;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -28,14 +24,11 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class LiveStreamManager extends AbstractManager {
-    private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
+public class LiveStreamManager extends AbstractContentManager {
+//    private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
 
     @Inject
     private MediaServerApiManager apiManager;
-
-    @Inject
-    protected Conversation conversation;
 
     private String url;
 
@@ -91,8 +84,19 @@ public class LiveStreamManager extends AbstractManager {
     }
 
     @Admin
-    public void publish(){
-        messages.info("Published");
+    public void publish(LiveStream stream){
+        appEm.merge(stream);
+        this.currentStream = stream;
+        liveStreams = null;
+        //todo make unique
+        String streamName = stream.getTitle() + "?" + getCallbackQueryParams();
+        if(stream.isPublished()){
+            RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.FLV_HIGH);
+            messages.info("Published " + stream.getSource());
+        }else{
+            RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
+            messages.info("Dropped " + stream.getSource());
+        }
     }
 
     @Admin
@@ -101,17 +105,19 @@ public class LiveStreamManager extends AbstractManager {
         currentStream = new LiveStream();
     }
 
-    public void viewLiveVideoByName(String name) {
+    public void viewLiveVideo(LiveStream stream) {
         ConversationUtils.safeBegin(conversation);
-        RtmpDTO info = getLiveVideoInfo();
-        for (ApplicationDTO app : info.getServer().getApplications()) {
-            for (StreamDTO stream : app.getLive().getStreams()) {
-                if (stream.getName().equals(name)) {
-                    this.currStreamInfo = new TwoTuple<ApplicationDTO, StreamDTO>(app, stream);
-                    break;
-                }
-            }
-        }
+        this.currentStream = stream;
+
+//        RtmpDTO info = getLiveVideoInfo();
+//        for (ApplicationDTO app : info.getServer().getApplications()) {
+//            for (StreamDTO stream : app.getLive().getStreams()) {
+//                if (stream.getName().equals(name)) {
+//                    this.currStreamInfo = new TwoTuple<ApplicationDTO, StreamDTO>(app, stream);
+//                    break;
+//                }
+//            }
+//        }
 
     }
 
@@ -123,9 +129,9 @@ public class LiveStreamManager extends AbstractManager {
         return getLiveVideoInfo().getServer().getLiveApp() == null ? null : getLiveVideoInfo().getServer().getLiveApp().getLive().getStreams();
     }
 
-    public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
-        return currStreamInfo;
-    }
+//    public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
+//        return currStreamInfo;
+//    }
 
     public String getUrl() {
         return url;
@@ -138,4 +144,11 @@ public class LiveStreamManager extends AbstractManager {
     public Conversation getConversation() {
         return conversation;
     }
+
+    @Override
+    protected String getCurrentContentName() {
+        return getCurrentStream().getTitle();
+    }
+
+
 }
