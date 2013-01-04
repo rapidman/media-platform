@@ -1,18 +1,25 @@
 package com.mediaplatform.jsf.fileupload;
 
+import com.mediaplatform.util.ConversationUtils;
 import org.apache.commons.io.IOUtils;
 import com.mediaplatform.event.*;
+import org.jboss.seam.faces.context.RenderScoped;
 import org.richfaces.event.FileUploadEvent;
 
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.*;
 import java.util.ArrayList;
 
 @Named
-@ConversationScoped
+@SessionScoped
 public class FileUploadBean implements Serializable {
+
     private ArrayList<UploadedFile> files = new ArrayList<UploadedFile>();
 
     public void paint(OutputStream stream, Object object) throws IOException {

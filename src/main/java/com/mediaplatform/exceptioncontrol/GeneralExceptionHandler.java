@@ -24,23 +24,37 @@ import org.jboss.solder.exception.control.CaughtException;
 import org.jboss.solder.exception.control.Handles;
 import org.jboss.solder.exception.control.HandlesExceptions;
 
+import javax.enterprise.context.NonexistentConversationException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import java.io.IOException;
 
 @HandlesExceptions
 public class GeneralExceptionHandler {
     @Inject
-    Messages messages;
+    private Messages messages;
+
+    @Inject
+    private FacesContext facesContext;
 
     public void printExceptionMessage(@Handles CaughtException<Throwable> event, Logger log) {
         log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
+        if(event.getException().getMessage() != null &&
+                event.getException().getMessage().indexOf("WELD-001303 No active contexts for scope type javax.enterprise.context.ConversationScoped") != -1){
+            try {
+                facesContext.getExternalContext().redirect("conversation_ended");
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         event.rethrow();
     }
 
     public void handleAuthorizationException(@Handles CaughtException<AuthorizationException> evt) {
         evt.handled();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You do not have the necessary permissions to perform that operation", null));
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You do not have the necessary permissions to perform that operation", null));
         FacesUtil.redirectToDeniedPage();
     }
 }
