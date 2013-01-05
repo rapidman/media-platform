@@ -19,6 +19,7 @@ public class Content extends AbstractEntity{
     private String description;
     private Catalog catalog;
     private FileEntry mediaFile;
+    private FileEntry cover;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -66,4 +67,12 @@ public class Content extends AbstractEntity{
         this.mediaFile = mediaFile;
     }
 
+    @OneToOne(fetch = FetchType.EAGER)
+    public FileEntry getCover() {
+        return cover;
+    }
+
+    public void setCover(FileEntry cover) {
+        this.cover = cover;
+    }
 }

@@ -28,10 +28,6 @@
                                  value="#{contentManager.selectedContent.description}"/>
                     <rich:message for="desc" ajaxRendered="false"/>
 
-                    <h:outputText value="Media file:"/>
-                    <h:outputText value="#{request.contextPath}#{contentManager.videoUrl}"/>
-                    <h:panelGroup/>
-
                     <f:facet name="footer">
                         <h:commandButton value="Save" action="#{contentManager.saveOrUpdate}" />
                         <h:panelGroup rendered="#{!empty contentManager.selectedContent.id}">
@@ -49,8 +45,25 @@
                         </h:panelGroup>
                     </f:facet>
                 </h:panelGrid>
+
                 <h:panelGrid columns="1" columnClasses="top">
-                    <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4" title="Icon"
+                    <h:panelGroup>
+                        <h:outputText value="Cover:"/>
+                        <h:graphicImage value="#{contentManager.getCoverUrl('200x.jpg')}" rendered="#{!empty contentManager.getCoverUrl('200x.jpg')}"/>
+                        <h:outputText value="empty" rendered="#{empty contentManager.getCoverUrl('200x.jpg')}"/>
+                    </h:panelGroup>
+                    <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Cover"
+                                     ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" style="height: 100px;">
+                        <a4j:param value="#{contentManager.conversation.id}" name="cid"/>
+                    </rich:fileUpload>
+                </h:panelGrid>
+
+                <h:panelGrid columns="1" columnClasses="top">
+                    <h:panelGroup>
+                        <h:outputText value="Media file:"/>
+                        <h:outputText value="#{request.contextPath}#{contentManager.videoUrl}"/>
+                    </h:panelGroup>
+                    <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4" title="Icon" style="height: 100px;"
                                      ontyperejected="alert('Only flv,mp4 files are accepted');" maxFilesQuantity="1">
                         <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>
                         <f:facet name="label">

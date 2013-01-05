@@ -141,10 +141,6 @@ public class LiveStreamManager extends AbstractContentManager {
         this.url = url;
     }
 
-    public Conversation getConversation() {
-        return conversation;
-    }
-
     @Override
     protected String getCurrentContentName() {
         return getCurrentStream().getTitle();

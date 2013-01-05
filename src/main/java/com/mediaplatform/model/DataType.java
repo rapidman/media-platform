@@ -6,5 +6,5 @@ package com.mediaplatform.model;
  * Time: 8:00 PM
  */
 public enum DataType {
-    ICON, MEDIA_CONTENT
+    ICON, MEDIA_CONTENT, COVER
 }

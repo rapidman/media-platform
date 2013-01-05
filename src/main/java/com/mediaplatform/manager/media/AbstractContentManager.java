@@ -23,10 +23,14 @@ public abstract class AbstractContentManager extends AbstractManager {
         return appEm.find(Content.class, id);
     }
 
-    public void saveOrUpdate(Content content, FileEntry mediaFile) {
-        if(mediaFile != null){
-            appEm.persist(mediaFile);
-            content.setMediaFile(mediaFile);
+    public void saveOrUpdate(Content content, FileEntry video, FileEntry cover) {
+        if(video != null){
+            appEm.persist(video);
+            content.setMediaFile(video);
+        }
+        if(cover != null){
+            appEm.persist(cover);
+            content.setCover(cover);
         }
         if(content.getId() == null){
             appEm.persist(content);
@@ -67,4 +71,7 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     protected abstract String getCurrentContentName();
 
+    public Conversation getConversation() {
+        return conversation;
+    }
 }

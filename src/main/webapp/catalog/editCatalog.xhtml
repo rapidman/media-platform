@@ -63,7 +63,7 @@
                         </h:panelGroup>
                     </f:facet>
                 </h:panelGrid>
-                <h:panelGrid columns="2" columnClasses="top,top">
+                <h:panelGrid columns="1" columnClasses="top">
                     <rich:fileUpload fileUploadListener="#{catalogManager.fileUploadBean.listener}" id="upload" acceptedTypes="jpg, gif, png, bmp" title="Icon"
                                      ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" >
                         <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>

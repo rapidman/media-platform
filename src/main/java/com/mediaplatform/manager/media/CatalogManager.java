@@ -86,13 +86,15 @@ public class CatalogManager extends AbstractCatalogManager {
     }
 
     public String getIconUrl(String format) {
-        if (selectedCatalog == null || selectedCatalog.getIcon() == null) return "";
+        if (selectedCatalog == null || selectedCatalog.getIcon() == null) return null;
         return viewHelper.getImgUrlExt(selectedCatalog.getIcon(), format);
     }
 
     @Admin
     public void saveOrUpdate() {
         FileEntry icon = null;
+        boolean update = selectedCatalog.getId() != null;
+        super.saverOrUpdate(selectedCatalog, icon);
         if (fileUploadBean.getSize() > 0) {
             icon = fileStorageManager.saveFile(
                     new ParentRef(selectedCatalog.getId(),
@@ -100,7 +102,6 @@ public class CatalogManager extends AbstractCatalogManager {
                     fileUploadBean.getFiles().get(0),
                     DataType.ICON);
         }
-        boolean update = selectedCatalog.getId() != null;
         super.saverOrUpdate(selectedCatalog, icon);
         updateEvent.fire(new UpdateCatalogEvent(selectedCatalog.getId()));
 

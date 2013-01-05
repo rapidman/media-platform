@@ -1,6 +1,7 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.event.DeleteContentEvent;
+import com.mediaplatform.event.UpdateCatalogEvent;
 import com.mediaplatform.event.UpdateContentEvent;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.security.Admin;
@@ -35,12 +36,18 @@ public class ContentManager extends AbstractContentManager {
     private List<Content> contentList;
     @Inject
     private Event<UpdateContentEvent> updateEvent;
+
+    @Inject
+    private Event<UpdateCatalogEvent> updateCatalogEvent;
     @Inject
     private Event<DeleteContentEvent> deleteEvent;
     @Inject
     private CatalogManager catalogManager;
 
     private FileUploadBean fileUploadBean = new FileUploadBean();
+
+    private FileUploadBean imgFileUploadBean = new FileUploadBean();
+
     @Inject
     private FileStorageManager fileStorageManager;
     @Inject
@@ -118,16 +125,28 @@ public class ContentManager extends AbstractContentManager {
     @Admin
     public void saveOrUpdate() {
         FileEntry mediaFile = null;
+        FileEntry cover = null;
+        selectedContent.setCatalog(selectedCatalog);
+        super.saveOrUpdate(selectedContent, mediaFile, mediaFile);
         if (fileUploadBean.getSize() > 0) {
             mediaFile = fileStorageManager.saveFile(
                     new ParentRef(selectedContent.getId(), selectedContent.getEntityType()),
                     fileUploadBean.getFiles().get(0),
                     DataType.MEDIA_CONTENT);
         }
-        selectedContent.setCatalog(selectedCatalog);
-        super.saveOrUpdate(selectedContent, mediaFile);
+        if (imgFileUploadBean.getSize() > 0) {
+            cover = fileStorageManager.saveFile(
+                    new ParentRef(selectedContent.getId(),
+                            selectedContent.getEntityType()),
+                    imgFileUploadBean.getFiles().get(0),
+                    DataType.COVER);
+        }
+        super.saveOrUpdate(selectedContent, mediaFile, cover);
         messages.info("Updated successfull!");
         updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
+        updateCatalogEvent.fire(new UpdateCatalogEvent(selectedCatalog.getId()));
+        fileUploadBean.clearUploadData();
+        imgFileUploadBean.clearUploadData();
     }
 
     @Admin
@@ -146,6 +165,8 @@ public class ContentManager extends AbstractContentManager {
         }
         selectedContent = null;
         ConversationUtils.safeEnd(conversation);
+        fileUploadBean.clearUploadData();
+        imgFileUploadBean.clearUploadData();
     }
 
     @Admin
@@ -191,5 +212,15 @@ public class ContentManager extends AbstractContentManager {
     public FileUploadBean getFileUploadBean() {
         return fileUploadBean;
     }
+
+    public FileUploadBean getImgFileUploadBean() {
+        return imgFileUploadBean;
+    }
+
+    public String getCoverUrl(String format) {
+        if (selectedContent == null || selectedContent.getCover() == null) return null;
+        return viewHelper.getImgUrlExt(selectedContent.getCover(), format);
+    }
+
 }
 
