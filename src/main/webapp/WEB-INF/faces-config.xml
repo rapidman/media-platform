@@ -47,7 +47,28 @@
             <redirect/>
         </navigation-case>
 
+        <navigation-case>
+            <from-action>#{catalogManager.addCatalog(node.id)}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/catalog/editCatalog.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-action>#{catalogManager.addRootCatalog()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/catalog/editCatalog.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
         <!-- content actions start-->
+        <navigation-case>
+            <from-action>#{contentManager.add()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/content/editContent.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
         <navigation-case>
             <from-action>#{contentManager.editContent(content.id)}</from-action>
             <if>#{true}</if>

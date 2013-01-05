@@ -23,12 +23,16 @@ public abstract class AbstractContentManager extends AbstractManager {
         return appEm.find(Content.class, id);
     }
 
-    public void update(Content content, FileEntry mediaFile) {
+    public void saveOrUpdate(Content content, FileEntry mediaFile) {
         if(mediaFile != null){
             appEm.persist(mediaFile);
             content.setMediaFile(mediaFile);
         }
-        appEm.merge(content);
+        if(content.getId() == null){
+            appEm.persist(content);
+        }else{
+            appEm.merge(content);
+        }
     }
 
     public void update(Content content) {

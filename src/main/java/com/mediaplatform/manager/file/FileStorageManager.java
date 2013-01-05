@@ -75,6 +75,7 @@ public class FileStorageManager implements Serializable{
     }
 
     public File getImageFile(FileEntry fileEntry, ImageFormat format) {
+
         File dir = getDestDir(fileEntry.getDataType(), fileEntry.getParentRef().getEntityType());
         File origFile = new File(dir, fileEntry.getFullName());
         if (!origFile.exists()) throw new RuntimeException("File not exists " + origFile.getAbsolutePath());

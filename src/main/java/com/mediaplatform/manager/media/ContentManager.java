@@ -1,12 +1,8 @@
 package com.mediaplatform.manager.media;
 
-import com.mediaplatform.data.stat.ApplicationDTO;
-import com.mediaplatform.data.stat.RtmpDTO;
-import com.mediaplatform.data.stat.StreamDTO;
 import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateContentEvent;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
-import com.mediaplatform.manager.MediaServerApiManager;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.RtmpPublishFormat;
@@ -19,7 +15,6 @@ import com.mediaplatform.util.TwoTuple;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.HashSet;
@@ -44,14 +39,12 @@ public class ContentManager extends AbstractContentManager {
     private Event<DeleteContentEvent> deleteEvent;
     @Inject
     private CatalogManager catalogManager;
-    @Inject
-    private FileUploadBean fileUploadBean;
+
+    private FileUploadBean fileUploadBean = new FileUploadBean();
     @Inject
     private FileStorageManager fileStorageManager;
     @Inject
     private ViewHelper viewHelper;
-
-
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
@@ -96,11 +89,15 @@ public class ContentManager extends AbstractContentManager {
 
     public String viewByCatalogId(Long catalogId) {
         ConversationUtils.safeBegin(conversation);
-
         TwoTuple<Catalog, List<Content>> result = catalogManager.getCatalogContentList(catalogId);
         selectedCatalog = result.first;
         contentList = result.second;
         return "/view-content-list";
+    }
+
+    public void add(){
+        ConversationUtils.safeBegin(conversation);
+        selectedContent = new Content();
     }
 
     public void viewVideoOnDemand(Long id) {
@@ -119,7 +116,7 @@ public class ContentManager extends AbstractContentManager {
     }
 
     @Admin
-    public void update() {
+    public void saveOrUpdate() {
         FileEntry mediaFile = null;
         if (fileUploadBean.getSize() > 0) {
             mediaFile = fileStorageManager.saveFile(
@@ -127,7 +124,8 @@ public class ContentManager extends AbstractContentManager {
                     fileUploadBean.getFiles().get(0),
                     DataType.MEDIA_CONTENT);
         }
-        super.update(selectedContent, mediaFile);
+        selectedContent.setCatalog(selectedCatalog);
+        super.saveOrUpdate(selectedContent, mediaFile);
         messages.info("Updated successfull!");
         updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
     }
@@ -147,6 +145,7 @@ public class ContentManager extends AbstractContentManager {
             contentList.remove(selectedContent);
         }
         selectedContent = null;
+        ConversationUtils.safeEnd(conversation);
     }
 
     @Admin
@@ -179,6 +178,18 @@ public class ContentManager extends AbstractContentManager {
     @Override
     protected String getCurrentContentName() {
         return getMediaFileFullName();
+    }
+
+    public String getHeader(){
+        boolean edit = selectedContent != null && selectedContent.getId() != null;
+        if(edit){
+            return "Edit " + selectedContent.getTitle();
+        }
+        return "Add new content";
+    }
+
+    public FileUploadBean getFileUploadBean() {
+        return fileUploadBean;
     }
 }
 

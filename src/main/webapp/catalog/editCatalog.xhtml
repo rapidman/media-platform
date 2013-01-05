@@ -11,7 +11,6 @@
 
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
-
     </ui:define>
 
     <ui:define name="content">
@@ -32,7 +31,7 @@
             }
 
         </h:outputStylesheet>
-        <rich:panel header="Edit #{catalogManager.selectedCatalog.title}" rendered="#{!empty catalogManager.selectedCatalog}" styleClass="editFormPanel" style="width:100%">
+        <rich:panel header="#{catalogManager.header}" rendered="#{!empty catalogManager.selectedCatalog}" styleClass="editFormPanel" style="width:100%">
             <h:form id="editCatalogForm">
                 <h:panelGrid columns="3">
                     <h:outputText value="Title:"/>
@@ -48,48 +47,27 @@
                     <rich:message for="desc" ajaxRendered="false"/>
 
                     <h:outputText value="Icon:"/>
-                    <h:graphicImage value="#{catalogManager.getIconUrl('16x.jpg')}" rendered="#{!empty catalogManager.getIconUrl('16x.jpg')}"/>
-                    <h:outputText value="empty" rendered="#{empty catalogManager.getIconUrl('16x.jpg')}"/>
+                    <h:graphicImage value="#{catalogManager.getIconUrl('32x.jpg')}" rendered="#{!empty catalogManager.getIconUrl('32x.jpg')}"/>
+                    <h:outputText value="empty" rendered="#{empty catalogManager.getIconUrl('32x.jpg')}"/>
                     <h:panelGroup/>
 
 
                     <f:facet name="footer">
-                        <h:commandButton value="Save" action="#{catalogManager.update}" />
-                        &nbsp;&nbsp;
-                        <h:commandButton value="Delete" >
-                            <rich:componentControl target="popup" operation="show" />
-                        </h:commandButton>
-                        <h:commandButton id="delBtn" action="#{catalogManager.delete}" style="display: none;"/>
-
+                        <h:commandButton value="Save" action="#{catalogManager.saveOrUpdate}" />
+                        <h:panelGroup rendered="#{!empty catalogManager.selectedCatalog.id}">
+                            &nbsp;&nbsp;
+                            <h:commandButton value="Delete" >
+                                <rich:componentControl target="popup" operation="show" />
+                            </h:commandButton>
+                            <h:commandButton id="delBtn" action="#{catalogManager.delete}" style="display: none;"/>
+                        </h:panelGroup>
                     </f:facet>
                 </h:panelGrid>
                 <h:panelGrid columns="2" columnClasses="top,top">
-                    <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}" id="upload" acceptedTypes="jpg, gif, png, bmp" render="info"  title="Icon"
+                    <rich:fileUpload fileUploadListener="#{catalogManager.fileUploadBean.listener}" id="upload" acceptedTypes="jpg, gif, png, bmp" title="Icon"
                                      ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" >
-                        <!--<a4j:ajax event="uploadcomplete" execute="@none"  render="info" />-->
+                        <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>
                     </rich:fileUpload>
-                    <h:panelGroup id="info" layout="block">
-                        <rich:panel bodyClass="info">
-                            <f:facet name="header">
-                                <h:outputText value="Uploaded Files Info" />
-                            </f:facet>
-                            <h:outputText value="No files currently uploaded" rendered="#{fileUploadBean.size==0}" />
-                            <rich:dataGrid columns="1" value="#{fileUploadBean.files}" var="file" rowKeyVar="row">
-                                <rich:panel bodyClass="rich-laguna-panel-no-header">
-                                    <h:panelGrid columns="2">
-                                        <a4j:mediaOutput element="img" mimeType="image/jpeg" createContent="#{fileUploadBean.paint}"
-                                                         value="#{row}" style="width:100px; height:100px;" cacheable="false">
-                                            <f:param value="#{fileUploadBean.timeStamp}" name="time" />
-                                        </a4j:mediaOutput>
-                                    </h:panelGrid>
-                                </rich:panel>
-                            </rich:dataGrid>
-                        </rich:panel>
-                        <br />
-                        <a4j:commandButton action="#{fileUploadBean.clearUploadData}" render="info, upload" value="Clear Uploaded Data"
-                                           rendered="#{fileUploadBean.size>0}" />
-                    </h:panelGroup>
-
                 </h:panelGrid>
             </h:form>
         </rich:panel>

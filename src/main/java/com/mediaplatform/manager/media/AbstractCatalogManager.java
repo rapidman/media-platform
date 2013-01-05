@@ -1,5 +1,6 @@
 package com.mediaplatform.manager.media;
 
+import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.model.Catalog;
 import com.mediaplatform.model.Content;
@@ -17,6 +18,7 @@ import java.util.List;
  * Time: 9:33 PM
  */
 public class AbstractCatalogManager extends AbstractManager {
+    protected FileUploadBean fileUploadBean = new FileUploadBean();
     @Inject
     protected Conversation conversation;
 
@@ -33,18 +35,23 @@ public class AbstractCatalogManager extends AbstractManager {
     }
 
     public void delete(Catalog catalog){
+        catalog = getById(catalog.getId());
         if(catalog.getParent() != null){
             catalog.getParent().getChildren().remove(catalog);
         }
         appEm.remove(catalog);
     }
 
-    public void update(Catalog catalog, FileEntry icon) {
+    public void saverOrUpdate(Catalog catalog, FileEntry icon) {
         if(icon != null){
             appEm.persist(icon);
             catalog.setIcon(icon);
         }
-        appEm.merge(catalog);
+        if(catalog.getId() == null){
+            appEm.persist(catalog);
+        }else{
+            appEm.merge(catalog);
+        }
     }
 
     public TwoTuple<Catalog, List<Content>> getCatalogContentList(Long catalogId) {
@@ -59,5 +66,13 @@ public class AbstractCatalogManager extends AbstractManager {
             contentList.addAll(catalog.getContentList());
             addContent(catalog.getChildren(), contentList);
         }
+    }
+
+    public FileUploadBean getFileUploadBean() {
+        return fileUploadBean;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
     }
 }

@@ -47,6 +47,8 @@
                 </rich:panel>
             </rich:dataGrid>
             <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
+            <br/>
+            <h:commandButton action="#{contentManager.add()}" value="Add" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"/>
         </h:form>
     </ui:define>
 

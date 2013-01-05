@@ -196,6 +196,7 @@ public class ImageConverter {
                 tmp.delete();
             }
             converter.convert(from, tmp, format);
+            if(to.exists()) to.delete();
             FileUtils.moveFile(tmp, to);
         } catch (Exception e) {
             String message = "Image converting failed: ";
