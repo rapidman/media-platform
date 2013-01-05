@@ -108,16 +108,17 @@ public class ContentManager extends AbstractContentManager {
     }
 
     public void viewVideoOnDemand(Long id) {
+        ConversationUtils.safeBegin(conversation);
         view(id);
     }
 
     @Admin
     public void editContent(Long id) {
+        ConversationUtils.safeBegin(conversation);
         view(id);
     }
 
     private void view(Long id) {
-        ConversationUtils.safeBegin(conversation);
         selectedContent = getById(id);
         selectedCatalog = catalogManager.getById(selectedContent.getCatalog().getId());
     }
