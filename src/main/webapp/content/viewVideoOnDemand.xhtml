@@ -21,7 +21,7 @@
                     config:{
                         bufferlength:1,
                         file:"#{contentManager.mediaFileFullName}?#{contentManager.callbackQueryParams}",
-                        streamer:"rtmp://localhost/vod",
+                        streamer:"rtmp://#{configBean.nginxServerHost}/vod",
                         provider:"rtmp",
                     }
                 }

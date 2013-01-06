@@ -21,7 +21,7 @@
                     config:{
                         bufferlength:1,
                         file:"#{liveStreamManager.currentStream.title}?#{liveStreamManager.callbackQueryParams}",
-                        streamer:"rtmp://localhost/myapp",
+                        streamer:"rtmp://#{configBean.nginxServerHost}/myapp",
                         provider:"rtmp",
                     }
                 }

@@ -34,4 +34,8 @@ public class ConfigBean {
     public String getMediaServerStatUrl() {
         return props.getProperty("media.server.api.stat.url");
     }
+
+    public String getNginxServerHost(){
+        return props.getProperty("nginx.server.host");
+    }
 }

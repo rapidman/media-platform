@@ -1,5 +1,6 @@
 package com.mediaplatform.manager.media;
 
+import com.mediaplatform.event.CreateContentEvent;
 import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateCatalogEvent;
 import com.mediaplatform.event.UpdateContentEvent;
@@ -36,7 +37,8 @@ public class ContentManager extends AbstractContentManager {
     private List<Content> contentList;
     @Inject
     private Event<UpdateContentEvent> updateEvent;
-
+    @Inject
+    private Event<CreateContentEvent> createEvent;
     @Inject
     private Event<UpdateCatalogEvent> updateCatalogEvent;
     @Inject
@@ -128,6 +130,9 @@ public class ContentManager extends AbstractContentManager {
         FileEntry mediaFile = null;
         FileEntry cover = null;
         selectedContent.setCatalog(selectedCatalog);
+        selectedCatalog.getContentList().add(selectedContent);
+        appEm.merge(selectedCatalog);
+        boolean edit = selectedContent.getId() != null;
         super.saveOrUpdate(selectedContent, mediaFile, mediaFile);
         if (fileUploadBean.getSize() > 0) {
             mediaFile = fileStorageManager.saveFile(
@@ -143,8 +148,14 @@ public class ContentManager extends AbstractContentManager {
                     DataType.COVER);
         }
         super.saveOrUpdate(selectedContent, mediaFile, cover);
-        messages.info("Updated successfull!");
-        updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
+        if(edit){
+            messages.info("Updated successfull!");
+            updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
+        }else{
+            messages.info("Created successfull!");
+            createEvent.fire(new CreateContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
+        }
+
         updateCatalogEvent.fire(new UpdateCatalogEvent(selectedCatalog.getId()));
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
@@ -154,13 +165,7 @@ public class ContentManager extends AbstractContentManager {
     public void delete() {
         super.delete(selectedContent);
         messages.info("Deleted successfull!");
-        Set<Long> expandedCatalogIds = new HashSet<Long>();
-        Catalog parent = selectedCatalog;
-        while (parent != null) {
-            expandedCatalogIds.add(parent.getId());
-            parent = parent.getParent();
-        }
-        deleteEvent.fire(new DeleteContentEvent(selectedContent.getId(), expandedCatalogIds));
+        deleteEvent.fire(new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
         if (contentList != null) {
             contentList.remove(selectedContent);
         }
@@ -168,6 +173,16 @@ public class ContentManager extends AbstractContentManager {
         ConversationUtils.safeEnd(conversation);
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
+    }
+
+    private Set<Long> getExpandedCatalogIds() {
+        Set<Long> expandedCatalogIds = new HashSet<Long>();
+        Catalog parent = selectedCatalog;
+        while (parent != null) {
+            expandedCatalogIds.add(parent.getId());
+            parent = parent.getParent();
+        }
+        return expandedCatalogIds;
     }
 
     @Admin

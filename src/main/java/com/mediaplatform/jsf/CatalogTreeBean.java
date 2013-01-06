@@ -1,5 +1,6 @@
 package com.mediaplatform.jsf;
 
+import com.mediaplatform.event.CreateContentEvent;
 import com.mediaplatform.manager.media.CatalogManager;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.event.DeleteCatalogEvent;
@@ -100,6 +101,10 @@ public class CatalogTreeBean implements Serializable {
 
     public void observeContentDelete(@Observes DeleteContentEvent deleteEvent) {
         refreshTree(deleteEvent.getExpandedCatalogIds());
+    }
+
+    public void observeContentCreate(@Observes CreateContentEvent createEvent) {
+        refreshTree(createEvent.getExpandedCatalogIds());
     }
 
     public void fillExpandedIds(List<CatalogTreeNode> nodes, Set<Long> expanded){
