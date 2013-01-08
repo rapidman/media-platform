@@ -1,12 +1,15 @@
 package com.mediaplatform.manager;
 
 import com.mediaplatform.model.Content;
+import com.mediaplatform.util.ConversationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.ejb.Stateful;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +24,9 @@ import java.util.List;
 @ConversationScoped
 @Named
 public class ContentSearchManager extends AbstractManager {
+    @Inject
+    protected Conversation conversation;
+
     private String query = null;
     private List<Content> contentList;
 
@@ -57,6 +63,7 @@ public class ContentSearchManager extends AbstractManager {
     }
 
     public void search(){
+        ConversationUtils.safeBegin(conversation);
         contentList = null;
     }
 }

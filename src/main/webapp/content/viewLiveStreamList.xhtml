@@ -17,8 +17,6 @@
 
         <rich:panel id="liveVideoPanel" header="Live Video">
             <h:form id="liveStreamForm">
-
-
                 <rich:dataTable value="#{liveStreamManager.liveStreams}" var="stream" iterationStatusVar="it"
                                 id="liveStreamsTable"
                                 rows="15">
@@ -52,9 +50,9 @@
                         </h:selectBooleanCheckbox>
                     </rich:column>
                     <rich:column>
-                        <a4j:commandLink styleClass="no-decor" execute="@this" render="confirmPane"
+                        <a4j:commandLink styleClass="no-decor" execute="@this" render="liveStreamConfirmPane"
                                          actionListener="#{liveStreamManager.edit(stream)}"
-                                         oncomplete="#{rich:component('confirmPane')}.show()">
+                                         oncomplete="#{rich:component('liveStreamConfirmPane')}.show()">
                             <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
                         </a4j:commandLink>
                         <a4j:commandLink styleClass="no-decor" render="liveStreamEditPane" execute="@this"

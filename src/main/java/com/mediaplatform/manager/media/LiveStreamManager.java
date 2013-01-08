@@ -41,6 +41,9 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     public LiveStream getCurrentStream() {
+        if(currentStream == null){
+            currentStream = new LiveStream();
+        }
         return currentStream;
     }
 
@@ -84,7 +87,7 @@ public class LiveStreamManager extends AbstractContentManager {
         //todo make unique
         String streamName = stream.getTitle() + "?" + getCallbackQueryParams();
         if(stream.isPublished()){
-            RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.FLV_LOW);
+            RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.MP4_LIVE_STREAM_HIGH);
             messages.info("Published " + stream.getSource());
         }else{
             RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());

@@ -12,6 +12,7 @@ public class ConversationUtils {
 
     public static void safeBegin(Conversation conversation) {
         safeEnd(conversation);
+        conversation.setTimeout(1000 * 60 * 30);
         conversation.begin();
     }
 

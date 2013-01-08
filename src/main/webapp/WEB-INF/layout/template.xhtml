@@ -39,7 +39,7 @@
                     <!--<h:graphicImage value="/img/hdr.title.gif" alt="JBoss Suites banner"/>-->
                 </div>
 
-                <h:form id="menuForm">
+
                     <rich:toolbar height="26px" itemSeparator="line">
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
                             <h:outputText value="(#{currentUser.name})"
@@ -47,19 +47,24 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
-                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/home.xhtml'}" action="#{mainPageManager.show}">#{bundles.messages.template_linkHome}</h:commandLink>
-                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/home.xhtml'}" value="#{bundles.messages.template_linkHome}"/>
+                            <h:form>
+                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/home.xhtml'}" action="#{mainPageManager.show}">#{bundles.messages.template_linkHome}</h:commandLink>
+                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/home.xhtml'}" value="#{bundles.messages.template_linkHome}"/>
+                            </h:form>
                         </rich:toolbarGroup>
 
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
-                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/content/viewLiveStreamList.xhtml'}" action="#{liveStreamManager.show}">#{bundles.messages.template_live_streams}</h:commandLink>
-                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml'}" value="#{bundles.messages.template_live_streams}"/>
+                            <h:form>
+                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/content/viewLiveStreamList.xhtml'}" action="#{liveStreamManager.show}">#{bundles.messages.template_live_streams}</h:commandLink>
+                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml'}" value="#{bundles.messages.template_live_streams}"/>
+                            </h:form>
                         </rich:toolbarGroup>
-
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
-                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">Events</h:commandLink>
-                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="Events"/>
+                            <h:form>
+                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">Events</h:commandLink>
+                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="Events"/>
+                            </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
@@ -70,8 +75,10 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
-                            <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/user/viewUserList.xhtml'}" action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
-                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/user/viewUserList.xhtml'}" value="#{bundles.messages.template_users}"/>
+                            <h:form>
+                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/user/viewUserList.xhtml'}" action="#{userList.show}">#{bundles.messages.template_users}</h:commandLink>
+                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/user/viewUserList.xhtml'}" value="#{bundles.messages.template_users}"/>
+                            </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
@@ -79,9 +86,11 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{facesContext.application.projectStage == 'Development'}">
-                            <h:commandLink action="pretty:home"
-                                           actionListener="#{facesContext.externalContext.invalidateSession}"
-                                           value="#{bundles.messages.template_linkReset}"/>
+                            <h:form>
+                                <h:commandLink action="pretty:home"
+                                               actionListener="#{facesContext.externalContext.invalidateSession}"
+                                               value="#{bundles.messages.template_linkReset}"/>
+                            </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{not identity.loggedIn and facesContext.viewRoot.viewId != '/login.xhtml'}">
@@ -100,11 +109,12 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
-                            <h:inputText value="#{contentSearchManager.query}" styleClass="barsearch"/>
-                            <h:commandButton styleClass="barsearchbutton" action="#{contentSearchManager.search}" value="Search"/>
+                            <h:form>
+                                <h:inputText value="#{contentSearchManager.query}" styleClass="barsearch"/>
+                                <h:commandButton styleClass="barsearchbutton" action="#{contentSearchManager.search}" value="Search"/>
+                            </h:form>
                         </rich:toolbarGroup>
                     </rich:toolbar>
-                </h:form>
                 <rich:popupPanel id="lp" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" rendered="#{not identity.loggedIn}">
                     <h:form>
                         <h:panelGrid columns="2">
