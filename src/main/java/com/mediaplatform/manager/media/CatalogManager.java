@@ -123,7 +123,6 @@ public class CatalogManager extends AbstractCatalogManager {
         if (!conversation.isTransient()) {
             conversation.end();
         }
-        ConversationUtils.safeEnd(conversation);
         fileUploadBean.clearUploadData();
     }
 

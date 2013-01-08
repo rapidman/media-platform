@@ -1,6 +1,7 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
+import com.mediaplatform.model.Catalog;
 import com.mediaplatform.model.Content;
 import com.mediaplatform.model.FileEntry;
 
@@ -45,7 +46,9 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     public void delete(Content content) {
         content = getById(content.getId());
-        content.getCatalog().getContentList().remove(content);
+        Catalog catalog = content.getCatalog();
+        catalog.getContentList().remove(content);
+        appEm.merge(catalog);
         appEm.remove(content);
     }
 

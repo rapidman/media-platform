@@ -163,14 +163,14 @@ public class ContentManager extends AbstractContentManager {
 
     @Admin
     public void delete() {
+        DeleteContentEvent event = new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds());
         super.delete(selectedContent);
         messages.info("Deleted successfull!");
-        deleteEvent.fire(new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
+        deleteEvent.fire(event);
         if (contentList != null) {
             contentList.remove(selectedContent);
         }
         selectedContent = null;
-        ConversationUtils.safeEnd(conversation);
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
     }

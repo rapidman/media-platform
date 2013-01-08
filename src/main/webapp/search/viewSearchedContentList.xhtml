@@ -1,0 +1,58 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
+
+
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+
+    </ui:define>
+
+    <ui:define name="content">
+        <h:outputStylesheet>
+            .label {
+                font-weight: bold;
+            }
+            .rf-dg, .rf-dg-c{
+                border:none;
+            }
+            .pbody {
+                width: 200px;
+            }
+        </h:outputStylesheet>
+        sdfddssasd
+        <h:form>
+            <rich:dataGrid id="searchContentGrid" value="#{contentSearchManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
+                <rich:panel bodyClass="pbody">
+                    <f:facet name="header">
+                        <h:outputText value="#{viewHelper.viewTitle(content.title)}"></h:outputText>
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Name:" styleClass="label"></h:outputText>
+                        <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
+                            <rich:contextMenu mode="server" target="contentId" >
+                                <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
+                                               mode="server" icon="/images/icons/edit.gif" />
+                            </rich:contextMenu>
+                        </h:commandLink>
+
+                        <h:outputText value="Desc:" styleClass="label"></h:outputText>
+                        <h:outputText value="#{content.description}" />
+                    </h:panelGrid>
+
+                    <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, '200x.jpg')}" rendered="#{!empty content.cover}"/>
+                </rich:panel>
+            </rich:dataGrid>
+            <rich:dataScroller for="searchContentGrid" renderIfSinglePage="false" />
+            <br/>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+

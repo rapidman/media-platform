@@ -25,13 +25,6 @@ import java.util.List;
 @ConversationScoped
 @Named
 public class LiveStreamManager extends AbstractContentManager {
-//    private TwoTuple<ApplicationDTO, StreamDTO> currStreamInfo;
-
-    @Inject
-    private MediaServerApiManager apiManager;
-
-    private String url;
-
     private List<LiveStream> liveStreams;
 
     private LiveStream currentStream;
@@ -43,10 +36,11 @@ public class LiveStreamManager extends AbstractContentManager {
         return liveStreams;
     }
 
+    public void setLiveStreams(List<LiveStream> liveStreams) {
+        this.liveStreams = liveStreams;
+    }
+
     public LiveStream getCurrentStream() {
-        if(currentStream == null){
-            currentStream = new LiveStream();
-        }
         return currentStream;
     }
 
@@ -55,6 +49,7 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     public void show(){
+        ConversationUtils.safeBegin(conversation);
         liveStreams = null;
     }
 
@@ -65,22 +60,20 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     @Admin
-    public void save(){
+    public void saveOrCreate(){
         if(currentStream.getId() == null){
             appEm.persist(currentStream);
         }else{
             appEm.merge(currentStream);
         }
-        show();
-        ConversationUtils.safeEnd(conversation);
+        currentStream = null;
     }
 
     @Admin
     public void remove(LiveStream stream){
         appEm.remove(appEm.find(LiveStream.class, stream.getId()));
-        ConversationUtils.safeEnd(conversation);
-        show();
         this.currentStream = null;
+        this.liveStreams = null;
     }
 
     @Admin
@@ -91,7 +84,7 @@ public class LiveStreamManager extends AbstractContentManager {
         //todo make unique
         String streamName = stream.getTitle() + "?" + getCallbackQueryParams();
         if(stream.isPublished()){
-            RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.FLV_HIGH);
+            RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.FLV_LOW);
             messages.info("Published " + stream.getSource());
         }else{
             RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
@@ -108,37 +101,6 @@ public class LiveStreamManager extends AbstractContentManager {
     public void viewLiveVideo(LiveStream stream) {
         ConversationUtils.safeBegin(conversation);
         this.currentStream = stream;
-
-//        RtmpDTO info = getLiveVideoInfo();
-//        for (ApplicationDTO app : info.getServer().getApplications()) {
-//            for (StreamDTO stream : app.getLive().getStreams()) {
-//                if (stream.getName().equals(name)) {
-//                    this.currStreamInfo = new TwoTuple<ApplicationDTO, StreamDTO>(app, stream);
-//                    break;
-//                }
-//            }
-//        }
-
-    }
-
-    public RtmpDTO getLiveVideoInfo() {
-        return apiManager.getStatInfo();
-    }
-
-    public List<StreamDTO> getLiveStreamsFromService() {
-        return getLiveVideoInfo().getServer().getLiveApp() == null ? null : getLiveVideoInfo().getServer().getLiveApp().getLive().getStreams();
-    }
-
-//    public TwoTuple<ApplicationDTO, StreamDTO> getCurrStreamInfo() {
-//        return currStreamInfo;
-//    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     @Override
@@ -146,5 +108,8 @@ public class LiveStreamManager extends AbstractContentManager {
         return getCurrentStream().getTitle();
     }
 
+    public boolean isEdit(){
+        return currentStream != null && currentStream.getId() != null;
+    }
 
 }

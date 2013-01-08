@@ -1,6 +1,7 @@
 package com.mediaplatform.manager;
 
 import com.mediaplatform.model.User;
+import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 
 import javax.ejb.Stateful;
@@ -27,8 +28,7 @@ public class UserList extends AbstractManager {
 
     private User currentUser;
 
-    private Integer currentUserIdx;
-
+    @Admin
     public void save(){
         appEm.merge(currentUser);
         users = null;
@@ -39,23 +39,22 @@ public class UserList extends AbstractManager {
         refresh();
     }
 
-    public void remove(){
-        int ind = 0;
-        for(Iterator<User> it = users.iterator(); it.hasNext();){
-            User user = it.next();
-            if(currentUserIdx == ind){
-                user = appEm.find(User.class, user.getUsername());
-                appEm.remove(user);
-                refresh();
-            }
-            ind++;
-        }
+    @Admin
+    public void remove(User currentUser){
+        User user = appEm.find(User.class, currentUser.getUsername());
+        appEm.remove(user);
+        refresh();
+    }
+
+    @Admin
+    public void edit(User currentUser){
+        ConversationUtils.safeBegin(conversation);
+        this.currentUser = currentUser;
     }
 
     private void refresh() {
         currentUser = null;
         users = null;
-        currentUserIdx = null;
     }
 
     public List<User> getUsers() {
@@ -75,14 +74,6 @@ public class UserList extends AbstractManager {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-    }
-
-    public Integer getCurrentUserIdx() {
-        return currentUserIdx;
-    }
-
-    public void setCurrentUserIdx(Integer currentUserIdx) {
-        this.currentUserIdx = currentUserIdx;
     }
 }
 

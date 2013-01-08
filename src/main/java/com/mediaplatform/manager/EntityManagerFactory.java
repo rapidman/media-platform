@@ -1,5 +1,11 @@
 package com.mediaplatform.manager;
 
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+
+import javax.ejb.Stateful;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
@@ -13,12 +19,12 @@ import java.io.Serializable;
  * Date: 12/3/12
  * Time: 10:15 PM
  */
-
 @SessionScoped
-public class EntityManagerFactory implements Serializable{
+public class EntityManagerFactory implements Serializable {
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
+    @RequestScoped
     @Produces
     @Named(value = "appEm")
     public EntityManager getAppEntityManager() {

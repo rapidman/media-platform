@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +37,13 @@ public class NotificationListenerServlet extends HttpServlet {
     public static final String CONTENT_NAME_PARAM_NAME = "cname";
     @Inject
     protected ConfigBean configBean;
+//
+//    @PersistenceContext(type = PersistenceContextType.TRANSACTION)
+//    private EntityManager entityManager;
 
     @Inject
     @Named(value = "appEm")
-    protected EntityManager appEm;
+    protected EntityManager entityManager;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -67,17 +72,17 @@ public class NotificationListenerServlet extends HttpServlet {
         Event event = new Event(type, addr, app, flashVer, swfUrl, tcUrl, pageUrl, streamName, contentName);
         if(StringUtils.isNotBlank(userName)){
             try {
-                User user = (User) appEm.createQuery("select u from User u where u.username = :userName").setParameter("userName", userName).getSingleResult();
+                User user = (User) entityManager.createQuery("select u from User u where u.username = :userName").setParameter("userName", userName).getSingleResult();
                 event.setUser(user);
             } catch (NoResultException e) {
                 //empty
             }
         }
-        appEm.persist(event);
+        entityManager.persist(event);
 
         //todo rise event
         if(EventType.publish_done == type){
-            LiveStream liveStream = (LiveStream) appEm.createQuery("select s from LiveStream s where s.title = :streamName").setParameter("streamName", contentName).getSingleResult();
+            LiveStream liveStream = (LiveStream) entityManager.createQuery("select s from LiveStream s where s.title = :streamName").setParameter("streamName", contentName).getSingleResult();
             liveStream.setPublished(false);
         }
     }

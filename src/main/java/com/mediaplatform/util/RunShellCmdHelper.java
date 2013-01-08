@@ -28,7 +28,12 @@ public class RunShellCmdHelper {
             public Object call() throws Exception {
                 try {
                     List<String> commands = new ArrayList<String>();
-                    commands.add(COMMAND);
+                    if(RtmpPublishFormat.MENCODER_COPY_TO_FLV == format){
+                        commands.add("mencoder");
+                    }else{
+                        commands.add(COMMAND);
+                    }
+
                     for(String arg: format.getArgs()){
                         if(arg.equals("%SOURCE%")){
                             commands.add(source);

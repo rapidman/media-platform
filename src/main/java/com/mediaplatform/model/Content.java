@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.hibernate.search.annotations.*;
 import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "content")
 @Veto
+@Indexed
 public class Content extends AbstractEntity{
     private String title;
     private String description;
@@ -32,6 +34,7 @@ public class Content extends AbstractEntity{
         this.catalog = catalog;
     }
 
+    @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
     public String getTitle() {
         return title;
     }
@@ -40,6 +43,7 @@ public class Content extends AbstractEntity{
         this.title = title;
     }
 
+    @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
     public String getDescription() {
         return description;
     }

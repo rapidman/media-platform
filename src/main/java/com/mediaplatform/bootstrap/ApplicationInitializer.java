@@ -20,6 +20,8 @@ import com.mediaplatform.model.Catalog;
 import com.mediaplatform.model.Content;
 import com.mediaplatform.model.User;
 import com.mediaplatform.util.TwoTuple;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.jboss.solder.logging.Logger;
 import org.jboss.solder.servlet.WebApplication;
 import org.jboss.solder.servlet.event.Initialized;
@@ -27,6 +29,7 @@ import org.jboss.solder.servlet.event.Initialized;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -40,15 +43,18 @@ import java.util.List;
 // @Stateless // can't use EJB since they are not yet available for lookup when initialized event is fired
 @Alternative
 public class ApplicationInitializer {
-//    @PersistenceContext
-//    private EntityManager entityManager;
-//
-//    @Inject
-//    private UserTransaction utx;
-//
-//    @Inject
-//    private Logger log;
-//
+
+
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Inject
+    private UserTransaction utx;
+
+    @Inject
+    private Logger log;
+
 //    private final List<User> users = new ArrayList<User>();
 //
 //    public ApplicationInitializer() {
@@ -58,6 +64,26 @@ public class ApplicationInitializer {
 //        ));
 //    }
 //
+    public void importData(@Observes @Initialized WebApplication webapp) {
+        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+        try {
+            utx.begin();
+            fullTextEntityManager.createIndexer().startAndWait();
+            utx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (utx.getStatus() == Status.STATUS_ACTIVE) {
+                    try {
+                        utx.rollback();
+                    } catch (Exception rbe) {
+                        log.error("Error rolling back transaction", rbe);
+                    }
+                }
+            }catch (Exception ex){}
+            throw new RuntimeException(e);
+        }
+    }
 //    /**
 //     * Import seed data when Seam Servlet fires an event notifying observers that the web application is being initialized.
 //     */

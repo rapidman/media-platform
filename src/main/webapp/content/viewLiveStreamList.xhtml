@@ -10,12 +10,17 @@
 
 
     <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
     </ui:define>
 
     <ui:define name="content">
-        <rich:panel header="Live Video">
-            <h:form id="form">
-                <rich:dataTable value="#{liveStreamManager.liveStreams}" var="stream" iterationStatusVar="it" id="liveStreamsTable"
+
+        <rich:panel id="liveVideoPanel" header="Live Video">
+            <h:form id="liveStreamForm">
+
+
+                <rich:dataTable value="#{liveStreamManager.liveStreams}" var="stream" iterationStatusVar="it"
+                                id="liveStreamsTable"
                                 rows="15">
                     <rich:column>
                         <f:facet name="header">#</f:facet>
@@ -24,7 +29,8 @@
                     <rich:column>
                         <f:facet name="header">Source</f:facet>
                         <h:outputText value="#{stream.source}" rendered="#{!stream.published}"/>
-                        <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{stream.source}" rendered="#{stream.published}" />
+                        <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{stream.source}"
+                                       rendered="#{stream.published}"/>
                     </rich:column>
                     <rich:column>
                         <f:facet name="header">Title</f:facet>
@@ -36,49 +42,52 @@
                     </rich:column>
                     <rich:column>
                         <f:facet name="header">Published</f:facet>
-                        <h:selectBooleanCheckbox value="#{stream.published}" >
-                            <a4j:ajax event="valueChange" execute="@this" listener="#{liveStreamManager.publish(stream)}" render="liveStreamsTable,globalMessages"/>
+                        <h:selectBooleanCheckbox value="#{stream.published}">
+                            <a4j:ajax event="valueChange" execute="@this"
+                                      listener="#{liveStreamManager.publish(stream)}"
+                                      render="liveStreamsTable,globalMessages"/>
                             <rich:tooltip id="tt1" styleClass="tooltip" layout="block">
                                 <span style="white-space: nowrap">#{stream.published ? 'Uncheck checkbox to drop stream' : 'Check checkbox to publish stream'}</span>
                             </rich:tooltip>
                         </h:selectBooleanCheckbox>
                     </rich:column>
                     <rich:column>
-                        <a4j:commandLink styleClass="no-decor" execute="@this" render="confirmPane" actionListener="#{liveStreamManager.edit(stream)}"
+                        <a4j:commandLink styleClass="no-decor" execute="@this" render="confirmPane"
+                                         actionListener="#{liveStreamManager.edit(stream)}"
                                          oncomplete="#{rich:component('confirmPane')}.show()">
                             <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
                         </a4j:commandLink>
-                        <a4j:commandLink styleClass="no-decor" render="editPane" execute="@this" actionListener="#{liveStreamManager.edit(stream)}"
-                                         oncomplete="#{rich:component('editPane')}.show()">
+                        <a4j:commandLink styleClass="no-decor" render="liveStreamEditPane" execute="@this"
+                                         actionListener="#{liveStreamManager.edit(stream)}"
+                                         oncomplete="#{rich:component('liveStreamEditPane')}.show()">
                             <h:graphicImage value="/images/icons/edit.gif" alt="edit"/>
                         </a4j:commandLink>
                     </rich:column>
                     <f:facet name="footer">
-                        <rich:dataScroller for="liveStreamsTable" />
+                        <rich:dataScroller for="liveStreamsTable"/>
                     </f:facet>
                 </rich:dataTable>
+
                 <h:panelGrid columns="1">
-                    <a4j:commandButton value="Add" execute="@this" oncomplete="#{rich:component('editPane')}.show()" actionListener="#{liveStreamManager.add}" render="editPane"/>
+                    <a4j:commandButton value="Add" execute="@this" oncomplete="#{rich:component('liveStreamEditPane')}.show()"
+                                       actionListener="#{liveStreamManager.add}" render="liveStreamEditPane"/>
                 </h:panelGrid>
 
-                <rich:popupPanel id="statPane" autosized="true">
-                    <h:graphicImage value="/images/ai.gif" alt="ai"/>
-                    Please wait...
-                </rich:popupPanel>
-
-                <rich:popupPanel id="confirmPane" autosized="true">
+                <rich:popupPanel id="liveStreamConfirmPane" autosized="true" domElementAtztachment="parent">
                     Are you sure you want to delete the #{liveStreamManager.currentStream.source}?
-                    <a4j:commandButton value="Cancel" onclick="#{rich:component('confirmPane')}.hide(); return false;"/>
-                    <a4j:commandButton value="Delete" action="#{liveStreamManager.remove(liveStreamManager.currentStream)}" render="liveStreamsTable" execute="confirmPane"
-                                       oncomplete="#{rich:component('confirmPane')}.hide();">
-                        <a4j:param name="cid" value="#{liveStreamManager.conversation.id}" />
+                    <a4j:commandButton value="Cancel" onclick="#{rich:component('liveStreamConfirmPane')}.hide(); return false;"/>
+                    <a4j:commandButton value="Delete"
+                                       action="#{liveStreamManager.remove(liveStreamManager.currentStream)}"
+                                       render="liveStreamsTable,globalMessages" execute="liveStreamConfirmPane"
+                                       oncomplete="#{rich:component('liveStreamConfirmPane')}.hide();">
                     </a4j:commandButton>
                 </rich:popupPanel>
 
-                <rich:popupPanel header="#{empty liveStreamManager.currentStream.id ? 'Add' : 'Edit'} Stream" id="editPane" domElementAtztachment="parent" width="400"
+                <rich:popupPanel header="Edit Stream"
+                                 id="liveStreamEditPane" domElementAttachment="parent" width="400"
                                  height="170">
-                    <h:panelGrid columns="2" id="editGrid">
-                        <h:outputText value="Url"/>
+                    <h:panelGrid columns="2" id="streamEditGrid">
+                        <h:outputText value="source"/>
                         <h:inputText value="#{liveStreamManager.currentStream.source}"/>
 
                         <h:outputText value="Description"/>
@@ -87,11 +96,15 @@
                         <h:outputText value="Title"/>
                         <h:inputText value="#{liveStreamManager.currentStream.title}"/>
                     </h:panelGrid>
-                    <a4j:commandButton value="Save" action="#{liveStreamManager.save}" render="liveStreamsTable" execute="editPane"
-                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('editPane')}.hide();}">
-                        <a4j:param name="cid" value="#{liveStreamManager.conversation.id}" />
-                    </a4j:commandButton>
-                    <a4j:commandButton value="Cancel" onclick="#{rich:component('editPane')}.hide(); return false;"/>
+                    <f:facet name="controls">
+                        <h:outputLink value="#" onclick="#{rich:component('liveStreamEditPane')}.hide(); return false;">
+                            X&nbsp;
+                        </h:outputLink>
+                    </f:facet>
+                    <a4j:commandButton value="Save" action="#{liveStreamManager.saveOrCreate}"
+                                       render="liveStreamsTable,globalMessages" execute="liveStreamEditPane"
+                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('liveStreamEditPane')}.hide();}"/>
+
                 </rich:popupPanel>
             </h:form>
         </rich:panel>

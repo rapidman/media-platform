@@ -34,13 +34,6 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{bookingAgent.cancel}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/search.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <navigation-case>
             <from-action>#{catalogManager.editCatalog(node.id)}</from-action>
             <if>#{true}</if>
             <to-view-id>/catalog/editCatalog.xhtml</to-view-id>
@@ -87,6 +80,13 @@
             <from-action>#{contentManager.viewVideoOnDemand(content.id)}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-action>#{contentSearchManager.search}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/search/viewSearchedContentList.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
@@ -141,80 +141,6 @@
         </navigation-case>
     </navigation-rule>
 
-    <!--<navigation-rule>-->
-        <!--<from-view-id>/content/editContent.xhtml</from-view-id>-->
-
-        <!--<navigation-case>-->
-            <!--<from-action>#{contentManager.delete}</from-action>-->
-            <!--<if>#{contentManager.selectedCatalog != null}</if>-->
-            <!--<to-view-id>#{contentManager.viewByCatalogId(contentManager.selectedCatalog.id)}</to-view-id>-->
-            <!--<redirect/>-->
-        <!--</navigation-case>-->
-    <!--</navigation-rule>-->
-
-    <navigation-rule>
-        <from-view-id>/search.xhtml</from-view-id>
-
-        <!-- navigation rules are required to reset request-scoped producer variables -->
-        <!--
-        <navigation-case>
-            <from-action>#{hotelSearch.find}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/search.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-action>#{hotelSearch.nextPage}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/search.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        -->
-
-        <navigation-case>
-            <from-action>#{bookingAgent.selectHotel(_hotel)}</from-action>
-            <if>#{bookingAgent.hotelSelection != null}</if>
-            <to-view-id>/hotel.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-    </navigation-rule>
-
-    <navigation-rule>
-        <from-view-id>/hotel.xhtml</from-view-id>
-
-        <navigation-case>
-            <from-action>#{bookingAgent.bookHotel}</from-action>
-            <if>#{bookingAgent.booking != null}</if>
-            <to-view-id>/book.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-    </navigation-rule>
-
-    <navigation-rule>
-        <from-view-id>/book.xhtml</from-view-id>
-
-        <navigation-case>
-            <from-action>#{bookingAgent.validate}</from-action>
-            <if>#{bookingAgent.bookingValid}</if>
-            <to-view-id>/confirm.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-    </navigation-rule>
-
-    <navigation-rule>
-        <from-view-id>/confirm.xhtml</from-view-id>
-
-        <navigation-case>
-            <from-action>#{bookingAgent.confirm}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/search.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-    </navigation-rule>
 
     <navigation-rule>
         <from-view-id>/register.xhtml</from-view-id>
