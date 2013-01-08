@@ -87,10 +87,11 @@ public class LiveStreamManager extends AbstractContentManager {
         //todo make unique
         String streamName = stream.getTitle() + "?" + getCallbackQueryParams();
         if(stream.isPublished()){
+            RunShellCmdHelper.dropStream(stream.getTitle(), configBean.getStreamDropUrl());
             RunShellCmdHelper.publish(stream.getSource(), streamName, RtmpPublishFormat.MP4_LIVE_STREAM_HIGH);
             messages.info("Published " + stream.getSource());
         }else{
-            RunShellCmdHelper.dropStream(streamName, configBean.getStreamDropUrl());
+            RunShellCmdHelper.dropStream(stream.getTitle(), configBean.getStreamDropUrl());
             messages.info("Dropped " + stream.getSource());
         }
     }
