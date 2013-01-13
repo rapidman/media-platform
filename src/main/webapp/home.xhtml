@@ -45,6 +45,7 @@
                                 <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
                                     <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
                                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
+                                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
                                                        mode="server" icon="/images/icons/edit.gif" />
                                     </rich:contextMenu>
                                 </h:commandLink>
@@ -53,7 +54,7 @@
                                 <h:outputText value="#{content.description}" />
 
                             </h:panelGrid>
-                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, '200x.jpg')}" rendered="#{!empty content.cover}"/>
+                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
                         </rich:panel>
                     </rich:dataGrid>
                 </h:form>
@@ -68,6 +69,7 @@
                                 <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
                                     <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
                                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
+                                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
                                                        mode="server" icon="/images/icons/edit.gif" />
                                     </rich:contextMenu>
                                 </h:commandLink>
@@ -76,7 +78,7 @@
                                 <h:outputText value="#{content.description}" />
 
                             </h:panelGrid>
-                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, '200x.jpg')}" rendered="#{!empty content.cover}"/>
+                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
                         </rich:panel>
                     </rich:dataGrid>
                 </h:form>

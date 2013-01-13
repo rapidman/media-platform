@@ -31,19 +31,19 @@
             }
 
         </h:outputStylesheet>
-        <rich:panel header="#{catalogManager.header}" rendered="#{!empty catalogManager.selectedCatalog}" styleClass="editFormPanel" style="width:100%">
+        <rich:panel header="#{catalogManager.header}" rendered="#{!empty catalogManager.selectedGenre}" styleClass="editFormPanel" style="width:100%">
             <h:form id="editCatalogForm">
                 <h:panelGrid columns="3">
                     <h:outputText value="Title:"/>
                     <h:inputText label="Title" id="title" required="true"
-                                 value="#{catalogManager.selectedCatalog.title}">
+                                 value="#{catalogManager.selectedGenre.title}">
                         <f:validateLength minimum="3"/>
                     </h:inputText>
                     <rich:message for="title" ajaxRendered="false"/>
 
                     <h:outputText value="Description:"/>
                     <h:inputTextarea label="Description" id="desc" required="true"
-                                 value="#{catalogManager.selectedCatalog.description}"/>
+                                 value="#{catalogManager.selectedGenre.description}"/>
                     <rich:message for="desc" ajaxRendered="false"/>
 
                     <h:outputText value="Icon:"/>
@@ -54,7 +54,7 @@
 
                     <f:facet name="footer">
                         <h:commandButton value="Save" action="#{catalogManager.saveOrUpdate}" />
-                        <h:panelGroup rendered="#{!empty catalogManager.selectedCatalog.id}">
+                        <h:panelGroup rendered="#{!empty catalogManager.selectedGenre.id}">
                             &nbsp;&nbsp;
                             <h:commandButton value="Delete" >
                                 <rich:componentControl target="popup" operation="show" />
@@ -71,10 +71,10 @@
                 </h:panelGrid>
             </h:form>
         </rich:panel>
-        <h:outputText value="Catalog not selected" rendered="#{empty catalogManager.selectedCatalog}"/>
+        <h:outputText value="Catalog not selected" rendered="#{empty catalogManager.selectedGenre}"/>
         <rich:popupPanel id="popup" modal="true" autosized="false" resizeable="false" width="500">
             <f:facet name="header">
-                <h:outputText value="Deleting #{catalogManager.selectedCatalog.title} and all it's children." />
+                <h:outputText value="Deleting #{catalogManager.selectedGenre.title} and all it's children." />
             </f:facet>
             <f:facet name="controls">
                 <h:outputLink value="#" onclick="#{rich:component('popup')}.hide(); return false;">

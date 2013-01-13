@@ -3,12 +3,11 @@ package com.mediaplatform.manager.media;
 import com.mediaplatform.event.DeleteCatalogEvent;
 import com.mediaplatform.event.EditCatalogEvent;
 import com.mediaplatform.event.UpdateCatalogEvent;
-import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.ViewHelper;
 import com.mediaplatform.manager.file.FileStorageManager;
-import com.mediaplatform.model.Catalog;
+import com.mediaplatform.model.Genre;
 import com.mediaplatform.model.DataType;
 import com.mediaplatform.model.FileEntry;
 import com.mediaplatform.model.ParentRef;
@@ -28,7 +27,7 @@ import javax.inject.Named;
 @ConversationScoped
 @Named
 public class CatalogManager extends AbstractCatalogManager {
-    private Catalog selectedCatalog;
+    private Genre selectedGenre;
     @Inject
     private Event<EditCatalogEvent> editEvent;
     @Inject
@@ -45,65 +44,65 @@ public class CatalogManager extends AbstractCatalogManager {
     @Admin
     public void editCatalog(Long id) {
         ConversationUtils.safeBegin(conversation);
-        selectedCatalog = getById(id);
-        editEvent.fire(new EditCatalogEvent(selectedCatalog.getId()));
+        selectedGenre = getById(id);
+        editEvent.fire(new EditCatalogEvent(selectedGenre.getId()));
         fileUploadBean.clearUploadData();
     }
 
     @Admin
     public void addCatalog(Long parentId) {
         ConversationUtils.safeBegin(conversation);
-        selectedCatalog = new Catalog();
-        selectedCatalog.setParent(getById(parentId));
+        selectedGenre = new Genre();
+        selectedGenre.setParent(getById(parentId));
         fileUploadBean.clearUploadData();
     }
 
     @Admin
     public void addRootCatalog() {
         ConversationUtils.safeBegin(conversation);
-        selectedCatalog = new Catalog();
+        selectedGenre = new Genre();
         fileUploadBean.clearUploadData();
     }
 
-    public Catalog getSelectedCatalog() {
-        return selectedCatalog;
+    public Genre getSelectedGenre() {
+        return selectedGenre;
     }
 
     public String getHeader() {
-        boolean edit = selectedCatalog.getId() != null;
+        boolean edit = selectedGenre.getId() != null;
         if (edit) {
-            return "Edit " + selectedCatalog.getTitle();
+            return "Edit " + selectedGenre.getTitle();
         }
-        if (selectedCatalog.getParent() != null) {
-            return "Adding new catalog to " + selectedCatalog.getParent().getTitle();
+        if (selectedGenre.getParent() != null) {
+            return "Adding new catalog to " + selectedGenre.getParent().getTitle();
         }
 
         return "Adding root catalog";
     }
 
-    public void setSelectedCatalog(Catalog selectedCatalog) {
-        this.selectedCatalog = selectedCatalog;
+    public void setSelectedGenre(Genre selectedGenre) {
+        this.selectedGenre = selectedGenre;
     }
 
     public String getIconUrl(String format) {
-        if (selectedCatalog == null || selectedCatalog.getIcon() == null) return null;
-        return viewHelper.getImgUrlExt(selectedCatalog.getIcon(), format);
+        if (selectedGenre == null || selectedGenre.getIcon() == null) return null;
+        return viewHelper.getImgUrlExt(selectedGenre.getIcon(), format);
     }
 
     @Admin
     public void saveOrUpdate() {
         FileEntry icon = null;
-        boolean update = selectedCatalog.getId() != null;
-        super.saverOrUpdate(selectedCatalog, icon);
+        boolean update = selectedGenre.getId() != null;
+        super.saverOrUpdate(selectedGenre, icon);
         if (fileUploadBean.getSize() > 0) {
             icon = fileStorageManager.saveFile(
-                    new ParentRef(selectedCatalog.getId(),
-                            selectedCatalog.getEntityType()),
+                    new ParentRef(selectedGenre.getId(),
+                            selectedGenre.getEntityType()),
                     fileUploadBean.getFiles().get(0),
                     DataType.ICON);
         }
-        super.saverOrUpdate(selectedCatalog, icon);
-        updateEvent.fire(new UpdateCatalogEvent(selectedCatalog.getId()));
+        super.saverOrUpdate(selectedGenre, icon);
+        updateEvent.fire(new UpdateCatalogEvent(selectedGenre.getId()));
 
         if (update) {
             messages.info("Update successfull");
@@ -115,9 +114,9 @@ public class CatalogManager extends AbstractCatalogManager {
 
     @Admin
     public void delete() {
-        super.delete(selectedCatalog);
-        deleteEvent.fire(new DeleteCatalogEvent(selectedCatalog.getId()));
-        this.selectedCatalog = null;
+        super.delete(selectedGenre);
+        deleteEvent.fire(new DeleteCatalogEvent(selectedGenre.getId()));
+        this.selectedGenre = null;
         messages.info("Delete successfull");
 
         if (!conversation.isTransient()) {

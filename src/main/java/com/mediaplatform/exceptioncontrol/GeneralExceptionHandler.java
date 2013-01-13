@@ -38,23 +38,30 @@ public class GeneralExceptionHandler {
     @Inject
     private FacesContext facesContext;
 
+    @Inject
+    private Logger logger;
+
     public void printExceptionMessage(@Handles CaughtException<Throwable> event, Logger log) {
-        log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
-        if(event.getException().getMessage() != null &&
-                event.getException().getMessage().indexOf("WELD-001303 No active contexts for scope type javax.enterprise.context.ConversationScoped") != -1){
-            try {
-                facesContext.getExternalContext().redirect("conversation_ended");
-                return;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
+        if (event.getException().getMessage() != null &&
+                (event.getException().getMessage().indexOf("WELD-001303 No active contexts for scope type javax.enterprise.context.ConversationScoped") != -1 ||
+                event.getException().getMessage().indexOf("WELD-000321 No conversation found to restore for id") != -1)) {
+            event.handled();
+            return;
         }
-        event.rethrow();
+        event.handled();
+        logger.error(event.getException());
     }
 
     public void handleAuthorizationException(@Handles CaughtException<AuthorizationException> evt) {
         evt.handled();
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You do not have the necessary permissions to perform that operation", null));
         FacesUtil.redirectToDeniedPage();
+    }
+
+    public void onNonexistentConversation(
+            @Handles CaughtException<NonexistentConversationException> evt) {
+        logger.error("NonexistentConversationException!\n" + evt.getException().getMessage(), evt.getException());
+        evt.handled();
     }
 }

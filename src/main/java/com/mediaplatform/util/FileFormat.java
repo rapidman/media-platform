@@ -16,6 +16,7 @@ public enum FileFormat {
     AVI("avi", "video/msvideo"),
     FLV("flv", "video/x-flv"),
     MP4("mp4", "video/mp4"),
+    MP3("mp3", "audio/mp3"),
     WEBM("webm", "video/webm"),
     HTML("html", "text/html"),
     ZIP("zip", "application/zip"),

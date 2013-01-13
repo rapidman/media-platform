@@ -2,7 +2,7 @@ package com.mediaplatform.manager.media;
 
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.manager.AbstractManager;
-import com.mediaplatform.model.Catalog;
+import com.mediaplatform.model.Genre;
 import com.mediaplatform.model.Content;
 import com.mediaplatform.model.FileEntry;
 import com.mediaplatform.util.TwoTuple;
@@ -22,49 +22,49 @@ public class AbstractCatalogManager extends AbstractManager {
     @Inject
     protected Conversation conversation;
 
-    public List<Catalog> getRootCatalogs(){
-        String hql = "select distinct c from Catalog c left join fetch c.children where c.parent is null order by c.id";
+    public List<Genre> getRootCatalogs(){
+        String hql = "select distinct c from Genre c left join fetch c.children where c.parent is null order by c.id";
         return appEm.createQuery(hql).getResultList();
     }
 
-    public Catalog getById(Long id){
-        Catalog result = appEm.find(Catalog.class, id);
+    public Genre getById(Long id){
+        Genre result = appEm.find(Genre.class, id);
         result.getContentList().size();
         result.getChildren().size();
         return result;
     }
 
-    public void delete(Catalog catalog){
-        catalog = getById(catalog.getId());
-        if(catalog.getParent() != null){
-            catalog.getParent().getChildren().remove(catalog);
+    public void delete(Genre genre){
+        genre = getById(genre.getId());
+        if(genre.getParent() != null){
+            genre.getParent().getChildren().remove(genre);
         }
-        appEm.remove(catalog);
+        appEm.remove(genre);
     }
 
-    public void saverOrUpdate(Catalog catalog, FileEntry icon) {
+    public void saverOrUpdate(Genre genre, FileEntry icon) {
         if(icon != null){
             appEm.persist(icon);
-            catalog.setIcon(icon);
+            genre.setIcon(icon);
         }
-        if(catalog.getId() == null){
-            appEm.persist(catalog);
+        if(genre.getId() == null){
+            appEm.persist(genre);
         }else{
-            appEm.merge(catalog);
+            appEm.merge(genre);
         }
     }
 
-    public TwoTuple<Catalog, List<Content>> getCatalogContentList(Long catalogId) {
-        Catalog catalog = getById(catalogId);
-        List<Content> contentList = new ArrayList<Content>(catalog.getContentList());
-        addContent(catalog.getChildren(), contentList);
-        return new TwoTuple<Catalog, List<Content>>(catalog, contentList);
+    public TwoTuple<Genre, List<Content>> getCatalogContentList(Long catalogId) {
+        Genre genre = getById(catalogId);
+        List<Content> contentList = new ArrayList<Content>(genre.getContentList());
+        addContent(genre.getChildren(), contentList);
+        return new TwoTuple<Genre, List<Content>>(genre, contentList);
     }
 
-    private void addContent(List<Catalog> catalogList, List<Content> contentList) {
-        for(Catalog catalog:catalogList){
-            contentList.addAll(catalog.getContentList());
-            addContent(catalog.getChildren(), contentList);
+    private void addContent(List<Genre> genreList, List<Content> contentList) {
+        for(Genre genre : genreList){
+            contentList.addAll(genre.getContentList());
+            addContent(genre.getChildren(), contentList);
         }
     }
 

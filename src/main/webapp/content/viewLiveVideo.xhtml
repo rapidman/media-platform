@@ -5,31 +5,34 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich"
-                xmlns:pretty="http://ocpsoft.com/prettyfaces"
-                xmlns:h="http://java.sun.com/jsf/html">
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+    </ui:define>
 
-    <script type="text/javascript" src="#{request.contextPath}/jwplayer/old/jwplayer.js"></script>
+    <ui:define name="content">
+        <script type="text/javascript" src="#{request.contextPath}/jwplayer/old/jwplayer.js"></script>
 
-    <div id="container">Loading the player ...</div>
+        <div id="playerContainer">Loading the player ...</div>
 
-    <script type="text/javascript">
-        jwplayer("container").setup({
-            modes:[
-                {   type:"flash",
-                    src:"#{request.contextPath}/jwplayer/old/player.swf",
-                    config:{
-                        bufferlength:1,
-                        file:"#{liveStreamManager.currentStream.title}?#{liveStreamManager.callbackQueryParams}",
-                        streamer:"rtmp://#{configBean.nginxServerHost}/myapp",
-                        provider:"rtmp",
+        <script type="text/javascript">
+            jwplayer("playerContainer").setup({
+                modes:[
+                    {   type:"flash",
+                        src:"#{request.contextPath}/jwplayer/old/player.swf",
+                        config:{
+                            bufferlength:1,
+                            file:"#{liveStreamManager.currentStream.title}?#{liveStreamManager.callbackQueryParams}",
+                            streamer:"rtmp://#{configBean.nginxServerHost}/myapp",
+                            provider:"rtmp",
+                        }
                     }
-                }
-            ]
-        });
-    </script>
+                ]
+            });
+        </script>
 
-    <br/>
-    <pretty:link mappingId="home">Back</pretty:link>
+    </ui:define>
 </ui:composition>
 

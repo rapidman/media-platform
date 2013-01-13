@@ -5,20 +5,21 @@ import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateCatalogEvent;
 import com.mediaplatform.event.UpdateContentEvent;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
-import com.mediaplatform.security.Admin;
-import com.mediaplatform.util.ConversationUtils;
-import com.mediaplatform.util.RtmpPublishFormat;
-import com.mediaplatform.util.ViewHelper;
+import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
-import com.mediaplatform.util.RunShellCmdHelper;
-import com.mediaplatform.util.TwoTuple;
+import com.mediaplatform.security.Admin;
+import com.mediaplatform.util.*;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,10 +32,9 @@ import java.util.Set;
 @Stateful
 @ConversationScoped
 @Named
-public class ContentManager extends AbstractContentManager {
+public class ContentManager extends AbstractContentManager implements Serializable{
     private Content selectedContent;
-    private Catalog selectedCatalog;
-    private List<Content> contentList;
+    private Genre selectedGenre;
     @Inject
     private Event<UpdateContentEvent> updateEvent;
     @Inject
@@ -57,6 +57,9 @@ public class ContentManager extends AbstractContentManager {
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
+    @Produces
+    @ConversationScoped
+    @Named("currentContent")
     public Content getSelectedContent() {
         if (selectedContent == null) {
             selectedContent = new Content();
@@ -80,27 +83,23 @@ public class ContentManager extends AbstractContentManager {
         this.selectedContent = selectedContent;
     }
 
-    public Catalog getSelectedCatalog() {
-        return selectedCatalog;
+    public Genre getSelectedGenre() {
+        return selectedGenre;
     }
 
-    public void setSelectedCatalog(Catalog selectedCatalog) {
-        this.selectedCatalog = selectedCatalog;
+    public void setSelectedGenre(Genre selectedGenre) {
+        this.selectedGenre = selectedGenre;
     }
 
     public List<Content> getContentList() {
-        return contentList;
-    }
-
-    public void setContentList(List<Content> contentList) {
-        this.contentList = contentList;
+        if(selectedGenre == null) return new ArrayList<Content>();
+        return selectedGenre.getContentList();
     }
 
     public String viewByCatalogId(Long catalogId) {
         ConversationUtils.safeBegin(conversation);
-        TwoTuple<Catalog, List<Content>> result = catalogManager.getCatalogContentList(catalogId);
-        selectedCatalog = result.first;
-        contentList = result.second;
+        TwoTuple<Genre, List<Content>> result = catalogManager.getCatalogContentList(catalogId);
+        selectedGenre = result.first;
         return "/view-content-list";
     }
 
@@ -109,9 +108,10 @@ public class ContentManager extends AbstractContentManager {
         selectedContent = new Content();
     }
 
-    public void viewVideoOnDemand(Long id) {
+    public Content viewVideoOnDemand(Long id) {
         ConversationUtils.safeBegin(conversation);
         view(id);
+        return selectedContent;
     }
 
     @Admin
@@ -122,32 +122,35 @@ public class ContentManager extends AbstractContentManager {
 
     private void view(Long id) {
         selectedContent = getById(id);
-        selectedCatalog = catalogManager.getById(selectedContent.getCatalog().getId());
+        selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
     }
 
     @Admin
     public void saveOrUpdate() {
         FileEntry mediaFile = null;
-        FileEntry cover = null;
-        selectedContent.setCatalog(selectedCatalog);
-        selectedCatalog.getContentList().add(selectedContent);
-        appEm.merge(selectedCatalog);
+
         boolean edit = selectedContent.getId() != null;
-        super.saveOrUpdate(selectedContent, mediaFile, mediaFile);
+        super.saveOrUpdate(selectedContent, selectedGenre, null, null);
         if (fileUploadBean.getSize() > 0) {
             mediaFile = fileStorageManager.saveFile(
                     new ParentRef(selectedContent.getId(), selectedContent.getEntityType()),
                     fileUploadBean.getFiles().get(0),
                     DataType.MEDIA_CONTENT);
         }
-        if (imgFileUploadBean.getSize() > 0) {
-            cover = fileStorageManager.saveFile(
-                    new ParentRef(selectedContent.getId(),
-                            selectedContent.getEntityType()),
-                    imgFileUploadBean.getFiles().get(0),
-                    DataType.COVER);
+        UploadedFile uploadedCover = null;
+        if(imgFileUploadBean.getSize() > 0){
+            uploadedCover = imgFileUploadBean.getFiles().get(0);
+        }else{
+            uploadedCover = new UploadedFile(fileStorageManager.getDefaultImage());
         }
-        super.saveOrUpdate(selectedContent, mediaFile, cover);
+
+        FileEntry cover = fileStorageManager.saveFile(
+                new ParentRef(selectedContent.getId(),
+                        selectedContent.getEntityType()),
+                uploadedCover,
+                DataType.COVER);
+
+        super.saveOrUpdate(selectedContent, selectedGenre, mediaFile, cover);
         if(edit){
             messages.info("Updated successfull!");
             updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
@@ -156,7 +159,7 @@ public class ContentManager extends AbstractContentManager {
             createEvent.fire(new CreateContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
         }
 
-        updateCatalogEvent.fire(new UpdateCatalogEvent(selectedCatalog.getId()));
+        updateCatalogEvent.fire(new UpdateCatalogEvent(selectedGenre.getId()));
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
     }
@@ -167,17 +170,15 @@ public class ContentManager extends AbstractContentManager {
         super.delete(selectedContent);
         messages.info("Deleted successfull!");
         deleteEvent.fire(event);
-        if (contentList != null) {
-            contentList.remove(selectedContent);
-        }
         selectedContent = null;
+        selectedGenre = catalogManager.getById(selectedGenre.getId());
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
     }
 
     private Set<Long> getExpandedCatalogIds() {
         Set<Long> expandedCatalogIds = new HashSet<Long>();
-        Catalog parent = selectedCatalog;
+        Genre parent = selectedGenre;
         while (parent != null) {
             expandedCatalogIds.add(parent.getId());
             parent = parent.getParent();

@@ -10,11 +10,16 @@ import java.io.Serializable;
 public abstract class NamedNode implements Serializable {
     protected String type;
     protected String title;
+    protected String description;
     private boolean expanded;
     private Long id;
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setTitle(String title) {

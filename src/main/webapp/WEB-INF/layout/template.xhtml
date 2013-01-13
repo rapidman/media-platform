@@ -38,9 +38,7 @@
                 <div id="title" >
                     <!--<h:graphicImage value="/img/hdr.title.gif" alt="JBoss Suites banner"/>-->
                 </div>
-
-
-                    <rich:toolbar height="26px" itemSeparator="line">
+                <rich:toolbar height="26px" itemSeparator="line">
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
                             <h:outputText value="(#{currentUser.name})"
                                           styleClass="user"/>
@@ -156,7 +154,7 @@
             <div id="container" align="left">
                 <table cellpadding="5px" width="100%" style="height: 100%">
                     <tr>
-                        <td valign="top" height="100%" style="border-right-color: #BED6F8; border-right: #BED6F8 solid thin;">
+                        <td valign="top" height="100%">
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">

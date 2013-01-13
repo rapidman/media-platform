@@ -49,8 +49,8 @@
                 <h:panelGrid columns="1" columnClasses="top">
                     <h:panelGroup>
                         <h:outputText value="Cover:"/>
-                        <h:graphicImage value="#{contentManager.getCoverUrl('200x.jpg')}" rendered="#{!empty contentManager.getCoverUrl('200x.jpg')}"/>
-                        <h:outputText value="empty" rendered="#{empty contentManager.getCoverUrl('200x.jpg')}"/>
+                        <h:graphicImage value="#{contentManager.getCoverUrl('rc94x147.jpg')}" />
+                        <h:outputText value="empty" rendered="#{empty contentManager.getCoverUrl('rc94x147.jpg')}"/>
                     </h:panelGroup>
                     <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Cover"
                                      ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" style="height: 100px;">
@@ -63,8 +63,8 @@
                         <h:outputText value="Media file:"/>
                         <h:outputText value="#{request.contextPath}#{contentManager.videoUrl}"/>
                     </h:panelGroup>
-                    <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4" title="Icon" style="height: 100px;"
-                                     ontyperejected="alert('Only flv,mp4 files are accepted');" maxFilesQuantity="1">
+                    <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4,mp3" title="Icon" style="height: 100px;"
+                                     ontyperejected="alert('Only flv,mp4,mp3 files are accepted');" maxFilesQuantity="1">
                         <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>
                         <f:facet name="label">
                             <h:outputText value="{_KB}KB from {KB}KB uploaded --- {mm}:{ss}" />

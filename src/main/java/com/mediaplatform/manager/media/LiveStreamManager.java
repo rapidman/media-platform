@@ -70,6 +70,7 @@ public class LiveStreamManager extends AbstractContentManager {
             appEm.merge(currentStream);
         }
         currentStream = null;
+        liveStreams = null;
     }
 
     @Admin

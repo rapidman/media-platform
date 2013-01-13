@@ -8,9 +8,11 @@ import com.mediaplatform.model.*;
 import com.mediaplatform.util.FileFormat;
 import com.mediaplatform.util.ImageConverter;
 import com.mediaplatform.util.ImageFormat;
+import org.jboss.solder.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.*;
@@ -29,7 +31,13 @@ public class FileStorageManager implements Serializable{
     @Inject
     private ImageConverter imageConverter;
 
+    @Inject
+    protected Logger log;
+
     private File fileStorageDir;
+
+    @Inject
+    private FacesContext facesContext;
 
 
     @PostConstruct
@@ -78,12 +86,19 @@ public class FileStorageManager implements Serializable{
 
         File dir = getDestDir(fileEntry.getDataType(), fileEntry.getParentRef().getEntityType());
         File origFile = new File(dir, fileEntry.getFullName());
-        if (!origFile.exists()) throw new RuntimeException("File not exists " + origFile.getAbsolutePath());
         String resizedFileName = fileEntry.getName() + format.getResizeType().getCode() + format.getSize() + "." + fileEntry.getFormat().getExt();
         File resizedFile = new File(dir, resizedFileName);
         if (resizedFile.exists()) return resizedFile;
+        if (!origFile.exists()){
+            log.error("File not exists " + origFile.getAbsolutePath());
+            origFile = getDefaultImage();
+        }
         imageConverter.convert(origFile, resizedFile, format);
         return resizedFile;
+    }
+
+    public File getDefaultImage() {
+        return new File(facesContext.getExternalContext().getRealPath("images/default2.jpg"));
     }
 
     public String getImageFileUrl(FileEntry fileEntry, ImageFormat format) {

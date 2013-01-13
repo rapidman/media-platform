@@ -1,9 +1,10 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
-import com.mediaplatform.model.Catalog;
+import com.mediaplatform.model.Genre;
 import com.mediaplatform.model.Content;
 import com.mediaplatform.model.FileEntry;
+import com.mediaplatform.model.User;
 
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
@@ -24,7 +25,8 @@ public abstract class AbstractContentManager extends AbstractManager {
         return appEm.find(Content.class, id);
     }
 
-    public void saveOrUpdate(Content content, FileEntry video, FileEntry cover) {
+    public void saveOrUpdate(Content content, Genre genre, FileEntry video, FileEntry cover) {
+        content.setGenre(genre);
         if(video != null){
             appEm.persist(video);
             content.setMediaFile(video);
@@ -34,9 +36,18 @@ public abstract class AbstractContentManager extends AbstractManager {
             content.setCover(cover);
         }
         if(content.getId() == null){
+            User author = currentUserInstance.get();
+            content.setAuthor(author);
             appEm.persist(content);
+            author = appEm.find(User.class, author.getUsername());
+            author.getContents().add(content);
+            appEm.merge(author);
         }else{
             appEm.merge(content);
+        }
+        if(!genre.getContentList().contains(content)){
+            genre.getContentList().add(content);
+            appEm.merge(genre);
         }
     }
 
@@ -46,9 +57,9 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     public void delete(Content content) {
         content = getById(content.getId());
-        Catalog catalog = content.getCatalog();
-        catalog.getContentList().remove(content);
-        appEm.merge(catalog);
+        Genre genre = content.getGenre();
+        genre.getContentList().remove(content);
+        appEm.merge(genre);
         appEm.remove(content);
     }
 

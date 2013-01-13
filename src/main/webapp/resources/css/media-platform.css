@@ -378,6 +378,6 @@ p.twitter-login {
 }
 
 .treeCatalog{
-    width: 225px;
-    overflow-x: auto;
+    width: 280px;
+    /*overflow-x: auto;*/
 }

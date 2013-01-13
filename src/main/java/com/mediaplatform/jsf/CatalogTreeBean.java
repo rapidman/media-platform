@@ -6,7 +6,7 @@ import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.event.DeleteCatalogEvent;
 import com.mediaplatform.event.DeleteContentEvent;
 import com.mediaplatform.event.UpdateCatalogEvent;
-import com.mediaplatform.model.Catalog;
+import com.mediaplatform.model.Genre;
 import org.jboss.seam.faces.context.conversation.Begin;
 import org.jboss.seam.faces.context.conversation.End;
 
@@ -56,9 +56,9 @@ public class CatalogTreeBean implements Serializable {
     private void refreshTree(Set<Long> expandedIds) {
         ConversationUtils.safeBegin(conversation);
         rootNodes.clear();
-        List<Catalog> rootCatalogs = catalogManager.getRootCatalogs();
-        for (Catalog catalog : rootCatalogs) {
-            rootNodes.add(new CatalogTreeNode(catalog, null, expandedIds));
+        List<Genre> rootGenres = catalogManager.getRootCatalogs();
+        for (Genre genre : rootGenres) {
+            rootNodes.add(new CatalogTreeNode(genre, null, expandedIds));
         }
     }
 

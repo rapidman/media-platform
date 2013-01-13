@@ -10,14 +10,14 @@
 
     <h:outputStylesheet>
         .top{
-        vertical-align: top;
-        width: 50%;
+            vertical-align: top;
+            width: 50%;
         }
         .bold{
-        font-weight: bold;
+            font-weight: bold;
         }
         .rf-ctx-lbl{
-            z-index: 9999;
+            z-index: 999;
             position: fixed;
         }
         .rf-trn-ico-cst{
@@ -28,18 +28,23 @@
     </h:outputStylesheet>
     <div class="treeCatalog">
         <fieldset>
-            <legend>Catalog (Video On Demand)</legend>
-            <h:panelGrid columns="1" columnClasses="top" width="">
+            <legend style="font-weight: bold;font-size: large;">Жанры</legend>
+            <h:panelGrid columns="1" columnClasses="top">
                 <h:form>
                     <rich:tree id="tree" nodeType="#{node.type}" var="node" value="#{catalogTreeBean.rootNodes}" toggleType="client">
                         <rich:treeNode type="catalog" expanded="#{node.expanded}" id="nodeId"
-                                       iconCollapsed="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}"
-                                       iconExpanded="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}"
-                                       iconLeaf="#{empty node.icon ? '/images/tree/disc.gif' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}">
+                                       iconCollapsed="#{empty node.icon ? '/images/icons/plus.png' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}"
+                                       iconExpanded="#{empty node.icon ? '/images/icons/minus.jpg' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}"
+                                       iconLeaf="#{empty node.icon ? '/images/icons/minus.jpg' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}">
+
                             &nbsp;<h:outputText value="[#{node.childrenSize}]" rendered="#{node.childrenSize > 0}"/>&nbsp;
-                            <h:outputText value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}"/>
-                            <h:commandLink action="#{contentManager.viewByCatalogId(node.id)}" value="#{node.title}" actionListener="#{catalogTreeBean.changeSelection(node)}"
-                                           rendered="#{!catalogTreeBean.isSelected(node)}"/>
+                            <h:outputText id="textId" value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}">
+                                <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="textId"/>
+                            </h:outputText>
+                            <h:commandLink id="linkId" action="#{contentManager.viewByCatalogId(node.id)}" value="#{node.title}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                           rendered="#{!catalogTreeBean.isSelected(node)}">
+                                <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="linkId"/>
+                            </h:commandLink>
                             <rich:contextMenu mode="server" target="nodeId" >
                                 <rich:menuItem label="Add" render="popupContent" action="#{catalogManager.addCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
                                                mode="server" icon="/images/icons/edit.gif" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}" />

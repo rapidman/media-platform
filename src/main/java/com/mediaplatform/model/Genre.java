@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.hibernate.annotations.Type;
 import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
@@ -13,21 +14,21 @@ import java.util.List;
  */
 @Cacheable
 @Entity
-@Table(name = "catalog")
+@Table(name = "genre")
 @Veto
-public class Catalog extends AbstractEntity {
+public class Genre extends AbstractEntity {
     private String title;
     private String description;
-    private Catalog parent;
-    private List<Catalog> children;
+    private Genre parent;
+    private List<Genre> children;
     private List<Content> contentList;
     private FileEntry icon;
 
-    public Catalog() {
-        super(EntityType.CATALOG);
+    public Genre() {
+        super(EntityType.GENRE);
     }
 
-    public Catalog(String title, String description) {
+    public Genre(String title, String description) {
         this();
         this.title = title;
         this.description = description;
@@ -41,6 +42,7 @@ public class Catalog extends AbstractEntity {
         this.title = title;
     }
 
+    @Type(type="org.hibernate.type.StringClobType")
     public String getDescription() {
         return description;
     }
@@ -50,27 +52,27 @@ public class Catalog extends AbstractEntity {
     }
 
     @ManyToOne
-    public Catalog getParent() {
+    public Genre getParent() {
         return parent;
     }
 
-    public void setParent(Catalog parent) {
+    public void setParent(Genre parent) {
         this.parent = parent;
     }
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    public List<Catalog> getChildren() {
+    public List<Genre> getChildren() {
         if (children == null) {
-            children = new ArrayList<Catalog>();
+            children = new ArrayList<Genre>();
         }
         return children;
     }
 
-    public void setChildren(List<Catalog> children) {
+    public void setChildren(List<Genre> children) {
         this.children = children;
     }
 
-    @OneToMany(mappedBy = "catalog", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
     public List<Content> getContentList() {
         if (contentList == null) {
             contentList = new ArrayList<Content>();

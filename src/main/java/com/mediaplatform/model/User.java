@@ -17,6 +17,8 @@
 package com.mediaplatform.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -45,6 +47,7 @@ public class User implements Serializable {
     private String name;
     private String email;
     private UserInfo userInfo;
+    private List<Content> contents;
 
     public User() {
     }
@@ -114,6 +117,18 @@ public class User implements Serializable {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    @OneToMany(mappedBy = "author")
+    public List<Content> getContents() {
+        if(contents == null){
+            contents = new ArrayList<Content>();
+        }
+        return contents;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
     }
 
     @Override

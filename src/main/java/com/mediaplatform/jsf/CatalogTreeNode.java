@@ -1,7 +1,7 @@
 package com.mediaplatform.jsf;
 
 import com.google.common.collect.Iterators;
-import com.mediaplatform.model.Catalog;
+import com.mediaplatform.model.Genre;
 import com.mediaplatform.model.FileEntry;
 
 import javax.swing.tree.TreeNode;
@@ -22,20 +22,21 @@ public class CatalogTreeNode extends NamedNode implements TreeNode {
 
     private CatalogTreeNode parent;
 
-    public CatalogTreeNode(Catalog catalog, CatalogTreeNode parent, Set<Long> expandedIds) {
+    public CatalogTreeNode(Genre genre, CatalogTreeNode parent, Set<Long> expandedIds) {
         this.setType("catalog");
-        setId(catalog.getId());
+        setId(genre.getId());
         this.parent = parent;
-        this.title = catalog.getTitle();
-        if(expandedIds != null && expandedIds.contains(catalog.getId())) setExpanded(true);
-        for(Catalog child:catalog.getChildren()){
+        this.title = genre.getTitle();
+        this.description = genre.getDescription();
+        if(expandedIds != null && expandedIds.contains(genre.getId())) setExpanded(true);
+        for(Genre child: genre.getChildren()){
             childCatalogs.add(new CatalogTreeNode(child, this, expandedIds));
         }
-        childrenSize+= catalog.getContentList().size();
+        childrenSize+= genre.getContentList().size();
         if(parent != null){
             parent.addChildrenSize(childrenSize);
         }
-        this.icon = catalog.getIcon();
+        this.icon = genre.getIcon();
     }
 
     private void addChildrenSize(int childrenSize) {

@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  * Time: 3:12 PM
  */
 public class RunShellCmdHelper {
-    private static ExecutorService service = Executors.newFixedThreadPool(100);
+    private static ExecutorService service = Executors.newFixedThreadPool(20);
     public static final String COMMAND = "ffmpeg";
 
 

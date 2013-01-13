@@ -13,6 +13,14 @@ public class UploadedFile implements Serializable {
     private String extension = "";
     private File file;
 
+    public UploadedFile() {
+    }
+
+    public UploadedFile(File file) {
+        this.file = file;
+        setName(file.getName());
+    }
+
     public byte[] getData() {
         return data;
     }
