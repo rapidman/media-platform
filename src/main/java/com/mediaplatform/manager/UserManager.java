@@ -56,19 +56,25 @@ public class UserManager extends AbstractManager {
     }
 
     public boolean isCanEdit(){
-        if(canEdit == null && identity.isLoggedIn()){
-            canEdit = Restrictions.isAdminOrOwner(identity, currentUserInstance.get(), currentUser);
-        }else{
-            canEdit = false;
+        if(!identity.isLoggedIn()) return false;
+        if(canEdit == null){
+            if(Restrictions.isAdminOrOwner(identity, currentUserInstance.get(), currentUser)){
+                canEdit = true;
+            }else{
+                canEdit = false;
+            }
         }
         return canEdit;
     }
 
     public boolean isOwner(){
-        if(owner == null && identity.isLoggedIn()){
-            owner = Restrictions.isOwner(currentUserInstance.get(), currentUser);
-        }else{
-            owner = false;
+        if(!identity.isLoggedIn()) return false;
+        if(owner == null){
+            if(Restrictions.isOwner(currentUserInstance.get(), currentUser)){
+                owner = true;
+            }else{
+                owner = false;
+            }
         }
         return owner;
     }

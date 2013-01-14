@@ -15,15 +15,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <rich:panel>
-            <f:facet name="header">
-                <h:panelGroup rendered="#{userManager.owner}">
-                    <h1>Your Account</h1>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{!userManager.owner}">
-                    <h1>Account</h1>
-                </h:panelGroup>
-            </f:facet>
+        <rich:panel header="#{userManager.owner ? 'Your Account' : 'Account'}">
             <h:panelGrid columns="2">
                 <h:outputLabel for="name">Full name:</h:outputLabel>
                 <h:inputText id="name" value="#{userManager.currentUser.name}" rendered="#{userManager.canEdit}"/>
@@ -36,7 +28,7 @@
                 <h:outputText id="email" value="#{userManager.currentUser.email}"/>
             </h:panelGrid>
             <div class="buttonBox">
-                <h:button id="changePassword" value="Change password" outcome="/password.xhtml"/>
+                <h:button id="changePassword" value="Change password" outcome="/password.xhtml" rendered="#{userManager.canEdit}"/>
             </div>
         </rich:panel>
     </ui:define>
