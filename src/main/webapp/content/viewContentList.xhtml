@@ -28,25 +28,7 @@
         </h:outputStylesheet>
         <h:form>
             <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                <rich:panel bodyClass="pbody">
-                    <f:facet name="header">
-                        <h:outputText value="#{viewHelper.viewTitle(content.title)}"></h:outputText>
-                    </f:facet>
-                    <h:panelGrid columns="2">
-                        <h:outputText value="Name:" styleClass="label"></h:outputText>
-                        <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                            <rich:contextMenu mode="server" target="contentId" >
-                                <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
-                                               mode="server" icon="/images/icons/edit.gif" />
-                            </rich:contextMenu>
-                        </h:commandLink>
-
-                        <h:outputText value="Desc:" styleClass="label"></h:outputText>
-                        <h:outputText value="#{content.description}" />
-                    </h:panelGrid>
-
-                    <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
-                </rich:panel>
+                <ui:include src="../include/contentPart.xhtml"/>
             </rich:dataGrid>
             <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
             <br/>

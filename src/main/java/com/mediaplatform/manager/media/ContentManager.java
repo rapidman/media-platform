@@ -10,12 +10,15 @@ import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.*;
+import com.mediaplatform.util.jsf.FacesUtil;
+import org.jboss.solder.servlet.http.RequestParam;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.faces.bean.ViewScoped;
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -32,7 +35,7 @@ import java.util.Set;
 @Stateful
 @ConversationScoped
 @Named
-public class ContentManager extends AbstractContentManager implements Serializable{
+public class ContentManager extends AbstractContentManager implements Serializable {
     private Content selectedContent;
     private Genre selectedGenre;
     @Inject
@@ -56,6 +59,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private ViewHelper viewHelper;
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
+
+
+    @Inject @RequestParam("cntid")
+    private Instance<Long> selectedContentId;
+
 
     @Produces
     @ConversationScoped
@@ -108,10 +116,33 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedContent = new Content();
     }
 
-    public Content viewVideoOnDemand(Long id) {
+    public Content viewVideoOnDemand(String id) {
         ConversationUtils.safeBegin(conversation);
-        view(id);
+        view(Long.parseLong(id));
         return selectedContent;
+    }
+
+    public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+        boolean error = false;
+        if(obj == null){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content ID not defined", null));
+            error = true;
+        }
+        Long id = null;
+        try {
+            id = Long.parseLong(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            error = true;
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect content ID '" + obj + "'", null));
+        }
+
+        if(!error && getById(id) == null){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
+            error = true;
+        }
+        if(error){
+            FacesUtil.redirectToHomePage();
+        }
     }
 
     @Admin

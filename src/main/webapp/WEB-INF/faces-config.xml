@@ -84,6 +84,13 @@
         </navigation-case>
 
         <navigation-case>
+            <from-outcome>vod</from-outcome>
+            <if>#{true}</if>
+            <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
             <from-action>#{contentSearchManager.search}</from-action>
             <if>#{true}</if>
             <to-view-id>/search/viewSearchedContentList.xhtml</to-view-id>

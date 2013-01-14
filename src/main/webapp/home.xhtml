@@ -8,12 +8,6 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 template="/WEB-INF/layout/template.xhtml">
 
-    <ui:define name="head">
-
-    </ui:define>
-
-
-
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
     </ui:define>
@@ -23,12 +17,7 @@
             <rich:panel header="Live Video">
                 <h:form rendered="#{mainPageManager.publishedLiveStreams.size() > 0}">
                     <rich:dataGrid id="liveContentGrid" value="#{mainPageManager.publishedLiveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
-                        <rich:panel bodyClass="pbody">
-                            <h:panelGrid columns="2">
-                                <h:outputText value="Source:" styleClass="label"></h:outputText>
-                                <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{stream.source}"  />
-                            </h:panelGrid>
-                        </rich:panel>
+                        <ui:include src="include/streamPart.xhtml"/>
                     </rich:dataGrid>
                 </h:form>
                 <h:outputText value="Published Live Streams not found" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
@@ -39,23 +28,7 @@
             <rich:panel header="Latest">
                 <h:form>
                     <rich:dataGrid id="latestContentGrid" value="#{contentManager.latestContentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                        <rich:panel bodyClass="pbody">
-                            <h:panelGrid columns="2">
-                                <h:outputText value="Name:" styleClass="label"></h:outputText>
-                                <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                                    <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
-                                        <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
-                                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
-                                                       mode="server" icon="/images/icons/edit.gif" />
-                                    </rich:contextMenu>
-                                </h:commandLink>
-
-                                <h:outputText value="Desc:" styleClass="label"></h:outputText>
-                                <h:outputText value="#{content.description}" />
-
-                            </h:panelGrid>
-                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
-                        </rich:panel>
+                        <ui:include src="include/contentPart.xhtml"/>
                     </rich:dataGrid>
                 </h:form>
             </rich:panel>
@@ -63,23 +36,7 @@
             <rich:panel header="Popular">
                 <h:form>
                     <rich:dataGrid id="popularContentGrid" value="#{contentManager.popularContentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                        <rich:panel bodyClass="pbody">
-                            <h:panelGrid columns="2">
-                                <h:outputText value="Name:" styleClass="label"></h:outputText>
-                                <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                                    <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
-                                        <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
-                                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
-                                                       mode="server" icon="/images/icons/edit.gif" />
-                                    </rich:contextMenu>
-                                </h:commandLink>
-
-                                <h:outputText value="Desc:" styleClass="label"></h:outputText>
-                                <h:outputText value="#{content.description}" />
-
-                            </h:panelGrid>
-                            <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
-                        </rich:panel>
+                        <ui:include src="include/contentPart.xhtml"/>
                     </rich:dataGrid>
                 </h:form>
             </rich:panel>

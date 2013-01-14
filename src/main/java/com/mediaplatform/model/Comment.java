@@ -6,6 +6,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * User: timur
@@ -24,6 +25,7 @@ public class Comment extends AbstractContent{
         super(EntityType.COMMENT);
     }
 
+    @NotNull
     @ManyToOne
     public Content getContent() {
         return content;

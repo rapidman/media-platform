@@ -1,13 +1,15 @@
 package com.mediaplatform.manager;
 
+import com.mediaplatform.manager.media.ContentManager;
 import com.mediaplatform.model.Comment;
 import com.mediaplatform.model.Content;
+import org.jboss.solder.servlet.http.RequestParam;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Instance;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,27 +19,22 @@ import java.util.List;
  */
 @ViewScoped
 @Named
-public class CommentManager extends AbstractManager{
-    @Inject
-    @Named("currentContent")
-    private Content currentContent;
+public class CommentManager extends AbstractManager implements Serializable{
+    @Inject @RequestParam("cntid")
+    private Instance<Long> selectedContentId;
     private Comment currentComment;
     private List<Comment> comments;
+    private Long contentId;
+    @Inject
+    private ContentManager contentManager;
 
     public void addComment(){
+        Content currentContent = contentManager.getById(contentId);
         currentComment.setContent(currentContent);
         appEm.persist(currentComment);
         currentContent.getComments().add(currentComment);
         appEm.merge(currentContent);
         comments = null;
-    }
-
-    public Content getCurrentContent() {
-        return currentContent;
-    }
-
-    public void setCurrentContent(Content currentContent) {
-        this.currentContent = currentContent;
     }
 
     public Comment getCurrentComment() {
@@ -53,7 +50,7 @@ public class CommentManager extends AbstractManager{
 
     public List<Comment> getComments() {
         if(comments == null){
-            comments = appEm.createQuery("select c from Comment c where c.content.id = :contentId order by c.createDateTime desc").setParameter("contentId", currentContent.getId()).getResultList();
+            comments = appEm.createQuery("select c from Comment c where c.content.id = :contentId order by c.createDateTime desc").setParameter("contentId", contentId).getResultList();
         }
         return comments;
     }
@@ -61,4 +58,16 @@ public class CommentManager extends AbstractManager{
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public Long getContentId() {
+        if(contentId == null){
+            contentId = selectedContentId.get();
+        }
+        return contentId;
+    }
+
+    public void setContentId(Long contentId) {
+        this.contentId = contentId;
+    }
+
 }

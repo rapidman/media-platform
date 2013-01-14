@@ -5,8 +5,16 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.org/seam/faces"
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam validator="#{contentManager.validateContentId}" name="id" value="#{id}" />
+            <f:event type="preRenderView" listener="#{contentManager.viewVideoOnDemand(id)}"/>
+        </f:metadata>
+    </ui:define>
 
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
@@ -34,9 +42,12 @@
         </script>
         <h:form>
             <rich:panel header="Add comment">
+                <h:inputHidden value="#{commentManager.contentId}"/>
                 <h:inputTextarea value="#{commentManager.currentComment.description}"/>
-                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Send"/>
+                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Send" render="commentsGrid"/>
             </rich:panel>
+        </h:form>
+        <h:form>
             <rich:dataGrid id="commentsGrid" value="#{commentManager.comments}" var="comment" columns="1"
                            elements="9" width="600px" border="0">
                 <h:panelGrid columns="2">

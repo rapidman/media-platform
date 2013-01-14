@@ -24,6 +24,7 @@ public class ViewHelper implements Serializable {
     @Inject
     private ConfigBean configBean;
     private static final int MAX_TITLE_LENGTH = 40;
+    private static final int MAX_DESC_LENGTH = 80;
 
     public String getImgUrl(FileEntry fileEntry, ImageFormat format){
         return fileStorageManager.getImageFileUrl(fileEntry, format);
@@ -39,5 +40,9 @@ public class ViewHelper implements Serializable {
 
     public String viewTitle(String title){
         return StringUtils.abbreviate(title, MAX_TITLE_LENGTH);
+    }
+
+    public String viewDescription(String desc){
+        return StringUtils.abbreviate(desc, MAX_DESC_LENGTH);
     }
 }
