@@ -35,6 +35,10 @@
         <view-id>/content/viewVideoOnDemand.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="user">
+        <pattern value="/user/#{id}"></pattern>
+        <view-id>/account/userProfile.xhtml</view-id>
+    </url-mapping>
 
     <url-mapping id="view-content-list">
         <pattern value="/view-content-list"></pattern>
@@ -82,14 +86,9 @@
         <view-id>/register.xhtml</view-id>
     </url-mapping>
 
-    <url-mapping id="account">
-        <pattern value="/account"></pattern>
-        <view-id>/account.xhtml</view-id>
-    </url-mapping>
-
     <url-mapping id="users">
         <pattern value="/user-list"></pattern>
-        <view-id>/user/viewUserList.xhtml</view-id>
+        <view-id>/account/viewUserList.xhtml</view-id>
     </url-mapping>
 
     <url-mapping id="view-live-streams">

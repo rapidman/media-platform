@@ -13,6 +13,7 @@
         <f:metadata>
             <f:viewParam validator="#{contentManager.validateContentId}" name="id" value="#{id}" />
             <f:event type="preRenderView" listener="#{contentManager.viewVideoOnDemand(id)}"/>
+            <f:event type="preRenderView" listener="#{commentManager.assignContentId(id)}"/>
         </f:metadata>
     </ui:define>
 
@@ -40,25 +41,7 @@
                 ]
             });
         </script>
-        <h:form>
-            <rich:panel header="Add comment">
-                <h:inputHidden value="#{commentManager.contentId}"/>
-                <h:inputTextarea value="#{commentManager.currentComment.description}"/>
-                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Send" render="commentsGrid"/>
-            </rich:panel>
-        </h:form>
-        <h:form>
-            <rich:dataGrid id="commentsGrid" value="#{commentManager.comments}" var="comment" columns="1"
-                           elements="9" width="600px" border="0">
-                <h:panelGrid columns="2">
-                    <h:outputText value="#{comment.author.name}"></h:outputText>
-                    <h:outputText value="#{comment.createDateTime}"></h:outputText>
-                </h:panelGrid>
-
-                <h:outputText value="#{comment.description}"></h:outputText>
-            </rich:dataGrid>
-            <rich:dataScroller for="commentsGrid" renderIfSinglePage="false" />
-        </h:form>
+        <ui:include src="/include/commentPart.xhtml"/>
     </ui:define>
 </ui:composition>
 

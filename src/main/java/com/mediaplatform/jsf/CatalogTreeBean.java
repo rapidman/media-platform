@@ -15,6 +15,7 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +32,7 @@ import java.util.Set;
  * Time: 11:51 PM
  */
 @Stateful
-@ConversationScoped
+@SessionScoped
 @Named
 public class CatalogTreeBean implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -39,22 +40,17 @@ public class CatalogTreeBean implements Serializable {
     @Inject
     private CatalogManager catalogManager;
     private TreeNode selectedNode;
-    @Inject
-    private Conversation conversation;
 
     @PostConstruct
-    @Begin
     public void init() {
         refreshTree(null);
     }
 
     @PreDestroy
-    @End
     public void destroy(){
     }
 
     private void refreshTree(Set<Long> expandedIds) {
-        ConversationUtils.safeBegin(conversation);
         rootNodes.clear();
         List<Genre> rootGenres = catalogManager.getRootCatalogs();
         for (Genre genre : rootGenres) {

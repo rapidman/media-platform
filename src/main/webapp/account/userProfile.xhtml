@@ -1,0 +1,44 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam validator="#{userManager.validateUserId}" name="id" value="#{id}" />
+            <f:event type="preRenderView" listener="#{userManager.viewUser(id)}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+        <rich:panel>
+            <f:facet name="header">
+                <h:panelGroup rendered="#{userManager.owner}">
+                    <h1>Your Account</h1>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{!userManager.owner}">
+                    <h1>Account</h1>
+                </h:panelGroup>
+            </f:facet>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="name">Full name:</h:outputLabel>
+                <h:inputText id="name" value="#{userManager.currentUser.name}" rendered="#{userManager.canEdit}"/>
+                <h:outputText value="#{userManager.currentUser.name}" rendered="#{!userManager.canEdit}"/>
+
+                <h:outputLabel for="username">Username:</h:outputLabel>
+                <h:outputText id="username" value="#{userManager.currentUser.username}" />
+
+                <h:outputLabel for="email">Email:</h:outputLabel>
+                <h:outputText id="email" value="#{userManager.currentUser.email}"/>
+            </h:panelGrid>
+            <div class="buttonBox">
+                <h:button id="changePassword" value="Change password" outcome="/password.xhtml"/>
+            </div>
+        </rich:panel>
+    </ui:define>
+
+</ui:composition>

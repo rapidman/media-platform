@@ -116,29 +116,19 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedContent = new Content();
     }
 
-    public Content viewVideoOnDemand(String id) {
+    public void viewVideoOnDemand(String id) {
         ConversationUtils.safeBegin(conversation);
         view(Long.parseLong(id));
-        return selectedContent;
     }
 
     public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        boolean error = false;
-        if(obj == null){
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content ID not defined", null));
-            error = true;
-        }
-        Long id = null;
-        try {
-            id = Long.parseLong(String.valueOf(obj));
-        } catch (NumberFormatException e) {
-            error = true;
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect content ID '" + obj + "'", null));
-        }
-
-        if(!error && getById(id) == null){
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
-            error = true;
+        boolean error = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
+        if(!error){
+            Long id = Long.parseLong(String.valueOf(obj));
+            if(getById(id) == null){
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
+                error = true;
+            }
         }
         if(error){
             FacesUtil.redirectToHomePage();

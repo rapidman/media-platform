@@ -1,5 +1,7 @@
 package com.mediaplatform.util.jsf;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -71,5 +73,25 @@ public class FacesUtil {
         return messages.size();
     }
 
+    public static boolean validateLong(javax.faces.context.FacesContext facesContext,
+                                       javax.faces.component.UIComponent uiComponent,
+                                       java.lang.Object obj,
+                                       String requiredMsg){
+        boolean error = validateRequired(facesContext, obj, requiredMsg);
+        try {
+            Long.parseLong(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            error = true;
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect number '" + obj + "'", null));
+        }
+        return error;
+    }
 
+    public static boolean validateRequired(FacesContext facesContext, Object obj, String requiredMsg) {
+        if(obj == null || (String.class.isInstance(obj) && StringUtils.isBlank((String) obj))){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, requiredMsg, null));
+            return true;
+        }
+        return false;
+    }
 }

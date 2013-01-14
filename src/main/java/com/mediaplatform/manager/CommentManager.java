@@ -3,9 +3,15 @@ package com.mediaplatform.manager;
 import com.mediaplatform.manager.media.ContentManager;
 import com.mediaplatform.model.Comment;
 import com.mediaplatform.model.Content;
+import com.mediaplatform.security.User;
+import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.solder.servlet.http.RequestParam;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,24 +23,33 @@ import java.util.List;
  * Date: 1/14/13
  * Time: 1:05 AM
  */
+
 @ViewScoped
 @Named
 public class CommentManager extends AbstractManager implements Serializable{
-    @Inject @RequestParam("cntid")
-    private Instance<Long> selectedContentId;
     private Comment currentComment;
     private List<Comment> comments;
     private Long contentId;
     @Inject
     private ContentManager contentManager;
 
+    @TransactionAttribute
+    @User
     public void addComment(){
         Content currentContent = contentManager.getById(contentId);
         currentComment.setContent(currentContent);
+        currentComment.setAuthor(currentUserInstance.get());
         appEm.persist(currentComment);
         currentContent.getComments().add(currentComment);
         appEm.merge(currentContent);
         comments = null;
+        currentComment = null;
+    }
+
+    public void assignContentId(String id) {
+        if(id != null){
+            this.contentId = Long.parseLong(id);
+        }
     }
 
     public Comment getCurrentComment() {
@@ -60,14 +75,12 @@ public class CommentManager extends AbstractManager implements Serializable{
     }
 
     public Long getContentId() {
-        if(contentId == null){
-            contentId = selectedContentId.get();
-        }
         return contentId;
     }
 
     public void setContentId(Long contentId) {
         this.contentId = contentId;
     }
+
 
 }

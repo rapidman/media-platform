@@ -15,7 +15,7 @@
     <ui:define name="content">
         <rich:panel header="User list">
             <h:form id="form">
-                <rich:dataTable value="#{userList.users}" var="user" iterationStatusVar="it" id="usersTable"
+                <rich:dataTable value="#{userManager.users}" var="user" iterationStatusVar="it" id="usersTable"
                                 rows="15">
                     <rich:column>
                         <f:facet name="header">#</f:facet>
@@ -31,12 +31,12 @@
                     </rich:column>
                     <rich:column>
                         <a4j:commandLink styleClass="no-decor" execute="@this" render="userConfirmPane"
-                                         actionListener="#{userList.edit(user)}"
+                                         actionListener="#{userManager.edit(user)}"
                                          oncomplete="#{rich:component('userConfirmPane')}.show()">
                             <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
                         </a4j:commandLink>
                         <a4j:commandLink styleClass="no-decor" render="editGrid" execute="@this"
-                                         actionListener="#{userList.edit(user)}"
+                                         actionListener="#{userManager.edit(user)}"
                                          oncomplete="#{rich:component('userEditPane')}.show()">
                             <h:graphicImage value="/images/icons/edit.gif" alt="edit"/>
                         </a4j:commandLink>
@@ -47,9 +47,9 @@
                 </rich:dataTable>
 
                 <rich:popupPanel id="userConfirmPane" autosized="true" domElementAttachment="parent">
-                    Are you sure you want to delete the #{userList.currentUser.name}?
+                    Are you sure you want to delete the #{userManager.currentUser.name}?
                     <a4j:commandButton value="Cancel" onclick="#{rich:component('userConfirmPane')}.hide(); return false;"/>
-                    <a4j:commandButton value="Delete" action="#{userList.remove(userList.currentUser)}" render="usersTable,globalMessages" execute="@this"
+                    <a4j:commandButton value="Delete" action="#{userManager.remove(userManager.currentUser)}" render="usersTable,globalMessages" execute="@this"
                                        oncomplete="#{rich:component('userConfirmPane')}.hide();"/>
                 </rich:popupPanel>
 
@@ -57,13 +57,13 @@
                                  height="170">
                     <h:panelGrid columns="2" id="editGrid">
                         <h:outputText value="Name"/>
-                        <h:inputText value="#{userList.currentUser.name}"/>
+                        <h:inputText value="#{userManager.currentUser.name}"/>
 
                         <h:outputText value="UserName"/>
-                        <h:outputText value="#{userList.currentUser.username}"/>
+                        <h:outputText value="#{userManager.currentUser.username}"/>
 
                     </h:panelGrid>
-                    <a4j:commandButton value="Save" action="#{userList.save}" render="usersTable,globalMessages" execute="userEditPane"
+                    <a4j:commandButton value="Save" action="#{userManager.save}" render="usersTable,globalMessages" execute="userEditPane"
                                        oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('userEditPane')}.hide();}"/>
                     <f:facet name="controls">
                         <h:outputLink value="#" onclick="#{rich:component('userEditPane')}.hide(); return false;">
