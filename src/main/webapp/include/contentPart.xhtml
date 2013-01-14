@@ -11,9 +11,9 @@
     <rich:panel bodyClass="pbody">
         <h:panelGrid columns="1">
             <h:panelGroup>
-                <h:link id="view" value="View" outcome="vod" style="white-space: nowrap;">
+                <h:link id="viewContent" value="View" outcome="vod" style="white-space: nowrap;">
                     <f:param name="id" value="#{content.id}"/>
-                    <rich:contextMenu mode="server" target="contentId" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
+                    <rich:contextMenu mode="server" target="viewContent" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
                                        rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
                                        mode="server" icon="/images/icons/edit.gif" />
