@@ -8,6 +8,13 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam validator="#{liveStreamManager.validateLiveContentId}" name="id" value="#{id}" />
+            <f:event type="preRenderView" listener="#{liveStreamManager.viewLiveVideo(id)}"/>
+        </f:metadata>
+    </ui:define>
+
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
     </ui:define>

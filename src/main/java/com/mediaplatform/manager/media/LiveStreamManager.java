@@ -1,18 +1,15 @@
 package com.mediaplatform.manager.media;
 
-import com.mediaplatform.data.stat.RtmpDTO;
-import com.mediaplatform.data.stat.StreamDTO;
-import com.mediaplatform.manager.MediaServerApiManager;
 import com.mediaplatform.model.LiveStream;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.RtmpPublishFormat;
 import com.mediaplatform.util.RunShellCmdHelper;
+import com.mediaplatform.util.jsf.FacesUtil;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
+import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 import java.util.List;
 
@@ -52,14 +49,27 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     public void show(){
-        ConversationUtils.safeBegin(conversation);
-        liveStreams = null;
+        refresh();
     }
 
     @Admin
     public void edit(LiveStream stream){
         ConversationUtils.safeBegin(conversation);
         this.currentStream = stream;
+    }
+
+    public void validateLiveContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+        boolean error = FacesUtil.validateLong(facesContext, uiComponent, obj, "Stream ID not defined");
+        if(!error){
+            Long id = Long.parseLong(String.valueOf(obj));
+            if(getStreamById(id) == null){
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Stream with ID '" + id + "' not found", null));
+                error = true;
+            }
+        }
+        if(error){
+            FacesUtil.redirectToHomePage();
+        }
     }
 
     @Admin
@@ -69,13 +79,18 @@ public class LiveStreamManager extends AbstractContentManager {
         }else{
             appEm.merge(currentStream);
         }
-        currentStream = null;
-        liveStreams = null;
+        ConversationUtils.safeEnd(conversation);
+        refresh();
     }
 
     @Admin
     public void remove(LiveStream stream){
         appEm.remove(appEm.find(LiveStream.class, stream.getId()));
+        ConversationUtils.safeEnd(conversation);
+        refresh();
+    }
+
+    private void refresh() {
         this.currentStream = null;
         this.liveStreams = null;
     }
@@ -103,10 +118,11 @@ public class LiveStreamManager extends AbstractContentManager {
         currentStream = new LiveStream();
     }
 
-    public void viewLiveVideo(LiveStream stream) {
+    public void viewLiveVideo(String id) {
         ConversationUtils.safeBegin(conversation);
-        this.currentStream = stream;
+        this.currentStream = getStreamById(Long.parseLong(id));
     }
+
 
     @Override
     protected String getCurrentContentName() {

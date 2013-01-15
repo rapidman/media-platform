@@ -77,6 +77,14 @@
         </navigation-case>
 
         <navigation-case>
+            <from-outcome>live</from-outcome>
+            <if>#{true}</if>
+            <to-view-id>/content/viewLiveVideo.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+
+        <navigation-case>
             <from-action>#{contentManager.viewVideoOnDemand(content.id)}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
@@ -134,7 +142,7 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{liveStreamManager.show}</from-action>
+            <from-outcome>live-list</from-outcome>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveStreamList.xhtml</to-view-id>
             <redirect/>

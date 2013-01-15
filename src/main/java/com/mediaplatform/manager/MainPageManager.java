@@ -2,10 +2,13 @@ package com.mediaplatform.manager;
 
 import com.mediaplatform.event.StreamChangedEvent;
 import com.mediaplatform.model.LiveStream;
+import com.mediaplatform.util.ConversationUtils;
 
 import javax.ejb.Stateful;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
@@ -18,9 +21,17 @@ import java.util.List;
 @ConversationScoped
 @Named
 public class MainPageManager extends AbstractManager{
+    @Inject
+    protected Conversation conversation;
+
     private List<LiveStream> publishedLiveStreams;
 
     public void show(){
+        ConversationUtils.safeEnd(conversation);
+        refresh();
+    }
+
+    public void refresh(){
         publishedLiveStreams = null;
     }
 
@@ -36,6 +47,6 @@ public class MainPageManager extends AbstractManager{
     }
 
     public void observeStreamChanged(@Observes StreamChangedEvent streamChangedEvent){
-        show();
+        refresh();
     }
 }

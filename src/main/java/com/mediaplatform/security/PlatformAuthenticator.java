@@ -74,6 +74,10 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     private Identity identity;
 
 
+    @Inject
+    private FacesContext facesContext;
+
+
     public void authenticate() {
         User user;
         try {
@@ -128,5 +132,14 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login required", null));
             FacesUtil.redirectToLoginPage();
         }
+    }
+
+    public boolean checkIsAdmin(){
+        if(!Restrictions.checkAdmin(identity)){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
+            FacesUtil.redirectToHomePage();
+            return false;
+        }
+        return true;
     }
 }

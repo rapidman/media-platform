@@ -1,14 +1,12 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
-import com.mediaplatform.model.Genre;
-import com.mediaplatform.model.Content;
-import com.mediaplatform.model.FileEntry;
-import com.mediaplatform.model.User;
+import com.mediaplatform.model.*;
 
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 import java.util.List;
+
 import static com.mediaplatform.web.NotificationListenerServlet.*;
 
 /**
@@ -21,31 +19,31 @@ public abstract class AbstractContentManager extends AbstractManager {
     @Inject
     protected Conversation conversation;
 
-    public Content getById(Long id){
+    public Content getContentById(Long id) {
         return appEm.find(Content.class, id);
     }
 
     public void saveOrUpdate(Content content, Genre genre, FileEntry video, FileEntry cover) {
         content.setGenre(genre);
-        if(video != null){
+        if (video != null) {
             appEm.persist(video);
             content.setMediaFile(video);
         }
-        if(cover != null){
+        if (cover != null) {
             appEm.persist(cover);
             content.setCover(cover);
         }
-        if(content.getId() == null){
+        if (content.getId() == null) {
             User author = currentUserInstance.get();
             content.setAuthor(author);
             appEm.persist(content);
             author = appEm.find(User.class, author.getUsername());
             author.getContents().add(content);
             appEm.merge(author);
-        }else{
+        } else {
             appEm.merge(content);
         }
-        if(!genre.getContentList().contains(content)){
+        if (!genre.getContentList().contains(content)) {
             genre.getContentList().add(content);
             appEm.merge(genre);
         }
@@ -56,11 +54,15 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public void delete(Content content) {
-        content = getById(content.getId());
+        content = getContentById(content.getId());
         Genre genre = content.getGenre();
         genre.getContentList().remove(content);
         appEm.merge(genre);
         appEm.remove(content);
+    }
+
+    public LiveStream getStreamById(Long id) {
+        return appEm.find(LiveStream.class, id);
     }
 
     public List<Content> findLatestList(int maxResult) {
@@ -75,10 +77,10 @@ public abstract class AbstractContentManager extends AbstractManager {
         return (Content) appEm.createQuery("select c from Content c where c.mediaFile.name = :name").setParameter("name", name).getSingleResult();
     }
 
-    public String getCallbackQueryParams(){
+    public String getCallbackQueryParams() {
         String out = CONTENT_NAME_PARAM_NAME + "=" + getCurrentContentName();
-        if(identity.isLoggedIn()){
-            out+="&" + UNAME_PARAM_NAME + "=" + identity.getUser().getId();
+        if (identity.isLoggedIn()) {
+            out += "&" + UNAME_PARAM_NAME + "=" + identity.getUser().getId();
         }
         return out;
     }

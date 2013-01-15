@@ -8,6 +8,12 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{platformAuthenticator.checkIsAdmin}"/>
+            <f:event type="preRenderView" listener="#{liveStreamManager.show}"/>
+        </f:metadata>
+    </ui:define>
 
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
@@ -22,13 +28,14 @@
                                 rows="15">
                     <rich:column>
                         <f:facet name="header">#</f:facet>
-                        #{it.index}
+                        #{it.index + 1}
                     </rich:column>
                     <rich:column>
                         <f:facet name="header">Source</f:facet>
                         <h:outputText value="#{stream.source}" rendered="#{!stream.published}"/>
-                        <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{stream.source}"
-                                       rendered="#{stream.published}"/>
+                        <h:link id="viewStream" value="#{viewHelper.viewTitle(stream.title)}" outcome="live" style="white-space: nowrap;" rendered="#{stream.published}">
+                            <f:param name="id" value="#{stream.id}"/>
+                        </h:link>
                     </rich:column>
                     <rich:column>
                         <f:facet name="header">Title</f:facet>

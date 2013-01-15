@@ -4,14 +4,8 @@ import com.mediaplatform.manager.media.ContentManager;
 import com.mediaplatform.model.Comment;
 import com.mediaplatform.model.Content;
 import com.mediaplatform.security.User;
-import com.mediaplatform.util.jsf.FacesUtil;
-import org.jboss.solder.servlet.http.RequestParam;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Instance;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,7 +30,7 @@ public class CommentManager extends AbstractManager implements Serializable{
     @TransactionAttribute
     @User
     public void addComment(){
-        Content currentContent = contentManager.getById(contentId);
+        Content currentContent = contentManager.getContentById(contentId);
         currentComment.setContent(currentContent);
         currentComment.setAuthor(currentUserInstance.get());
         appEm.persist(currentComment);

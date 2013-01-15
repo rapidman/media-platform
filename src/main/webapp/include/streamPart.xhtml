@@ -10,7 +10,9 @@
 
     <rich:panel bodyClass="pbody">
         <h:panelGrid columns="1">
-            <h:commandLink action="#{liveStreamManager.viewLiveVideo(stream)}" value="#{viewHelper.viewTitle(stream.title)}"  />
+            <h:link id="viewStream" value="#{viewHelper.viewTitle(stream.title)}" outcome="live" style="white-space: nowrap;">
+                <f:param name="id" value="#{stream.id}"/>
+            </h:link>
             <h:outputText value="#{viewHelper.viewDescription(stream.description)}" />
         </h:panelGrid>
     </rich:panel>

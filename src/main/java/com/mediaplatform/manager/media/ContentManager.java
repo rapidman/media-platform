@@ -125,7 +125,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         boolean error = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
         if(!error){
             Long id = Long.parseLong(String.valueOf(obj));
-            if(getById(id) == null){
+            if(getContentById(id) == null){
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
                 error = true;
             }
@@ -142,7 +142,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     private void view(Long id) {
-        selectedContent = getById(id);
+        selectedContent = getContentById(id);
         selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
     }
 

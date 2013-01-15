@@ -20,20 +20,21 @@
         <view-id>/content/editContent.xhtml</view-id>
     </url-mapping>
 
-    <url-mapping id="view-live-video">
-        <pattern value="/view-live-video"></pattern>
-        <view-id>/content/viewLiveVideo.xhtml</view-id>
-    </url-mapping>
-
-    <url-mapping id="view-video-ondemand">
-        <pattern value="/view-video-ondemand"></pattern>
-        <view-id>/content/viewVideoOnDemand.xhtml</view-id>
-    </url-mapping>
-
     <url-mapping id="vod">
         <pattern value="/vod/#{id}"></pattern>
         <view-id>/content/viewVideoOnDemand.xhtml</view-id>
     </url-mapping>
+
+    <url-mapping id="live">
+        <pattern value="/live/#{id}"></pattern>
+        <view-id>/content/viewLiveVideo.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="live-list">
+        <pattern value="/live-list"></pattern>
+        <view-id>/content/viewLiveStreamList.xhtml</view-id>
+    </url-mapping>
+
 
     <url-mapping id="user">
         <pattern value="/user/#{id}"></pattern>
@@ -89,11 +90,6 @@
     <url-mapping id="users">
         <pattern value="/user-list"></pattern>
         <view-id>/account/viewUserList.xhtml</view-id>
-    </url-mapping>
-
-    <url-mapping id="view-live-streams">
-        <pattern value="/view-live-streams"></pattern>
-        <view-id>/content/viewLiveStreamList.xhtml</view-id>
     </url-mapping>
 
     <url-mapping id="view-events">

@@ -11,7 +11,7 @@ public class Restrictions {
         return checkAdmin(identity);
     }
 
-    private static boolean checkAdmin(Identity identity) {
+    public static boolean checkAdmin(Identity identity) {
         return identity.hasRole("admin", "USERS", "GROUP");
     }
 
