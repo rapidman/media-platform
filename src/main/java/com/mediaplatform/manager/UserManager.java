@@ -121,6 +121,11 @@ public class UserManager extends AbstractManager {
     }
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+        if("conversation_ended".equals(obj)){
+            FacesUtil.redirect("conversation_ended");
+            return;
+        }
+
         boolean ok = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
         if(ok){
             if(getById(String.valueOf(obj)) == null){
