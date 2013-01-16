@@ -25,7 +25,7 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
 import com.mediaplatform.i18n.DefaultBundleKey;
-import com.mediaplatform.model.User;
+import com.mediaplatform.manager.UserManager;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.international.status.builder.BundleTemplateMessage;
 
@@ -40,20 +40,19 @@ public class CurrentPasswordValidator implements Validator {
     private BundleTemplateMessage messageBuilder;
 
     @Inject
-    @Authenticated
-    private User currentUser;
+    private UserManager userManager;
 
     @Inject
     Messages messages;
 
     public void validate(final FacesContext ctx, final UIComponent comp, final Object value) throws ValidatorException {
         String currentPassword = (String) value;
-        if ((currentUser.getPassword() != null) && !currentUser.getPassword().equals(currentPassword)) {
+        if ((userManager.getSelectedUser().getPassword() != null) && !userManager.getSelectedUser().getPassword().equals(currentPassword)) {
             /*
              * FIXME: This is an ugly way to put i18n in FacesMessages: https://jira.jboss.org/browse/SEAMFACES-24
              */
 
-            throw new ValidatorException(new FacesMessage(messageBuilder
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, null, messageBuilder
                     .key(new DefaultBundleKey("account_passwordsDoNotMatch")).defaults("Passwords do not match").build()
                     .getText()));
         }

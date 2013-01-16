@@ -5,6 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.org/seam/faces"
                 template="/WEB-INF/layout/template.xhtml">
 
     <ui:define name="metadata">
@@ -14,22 +15,51 @@
         </f:metadata>
     </ui:define>
 
+    <ui:define name="globalMessages">
+    </ui:define>
+
     <ui:define name="content">
         <rich:panel header="#{userManager.owner ? 'Your Account' : 'Account'}">
-            <h:panelGrid columns="2">
-                <h:outputLabel for="name">Full name:</h:outputLabel>
-                <h:inputText id="name" value="#{userManager.currentUser.name}" rendered="#{userManager.canEdit}"/>
-                <h:outputText value="#{userManager.currentUser.name}" rendered="#{!userManager.canEdit}"/>
-
-                <h:outputLabel for="username">Username:</h:outputLabel>
-                <h:outputText id="username" value="#{userManager.currentUser.username}" />
-
-                <h:outputLabel for="email">Email:</h:outputLabel>
-                <h:outputText id="email" value="#{userManager.currentUser.email}"/>
-            </h:panelGrid>
-            <div class="buttonBox">
-                <h:button id="changePassword" value="Change password" outcome="/password.xhtml" rendered="#{userManager.canEdit}"/>
+            <div class="errors">
+                <h:messages id="messages" globalOnly="true"/>
             </div>
+            <h:form id="userProfileForm">
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="name">Full name:</h:outputLabel>
+                    <h:inputText id="name" value="#{userManager.selectedUser.name}" rendered="#{userManager.canEdit}"/>
+                    <h:outputText value="#{userManager.selectedUser.name}" rendered="#{!userManager.canEdit}"/>
+
+                    <h:outputLabel for="username">Username:</h:outputLabel>
+                    <h:outputText id="username" value="#{userManager.selectedUser.username}" />
+
+                    <h:outputLabel for="email">Email:</h:outputLabel>
+                    <h:outputText id="email" value="#{userManager.selectedUser.email}"/>
+
+                    <h:outputLabel for="currentPassword" rendered="#{userManager.canEdit}">Current password:</h:outputLabel>
+                    <h:panelGroup>
+                        <h:inputSecret id="currentPassword" value="#{userManager.selectedUser.password}" rendered="#{userManager.canEdit}">
+                            <f:validator validatorId="currentPassword"/>
+                        </h:inputSecret>
+                        <h:message for="currentPassword" />
+                    </h:panelGroup>
+
+                    <h:outputLabel for="newPassword" rendered="#{userManager.canEdit}">New password:</h:outputLabel>
+                    <h:panelGroup>
+                        <h:inputSecret id="newPassword" value="#{userManager.newPassword}" rendered="#{userManager.canEdit}"/>
+                        <h:message for="newPassword" />
+                    </h:panelGroup>
+
+                    <h:outputLabel for="confirmPassword" rendered="#{userManager.canEdit}">Confirm password:</h:outputLabel>
+                    <h:panelGroup>
+                        <h:inputSecret id="confirmPassword" value="#{userManager.confirmPassword}" rendered="#{userManager.canEdit}"/>
+                        <h:message for="confirmPassword" />
+                    </h:panelGroup>
+                </h:panelGrid>
+                <s:validateForm id="passwordCheck" validatorId="confirmPassword" fields="newPassword=userProfileForm:newPassword confirmPassword=userProfileForm:confirmPassword"/>
+                <h:panelGroup rendered="#{userManager.canEdit}">
+                    <h:commandButton id="Save" value="Save" action="#{userManager.save}"  />
+                </h:panelGroup>
+            </h:form>
         </rich:panel>
     </ui:define>
 

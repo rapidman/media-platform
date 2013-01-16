@@ -29,7 +29,7 @@ public class AbstractManager implements Serializable{
 
     @Inject
     @Authenticated
-    protected Instance<User> currentUserInstance;
+    protected User currentUser;
 
     @Inject
     @Named(value = "appEm")

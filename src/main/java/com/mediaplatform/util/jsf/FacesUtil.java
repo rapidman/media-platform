@@ -77,21 +77,23 @@ public class FacesUtil {
                                        javax.faces.component.UIComponent uiComponent,
                                        java.lang.Object obj,
                                        String requiredMsg){
-        boolean error = validateRequired(facesContext, obj, requiredMsg);
-        try {
-            Long.parseLong(String.valueOf(obj));
-        } catch (NumberFormatException e) {
-            error = true;
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect number '" + obj + "'", null));
+        boolean ok = validateRequired(facesContext, obj, requiredMsg);
+        if(ok){
+            try {
+                Long.parseLong(String.valueOf(obj));
+            } catch (NumberFormatException e) {
+                ok = false;
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect number '" + obj + "'", null));
+            }
         }
-        return error;
+        return ok;
     }
 
     public static boolean validateRequired(FacesContext facesContext, Object obj, String requiredMsg) {
         if(obj == null || (String.class.isInstance(obj) && StringUtils.isBlank((String) obj))){
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, requiredMsg, null));
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }

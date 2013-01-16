@@ -160,8 +160,12 @@
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">
-                            <div align="left" ><h:messages style="background-color: #D3EAA4; height: 25px;" globalOnly="true"
-                                                           errorStyle="color: #a52a2a; font-size: large;" infoStyle="color: #336699; font-size: large;" id="globalMessages"/></div>
+                            <div align="left" >
+                                <ui:insert name="globalMessages">
+                                    <h:messages style="background-color: #D3EAA4; height: 25px;" globalOnly="true"
+                                                errorStyle="color: #a52a2a; font-size: large;" infoStyle="color: #336699; font-size: large;" id="globalMessages"/>
+                                </ui:insert>
+                            </div>
                             <div id="content"><ui:insert name="content"/></div>
                         </td>
                     </tr>

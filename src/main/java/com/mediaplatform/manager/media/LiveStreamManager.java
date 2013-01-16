@@ -59,15 +59,15 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     public void validateLiveContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        boolean error = FacesUtil.validateLong(facesContext, uiComponent, obj, "Stream ID not defined");
-        if(!error){
+        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Stream ID not defined");
+        if(ok){
             Long id = Long.parseLong(String.valueOf(obj));
             if(getStreamById(id) == null){
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Stream with ID '" + id + "' not found", null));
-                error = true;
+                ok = false;
             }
         }
-        if(error){
+        if(!ok){
             FacesUtil.redirectToHomePage();
         }
     }

@@ -1,7 +1,8 @@
 package com.mediaplatform.manager;
 
+import com.mediaplatform.account.CurrentUserManager;
+import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.model.User;
-import com.mediaplatform.security.Admin;
 import com.mediaplatform.security.Restrictions;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.jsf.FacesUtil;
@@ -13,7 +14,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Iterator;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -28,9 +30,12 @@ public class UserManager extends AbstractManager {
     @Inject
     protected Conversation conversation;
 
+    @Inject
+    private CurrentUserManager currentUserManager;
+
     private List<User> users;
 
-    private User currentUser;
+    private User selectedUser;
 
     @Inject
     private FacesContext facesContext;
@@ -39,15 +44,28 @@ public class UserManager extends AbstractManager {
 
     private Boolean owner;
 
+    @NotNull
+    @Size(min = 5, max = 15)
+    private String confirmPassword;
+
+    @NotNull
+    @Size(min = 5, max = 15)
+    private String newPassword;
+
     @com.mediaplatform.security.User
     public void save() {
         if (checkRights()) return;
-        appEm.merge(currentUser);
+        appEm.merge(selectedUser);
+        if(Restrictions.isOwner(currentUser, selectedUser)){
+            currentUserManager.updateCurrentUser(selectedUser);
+        }
+        messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
         users = null;
+        ConversationUtils.safeEnd(conversation);
     }
 
     private boolean checkRights() {
-        if (!Restrictions.isAdminOrOwner(identity, currentUserInstance.get(), currentUser)) {
+        if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
             FacesUtil.redirectToDeniedPage();
             return true;
@@ -58,7 +76,7 @@ public class UserManager extends AbstractManager {
     public boolean isCanEdit(){
         if(!identity.isLoggedIn()) return false;
         if(canEdit == null){
-            if(Restrictions.isAdminOrOwner(identity, currentUserInstance.get(), currentUser)){
+            if(Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)){
                 canEdit = true;
             }else{
                 canEdit = false;
@@ -70,7 +88,7 @@ public class UserManager extends AbstractManager {
     public boolean isOwner(){
         if(!identity.isLoggedIn()) return false;
         if(owner == null){
-            if(Restrictions.isOwner(currentUserInstance.get(), currentUser)){
+            if(Restrictions.isOwner(currentUser, selectedUser)){
                 owner = true;
             }else{
                 owner = false;
@@ -95,7 +113,7 @@ public class UserManager extends AbstractManager {
     public void viewUser(String id) {
         refresh();
         ConversationUtils.safeBegin(conversation);
-        this.currentUser = getById(id);
+        this.selectedUser = getById(id);
     }
 
     public User getById(String id) {
@@ -103,20 +121,20 @@ public class UserManager extends AbstractManager {
     }
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        boolean error = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
-        if(!error){
+        boolean ok = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
+        if(ok){
             if(getById(String.valueOf(obj)) == null){
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + obj + "' not found", null));
-                error = true;
+                ok = false;
             }
         }
-        if(error){
+        if(!ok){
             FacesUtil.redirectToHomePage();
         }
     }
 
     private void refresh() {
-        currentUser = null;
+        selectedUser = null;
         users = null;
         canEdit = null;
         owner = null;
@@ -133,12 +151,28 @@ public class UserManager extends AbstractManager {
         this.users = users;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public User getSelectedUser() {
+        return selectedUser;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setSelectedUser(User selectedUser) {
+        this.selectedUser = selectedUser;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 }
 

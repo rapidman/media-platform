@@ -47,9 +47,9 @@
                 </rich:dataTable>
 
                 <rich:popupPanel id="userConfirmPane" autosized="true" domElementAttachment="parent">
-                    Are you sure you want to delete the #{userManager.currentUser.name}?
+                    Are you sure you want to delete the #{userManager.selectedUser.name}?
                     <a4j:commandButton value="Cancel" onclick="#{rich:component('userConfirmPane')}.hide(); return false;"/>
-                    <a4j:commandButton value="Delete" action="#{userManager.remove(userManager.currentUser)}" render="usersTable,globalMessages" execute="@this"
+                    <a4j:commandButton value="Delete" action="#{userManager.remove(userManager.selectedUser)}" render="usersTable,globalMessages" execute="@this"
                                        oncomplete="#{rich:component('userConfirmPane')}.hide();"/>
                 </rich:popupPanel>
 
@@ -57,10 +57,10 @@
                                  height="170">
                     <h:panelGrid columns="2" id="editGrid">
                         <h:outputText value="Name"/>
-                        <h:inputText value="#{userManager.currentUser.name}"/>
+                        <h:inputText value="#{userManager.selectedUser.name}"/>
 
                         <h:outputText value="UserName"/>
-                        <h:outputText value="#{userManager.currentUser.username}"/>
+                        <h:outputText value="#{userManager.selectedUser.username}"/>
 
                     </h:panelGrid>
                     <a4j:commandButton value="Save" action="#{userManager.save}" render="usersTable,globalMessages" execute="userEditPane"

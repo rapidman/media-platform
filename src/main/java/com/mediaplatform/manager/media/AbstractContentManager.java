@@ -34,7 +34,7 @@ public abstract class AbstractContentManager extends AbstractManager {
             content.setCover(cover);
         }
         if (content.getId() == null) {
-            User author = currentUserInstance.get();
+            User author = currentUser;
             content.setAuthor(author);
             appEm.persist(content);
             author = appEm.find(User.class, author.getUsername());

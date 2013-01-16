@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.mediaplatform.model.User;
 
+import java.io.Serializable;
+
 
 @Stateful
 @SessionScoped
-public class CurrentUserManager {
+public class CurrentUserManager implements Serializable{
     private User currentUser;
 
     @Produces
@@ -20,6 +22,10 @@ public class CurrentUserManager {
     @Named("currentUser")
     public User getCurrentAccount() {
         return currentUser;
+    }
+
+    public void updateCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     // Injecting HttpServletRequest instead of HttpSession as the latter conflicts with a Weld bean on GlassFish 3.0.1

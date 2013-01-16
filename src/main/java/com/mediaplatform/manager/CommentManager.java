@@ -32,7 +32,7 @@ public class CommentManager extends AbstractManager implements Serializable{
     public void addComment(){
         Content currentContent = contentManager.getContentById(contentId);
         currentComment.setContent(currentContent);
-        currentComment.setAuthor(currentUserInstance.get());
+        currentComment.setAuthor(currentUser);
         appEm.persist(currentComment);
         currentContent.getComments().add(currentComment);
         appEm.merge(currentContent);

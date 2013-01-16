@@ -40,21 +40,21 @@ public class ConfirmPasswordValidator implements Validator {
 
     @Inject
     @InputField
-    private String password;
+    private String newPassword;
 
     @Inject
     @InputField
     private String confirmPassword;
 
     public void validate(final FacesContext ctx, final UIComponent form, final Object components) throws ValidatorException {
-        if (password == null || confirmPassword == null) {
+        if (newPassword == null || confirmPassword == null) {
             return;
         }
 
-        if (!password.equals(confirmPassword)) {
-            throw new ValidatorException(new FacesMessage(messageBuilder
+        if (!newPassword.equals(confirmPassword)) {
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, messageBuilder
                     .key(new DefaultBundleKey("account_passwordsDoNotMatch")).defaults("Passwords do not match").build()
-                    .getText()));
+                    .getText(), null));
         }
     }
 

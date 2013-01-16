@@ -122,15 +122,15 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        boolean error = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
-        if(!error){
+        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
+        if(ok){
             Long id = Long.parseLong(String.valueOf(obj));
             if(getContentById(id) == null){
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
-                error = true;
+                ok = false;
             }
         }
-        if(error){
+        if(!ok){
             FacesUtil.redirectToHomePage();
         }
     }
