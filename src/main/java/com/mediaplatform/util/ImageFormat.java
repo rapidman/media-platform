@@ -2,11 +2,7 @@ package com.mediaplatform.util;
 
 import org.jboss.solder.core.Veto;
 
-/**
- * User: Sergey Demin
-* Date: 11.11.2009
-* Time: 13:13:04
-*/
+
 @Veto
 public class ImageFormat {
 

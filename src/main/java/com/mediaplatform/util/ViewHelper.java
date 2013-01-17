@@ -27,7 +27,15 @@ public class ViewHelper implements Serializable {
     private static final int MAX_DESC_LENGTH = 80;
 
     public String getImgUrl(FileEntry fileEntry, ImageFormat format){
-        return fileStorageManager.getImageFileUrl(fileEntry, format);
+        return configBean.getResourceServletMapping() + fileStorageManager.getImageFileUrl(fileEntry, format);
+    }
+
+    public String getImgUrlByStr(FileEntry fileEntry, String format){
+        return configBean.getResourceServletMapping() + fileStorageManager.getImageFileUrl(fileEntry, ImageFormat.parse(format));
+    }
+
+    public String getDefaultAvatar(String format){
+        return configBean.getResourceServletMapping() + fileStorageManager.getDefaultAvatarUrl(format);
     }
 
     public String getImgUrlExt(FileEntry fileEntry, String format){

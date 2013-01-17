@@ -38,21 +38,23 @@ import org.jboss.solder.core.Veto;
  */
 @Cacheable
 @Entity
-@Table(name = "platform_user")
+@Table(name = "platform_user", uniqueConstraints = @UniqueConstraint(columnNames={"username"}))
 @Veto
-public class User implements Serializable {
-    private static final long serialVersionUID = -602733026033932730L;
+public class User extends AbstractEntity {
     private String username;
     private String password;
     private String name;
     private String email;
     private UserInfo userInfo;
     private List<Content> contents;
+    private FileEntry avatar;
 
     public User() {
+        super(EntityType.USER);
     }
 
     public User(final String name, final String username, final String email) {
+        this();
         this.name = name;
         this.username = username;
         this.email = email;
@@ -83,7 +85,6 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    @Id
     @NotNull
     @Size(min = 3, max = 15)
     @Pattern(regexp = "^\\w*$", message = "not a valid username")
@@ -129,6 +130,15 @@ public class User implements Serializable {
 
     public void setContents(List<Content> contents) {
         this.contents = contents;
+    }
+
+    @OneToOne(fetch = FetchType.EAGER)
+    public FileEntry getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(FileEntry avatar) {
+        this.avatar = avatar;
     }
 
     @Override

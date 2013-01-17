@@ -54,9 +54,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private FileUploadBean imgFileUploadBean = new FileUploadBean();
 
     @Inject
-    private FileStorageManager fileStorageManager;
+    private Instance<FileStorageManager> fileStorageManager;
+
     @Inject
-    private ViewHelper viewHelper;
+    private Instance<ViewHelper> viewHelper;
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
@@ -153,7 +154,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         boolean edit = selectedContent.getId() != null;
         super.saveOrUpdate(selectedContent, selectedGenre, null, null);
         if (fileUploadBean.getSize() > 0) {
-            mediaFile = fileStorageManager.saveFile(
+            mediaFile = fileStorageManager.get().saveFile(
                     new ParentRef(selectedContent.getId(), selectedContent.getEntityType()),
                     fileUploadBean.getFiles().get(0),
                     DataType.MEDIA_CONTENT);
@@ -161,11 +162,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
         UploadedFile uploadedCover = null;
         if(imgFileUploadBean.getSize() > 0){
             uploadedCover = imgFileUploadBean.getFiles().get(0);
-        }else{
-            uploadedCover = new UploadedFile(fileStorageManager.getDefaultImage());
         }
 
-        FileEntry cover = fileStorageManager.saveFile(
+        FileEntry cover = fileStorageManager.get().saveFile(
                 new ParentRef(selectedContent.getId(),
                         selectedContent.getEntityType()),
                 uploadedCover,
@@ -209,7 +208,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @Admin
     public void publish(boolean highQuality) {
-        String absFilePath = fileStorageManager.getMediaFileUrl(selectedContent.getMediaFile(), true);
+        String absFilePath = fileStorageManager.get().getMediaFileUrl(selectedContent.getMediaFile(), true);
         LiveStream liveStream = new LiveStream(absFilePath, selectedContent.getMediaFile().getName(), selectedContent.getDescription(), true);
         appEm.persist(liveStream);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
@@ -231,7 +230,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     public String getVideoUrl() {
         if (selectedContent == null || selectedContent.getMediaFile() == null) return "";
-        return viewHelper.getVideoUrl(selectedContent.getMediaFile());
+        return viewHelper.get().getVideoUrl(selectedContent.getMediaFile());
     }
 
     @Override
@@ -257,7 +256,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     public String getCoverUrl(String format) {
         if (selectedContent == null || selectedContent.getCover() == null) return null;
-        return viewHelper.getImgUrlExt(selectedContent.getCover(), format);
+        return viewHelper.get().getImgUrlExt(selectedContent.getCover(), format);
     }
 
 }

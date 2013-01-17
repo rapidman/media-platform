@@ -19,15 +19,18 @@ package com.mediaplatform.security;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import com.mediaplatform.account.Authenticated;
 import com.mediaplatform.i18n.DefaultBundleKey;
+import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.User;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.seam.international.status.Messages;
@@ -73,9 +76,13 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     @Inject
     private Identity identity;
 
+    @Inject
+    private Instance<UserManager> userManagerInstance;
+
 
     @Inject
     private FacesContext facesContext;
+
 
 
     public void authenticate() {
@@ -83,21 +90,21 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
         try {
             if(twUser != null){
                 log.info("Logging in " + twUser.getScreenName());
-                user = em.find(User.class, twUser.getScreenName());
+                user = userManagerInstance.get().findByUsername(twUser.getScreenName());
                 if(user != null){
                     authenticate(user);
                     return;
                 }
             }else if(fbUser != null){
                 log.info("Logging in " + fbUser.getId());
-                user = em.find(User.class, fbUser.getId());
+                user = userManagerInstance.get().findByUsername(fbUser.getId());
                 if(user != null){
                     authenticate(user);
                     return;
                 }
             }else{
                 log.info("Logging in " + credentials.getUsername());
-                user = em.find(User.class, credentials.getUsername());
+                user = userManagerInstance.get().findByUsername(credentials.getUsername());
                 if (user != null && credentials.getCredential() instanceof PasswordCredential &&
                         user.getPassword().equals(((PasswordCredential) credentials.getCredential()).getValue())) {
                     if(user.getUserInfo() != null && user.getUserInfo().getSocialNetType() != null){

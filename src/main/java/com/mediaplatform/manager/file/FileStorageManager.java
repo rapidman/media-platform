@@ -83,7 +83,6 @@ public class FileStorageManager implements Serializable{
     }
 
     public File getImageFile(FileEntry fileEntry, ImageFormat format) {
-
         File dir = getDestDir(fileEntry.getDataType(), fileEntry.getParentRef().getEntityType());
         File origFile = new File(dir, fileEntry.getFullName());
         String resizedFileName = fileEntry.getName() + format.getResizeType().getCode() + format.getSize() + "." + fileEntry.getFormat().getExt();
@@ -91,15 +90,40 @@ public class FileStorageManager implements Serializable{
         if (resizedFile.exists()) return resizedFile;
         if (!origFile.exists()){
             log.error("File not exists " + origFile.getAbsolutePath());
-            origFile = getDefaultImage();
+            if(DataType.AVATAR == fileEntry.getDataType()){
+                origFile = getDefaultAvatar(format);
+            }else{
+                origFile = getDefaultImage(format);
+            }
+
         }
         imageConverter.convert(origFile, resizedFile, format);
         return resizedFile;
     }
 
-    public File getDefaultImage() {
-        return new File(facesContext.getExternalContext().getRealPath("images/default2.jpg"));
+    public File getDefaultImage(ImageFormat format) {
+        return getDefaultImg(format, "default2", "images/default2.jpg", "jpg");
     }
+
+    public File getDefaultAvatar(ImageFormat format) {
+        return getDefaultImg(format, "default_avatar", "images/default_avatar.gif", "gif");
+    }
+
+    private File getDefaultImg(ImageFormat format, String name, String path, String ext) {
+        File origFile = new File(facesContext.getExternalContext().getRealPath(path));
+        String resizedFileName = name + format.getResizeType().getCode() + format.getSize() + "." + ext;
+        File resizedFile = new File(fileStorageDir, resizedFileName);
+        if (resizedFile.exists()) return resizedFile;
+        imageConverter.convert(origFile, resizedFile, format);
+        return resizedFile;
+    }
+
+    public String getDefaultAvatarUrl(String format) {
+        File file = getDefaultAvatar(ImageFormat.parse(format));
+        String result = StringUtils.substringAfter(file.getAbsolutePath(), fileStorageDir.getAbsolutePath());
+        return result;
+    }
+
 
     public String getImageFileUrl(FileEntry fileEntry, ImageFormat format) {
         File file = getImageFile(fileEntry, format);

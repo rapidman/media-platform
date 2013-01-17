@@ -38,8 +38,9 @@
                 <div id="title" >
                     <!--<h:graphicImage value="/img/hdr.title.gif" alt="JBoss Suites banner"/>-->
                 </div>
-                <rich:toolbar height="26px" itemSeparator="line">
+                <rich:toolbar height="28px" itemSeparator="line">
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
+                            <h:graphicImage value="#{empty currentUser.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(currentUser.avatar, 'rc23x23.jpg')}" />#{" "}
                             <h:outputText value="(#{currentUser.name})"
                                           styleClass="user"/>
                         </rich:toolbarGroup>

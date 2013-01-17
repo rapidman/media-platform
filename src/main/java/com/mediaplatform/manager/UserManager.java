@@ -2,20 +2,30 @@ package com.mediaplatform.manager;
 
 import com.mediaplatform.account.CurrentUserManager;
 import com.mediaplatform.i18n.DefaultBundleKey;
+import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.jsf.fileupload.UploadedFile;
+import com.mediaplatform.manager.file.FileStorageManager;
+import com.mediaplatform.model.DataType;
+import com.mediaplatform.model.FileEntry;
+import com.mediaplatform.model.ParentRef;
 import com.mediaplatform.model.User;
 import com.mediaplatform.security.Restrictions;
 import com.mediaplatform.util.ConversationUtils;
+import com.mediaplatform.util.ViewHelper;
 import com.mediaplatform.util.jsf.FacesUtil;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.NoResultException;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -26,12 +36,12 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class UserManager extends AbstractManager {
+public class UserManager extends AbstractManager implements Serializable{
     @Inject
     protected Conversation conversation;
 
     @Inject
-    private CurrentUserManager currentUserManager;
+    private Instance<CurrentUserManager> currentUserManager;
 
     private List<User> users;
 
@@ -52,15 +62,35 @@ public class UserManager extends AbstractManager {
     @Size(min = 5, max = 15)
     private String newPassword;
 
+    @Inject
+    private Instance<ViewHelper> viewHelper;
+
+    private FileUploadBean imgFileUploadBean = new FileUploadBean();
+    @Inject
+    private Instance<FileStorageManager> fileStorageManager;
+
+    private boolean changePassword = false;
+
     @com.mediaplatform.security.User
     public void save() {
         if (checkRights()) return;
+
+        UploadedFile uploadedAvatar = null;
+        if(imgFileUploadBean.getSize() > 0){
+            uploadedAvatar = imgFileUploadBean.getFiles().get(0);
+        }
+        FileEntry avatar = fileStorageManager.get().saveFile(
+                new ParentRef(selectedUser.getId(),
+                        selectedUser.getEntityType()),
+                uploadedAvatar,
+                DataType.AVATAR);
+        appEm.persist(avatar);
+        selectedUser.setAvatar(avatar);
         appEm.merge(selectedUser);
         if(Restrictions.isOwner(currentUser, selectedUser)){
-            currentUserManager.updateCurrentUser(selectedUser);
+            currentUserManager.get().updateCurrentUser(selectedUser);
         }
         messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
-        users = null;
         ConversationUtils.safeEnd(conversation);
     }
 
@@ -105,7 +135,7 @@ public class UserManager extends AbstractManager {
     @com.mediaplatform.security.User
     public void remove(User currentUser) {
         if (checkRights()) return;
-        User user = getById(currentUser.getUsername());
+        User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
         refresh();
     }
@@ -113,11 +143,15 @@ public class UserManager extends AbstractManager {
     public void viewUser(String id) {
         refresh();
         ConversationUtils.safeBegin(conversation);
-        this.selectedUser = getById(id);
+        this.selectedUser = findByUsername(id);
     }
 
-    public User getById(String id) {
-        return appEm.find(User.class, id);
+    public User findByUsername(String userName){
+        try {
+            return (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
@@ -128,7 +162,7 @@ public class UserManager extends AbstractManager {
 
         boolean ok = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
         if(ok){
-            if(getById(String.valueOf(obj)) == null){
+            if(findByUsername(String.valueOf(obj)) == null){
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + obj + "' not found", null));
                 ok = false;
             }
@@ -178,6 +212,31 @@ public class UserManager extends AbstractManager {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public String getAvatarUrl(String format) {
+        if (selectedUser == null || selectedUser.getAvatar() == null) return null;
+        return viewHelper.get().getImgUrlExt(selectedUser.getAvatar(), format);
+    }
+
+    public FileUploadBean getImgFileUploadBean() {
+        return imgFileUploadBean;
+    }
+
+    public void setImgFileUploadBean(FileUploadBean imgFileUploadBean) {
+        this.imgFileUploadBean = imgFileUploadBean;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
+    }
+
+    public boolean isChangePassword() {
+        return changePassword;
+    }
+
+    public void setChangePassword(boolean changePassword) {
+        this.changePassword = changePassword;
     }
 }
 
