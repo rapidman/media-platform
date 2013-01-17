@@ -73,7 +73,7 @@ public class UserManager extends AbstractManager implements Serializable{
 
     @com.mediaplatform.security.User
     public void save() {
-        if (checkRights()) return;
+        if (!checkRights()) return;
 
         UploadedFile uploadedAvatar = null;
         if(imgFileUploadBean.getSize() > 0){
@@ -98,9 +98,9 @@ public class UserManager extends AbstractManager implements Serializable{
         if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
             FacesUtil.redirectToDeniedPage();
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean isCanEdit(){
@@ -134,16 +134,18 @@ public class UserManager extends AbstractManager implements Serializable{
 
     @com.mediaplatform.security.User
     public void remove(User currentUser) {
-        if (checkRights()) return;
+        if (!checkRights()) return;
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
         refresh();
     }
 
-    public void viewUser(String id) {
+    @com.mediaplatform.security.User
+    public void viewUser(String userName) {
+        if (!checkRights()) return;
         refresh();
         ConversationUtils.safeBegin(conversation);
-        this.selectedUser = findByUsername(id);
+        this.selectedUser = findByUsername(userName);
     }
 
     public User findByUsername(String userName){

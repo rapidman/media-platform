@@ -40,9 +40,13 @@
                 </div>
                 <rich:toolbar height="28px" itemSeparator="line">
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
-                            <h:graphicImage value="#{empty currentUser.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(currentUser.avatar, 'rc23x23.jpg')}" />#{" "}
-                            <h:outputText value="(#{currentUser.name})"
-                                          styleClass="user"/>
+                            <h:link id="viewUser" value="" outcome="user" style="white-space: nowrap;" styleClass="#{facesContext.viewRoot.viewId == '/account/userProfile.xhtml' ? 'active' : ''}">
+                                <f:param name="id" value="#{currentUser.username}"/>
+                                <h:panelGrid columns="2">
+                                    <h:graphicImage value="#{empty currentUser.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(currentUser.avatar, 'rc23x23.jpg')}" />
+                                    <h:outputText value="(#{currentUser.name})"/>
+                                </h:panelGrid>
+                            </h:link>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
@@ -64,15 +68,6 @@
                                 <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">Events</h:commandLink>
                                 <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="Events"/>
                             </h:form>
-                        </rich:toolbarGroup>
-
-                        <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
-                            <h:panelGroup rendered="#{facesContext.viewRoot.viewId != '/account/userProfile.xhtml'}">
-                                <h:link id="myPage" value="My Page" outcome="user" style="white-space: nowrap;">
-                                    <f:param name="id" value="#{identity.user.id}"/>
-                                </h:link>
-                            </h:panelGroup>
-                            <h:outputText rendered="#{facesContext.viewRoot.viewId == '/account/userProfile.xhtml'}" value="My Page"/>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
