@@ -1,11 +1,8 @@
 package com.mediaplatform.jsf;
 
-import com.mediaplatform.event.CreateContentEvent;
+import com.mediaplatform.event.*;
 import com.mediaplatform.manager.media.CatalogManager;
 import com.mediaplatform.util.ConversationUtils;
-import com.mediaplatform.event.DeleteCatalogEvent;
-import com.mediaplatform.event.DeleteContentEvent;
-import com.mediaplatform.event.UpdateCatalogEvent;
 import com.mediaplatform.model.Genre;
 import org.jboss.seam.faces.context.conversation.Begin;
 import org.jboss.seam.faces.context.conversation.End;
@@ -21,10 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.tree.TreeNode;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: timur
@@ -82,6 +76,13 @@ public class CatalogTreeBean implements Serializable {
         return selectedNode != null && selectedNode.equals(other);
     }
 
+    public void observeGenreSelect(@Observes SelectGenreEvent selectGenreEvent) {
+        Set<Long> expandedIds = selectGenreEvent.getExpandedCatalogIds();
+        fillExpandedIds(rootNodes, expandedIds);
+        refreshTree(expandedIds);
+        selectedNode = getTreeNodeById(selectGenreEvent.getGenreId(), rootNodes);
+    }
+
     public void observeCatalogUpdate(@Observes UpdateCatalogEvent updateEvent) {
         Set<Long> expandedIds = new HashSet<Long>();
         fillExpandedIds(rootNodes, expandedIds);
@@ -112,5 +113,16 @@ public class CatalogTreeBean implements Serializable {
             }
         }
 
+    }
+
+    private CatalogTreeNode getTreeNodeById(Long nodeId, List<CatalogTreeNode> nodes) {
+        for(CatalogTreeNode node:nodes){
+            if(node.getId().equals(nodeId)){
+                return node;
+            }
+            CatalogTreeNode result = getTreeNodeById(nodeId, node.getChildCatalogs());
+            if(result != null) return result;
+        }
+        return null;
     }
 }

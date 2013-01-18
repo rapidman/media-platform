@@ -8,6 +8,12 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam validator="#{contentManager.validateGenreId}" name="id" value="#{id}" required="true" requiredMessage="Genre ID not defined" />
+            <f:event type="preRenderView" listener="#{contentManager.viewByGenreId(id)}" />
+        </f:metadata>
+    </ui:define>
 
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
@@ -27,12 +33,20 @@
             }
         </h:outputStylesheet>
         <h:form>
-            <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                <ui:include src="../include/contentPart.xhtml"/>
-            </rich:dataGrid>
-            <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
-            <br/>
-            <h:commandButton action="#{contentManager.add()}" value="Add" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"/>
+            <rich:panel header="Жанр:#{contentManager.selectedGenre.title}">
+                <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
+                    <ui:include src="../include/contentPart.xhtml"/>
+                </rich:dataGrid>
+                <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
+                <rich:panel>
+                    <h:outputText value="Список статей пока пуст." rendered="#{empty contentManager.contentList}"/>
+                    <br/>
+                    <h:commandButton id="btnAdd" action="#{contentManager.add()}" value="Добавить" disabled="#{!identity.loggedIn}"/>
+                    <rich:tooltip styleClass="tooltip" layout="block" showDelay="500" rendered="#{!identity.loggedIn}">
+                        <span style="white-space: nowrap"> Для добавления постов требуется авторизация.</span>
+                    </rich:tooltip>
+                </rich:panel>
+            </rich:panel>
         </h:form>
     </ui:define>
 

@@ -120,7 +120,7 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{contentManager.viewByCatalogId(node.id)}</from-action>
+            <from-outcome>genre</from-outcome>
             <if>#{true}</if>
             <to-view-id>/content/viewContentList.xhtml</to-view-id>
             <redirect/>

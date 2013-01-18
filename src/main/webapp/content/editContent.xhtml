@@ -29,19 +29,24 @@
                     <rich:message for="desc" ajaxRendered="false"/>
 
                     <f:facet name="footer">
-                        <h:commandButton value="Save" action="#{contentManager.saveOrUpdate}" />
-                        <h:panelGroup rendered="#{!empty contentManager.selectedContent.id}">
-                            &nbsp;&nbsp;
-                            <h:commandButton value="Publish HighQuality" action="#{contentManager.publish(true)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                            &nbsp;&nbsp;
-                            <h:commandButton value="Publish LowQuality" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                            &nbsp;&nbsp;
-                            <h:commandButton value="View On Demand" action="#{contentManager.viewVideoOnDemand(contentManager.selectedContent.id)}" disabled="#{empty contentManager.selectedContent.mediaFile}" />
-                            &nbsp;&nbsp;
-                            <h:commandButton value="Delete" >
-                                <rich:componentControl target="popup" operation="show" />
-                            </h:commandButton>
-                            <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
+                        <h:panelGroup>
+                            <h:panelGrid columns="2">
+                                <h:commandButton value="Save" action="#{contentManager.saveOrUpdate}" />
+                                <h:commandButton action="#{contentManager.cancelEdit}" value="Close"/>
+                            </h:panelGrid>
+                            <h:panelGroup rendered="#{!empty contentManager.selectedContent.id}">
+                                &nbsp;&nbsp;
+                                <h:commandButton value="Publish HighQuality" action="#{contentManager.publish(true)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
+                                &nbsp;&nbsp;
+                                <h:commandButton value="Publish LowQuality" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
+                                &nbsp;&nbsp;
+                                <h:commandButton value="View On Demand" action="#{contentManager.viewVideoOnDemand(contentManager.selectedContent.id)}" disabled="#{empty contentManager.selectedContent.mediaFile}" />
+                                &nbsp;&nbsp;
+                                <h:commandButton value="Delete" >
+                                    <rich:componentControl target="popup" operation="show" />
+                                </h:commandButton>
+                                <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
+                            </h:panelGroup>
                         </h:panelGroup>
                     </f:facet>
                 </h:panelGrid>
@@ -71,6 +76,7 @@
                         </f:facet>
                     </rich:fileUpload>
                 </h:panelGrid>
+
             </h:form>
         </rich:panel>
         <h:outputText value="Content not selected" rendered="#{empty contentManager.selectedContent}"/>

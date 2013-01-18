@@ -35,15 +35,14 @@
         <view-id>/content/viewLiveStreamList.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="genre">
+        <pattern value="/genre/#{id}"></pattern>
+        <view-id>/content/viewContentList.xhtml</view-id>
+    </url-mapping>
 
     <url-mapping id="user">
         <pattern value="/user/#{id}"></pattern>
         <view-id>/account/userProfile.xhtml</view-id>
-    </url-mapping>
-
-    <url-mapping id="view-content-list">
-        <pattern value="/view-content-list"></pattern>
-        <view-id>/content/viewContentList.xhtml</view-id>
     </url-mapping>
 
     <url-mapping id="conversation_ended">

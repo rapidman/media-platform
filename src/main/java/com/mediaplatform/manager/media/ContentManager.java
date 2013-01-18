@@ -1,14 +1,13 @@
 package com.mediaplatform.manager.media;
 
-import com.mediaplatform.event.CreateContentEvent;
-import com.mediaplatform.event.DeleteContentEvent;
-import com.mediaplatform.event.UpdateCatalogEvent;
-import com.mediaplatform.event.UpdateContentEvent;
+import com.mediaplatform.event.*;
+import com.mediaplatform.jsf.CatalogTreeBean;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
-import com.mediaplatform.security.Admin;
+import com.mediaplatform.security.*;
+import com.mediaplatform.security.User;
 import com.mediaplatform.util.*;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.solder.servlet.http.RequestParam;
@@ -43,6 +42,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @Inject
     private Event<CreateContentEvent> createEvent;
     @Inject
+    private Event<SelectGenreEvent> selectGenreEventEvent;
+    @Inject
     private Event<UpdateCatalogEvent> updateCatalogEvent;
     @Inject
     private Event<DeleteContentEvent> deleteEvent;
@@ -62,7 +63,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
 
-    @Inject @RequestParam("cntid")
+    @Inject
+    @RequestParam("cntid")
     private Instance<Long> selectedContentId;
 
 
@@ -101,18 +103,22 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public List<Content> getContentList() {
-        if(selectedGenre == null) return new ArrayList<Content>();
+        if (selectedGenre == null) return new ArrayList<Content>();
         return selectedGenre.getContentList();
     }
 
-    public String viewByCatalogId(Long catalogId) {
+    public String viewByGenreId(String genreIdStr) {
+        Long genreId = Long.parseLong(genreIdStr);
         ConversationUtils.safeBegin(conversation);
-        TwoTuple<Genre, List<Content>> result = catalogManager.getCatalogContentList(catalogId);
+
+        TwoTuple<Genre, List<Content>> result = catalogManager.getCatalogContentList(genreId);
         selectedGenre = result.first;
+        selectGenreEventEvent.fire(new SelectGenreEvent(selectedGenre.getId(), getExpandedCatalogIds()));
         return "/view-content-list";
     }
 
-    public void add(){
+    @com.mediaplatform.security.User
+    public void add() {
         ConversationUtils.safeBegin(conversation);
         selectedContent = new Content();
     }
@@ -122,12 +128,41 @@ public class ContentManager extends AbstractContentManager implements Serializab
         view(Long.parseLong(id));
     }
 
-    public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+    public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
         boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
+        if (ok) {
+            Long id = Long.parseLong(String.valueOf(obj));
+            if (getContentById(id) == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
+                ok = false;
+            }
+        }
+        if (!ok) {
+            FacesUtil.redirectToHomePage();
+        }
+    }
+
+    @User
+    public void editContent(Long id) {
+        view(id);
+        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+            FacesUtil.redirectToDeniedPage();
+            return;
+        }
+        ConversationUtils.safeBegin(conversation);
+    }
+
+    private void view(Long id) {
+        selectedContent = getContentById(id);
+        selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
+    }
+
+    public void validateGenreId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Genre ID not defined");
         if(ok){
             Long id = Long.parseLong(String.valueOf(obj));
-            if(getContentById(id) == null){
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
+            if(catalogManager.getById(id) == null){
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Genre with ID '" + id + "' not found", null));
                 ok = false;
             }
         }
@@ -136,21 +171,13 @@ public class ContentManager extends AbstractContentManager implements Serializab
         }
     }
 
-    @Admin
-    public void editContent(Long id) {
-        ConversationUtils.safeBegin(conversation);
-        view(id);
-    }
-
-    private void view(Long id) {
-        selectedContent = getContentById(id);
-        selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
-    }
-
-    @Admin
+    @User
     public void saveOrUpdate() {
+        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+            FacesUtil.redirectToDeniedPage();
+            return;
+        }
         FileEntry mediaFile = null;
-
         boolean edit = selectedContent.getId() != null;
         super.saveOrUpdate(selectedContent, selectedGenre, null, null);
         if (fileUploadBean.getSize() > 0) {
@@ -159,22 +186,20 @@ public class ContentManager extends AbstractContentManager implements Serializab
                     fileUploadBean.getFiles().get(0),
                     DataType.MEDIA_CONTENT);
         }
-        UploadedFile uploadedCover = null;
-        if(imgFileUploadBean.getSize() > 0){
-            uploadedCover = imgFileUploadBean.getFiles().get(0);
+        FileEntry cover = null;
+        if (imgFileUploadBean.getSize() > 0) {
+            cover = fileStorageManager.get().saveFile(
+                    new ParentRef(selectedContent.getId(),
+                            selectedContent.getEntityType()),
+                    imgFileUploadBean.getFiles().get(0),
+                    DataType.COVER);
         }
 
-        FileEntry cover = fileStorageManager.get().saveFile(
-                new ParentRef(selectedContent.getId(),
-                        selectedContent.getEntityType()),
-                uploadedCover,
-                DataType.COVER);
-
         super.saveOrUpdate(selectedContent, selectedGenre, mediaFile, cover);
-        if(edit){
+        if (edit) {
             messages.info("Updated successfull!");
             updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
-        }else{
+        } else {
             messages.info("Created successfull!");
             createEvent.fire(new CreateContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
         }
@@ -186,6 +211,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @Admin
     public void delete() {
+        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+            FacesUtil.redirectToDeniedPage();
+            return;
+        }
         DeleteContentEvent event = new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds());
         super.delete(selectedContent);
         messages.info("Deleted successfull!");
@@ -194,6 +223,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedGenre = catalogManager.getById(selectedGenre.getId());
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
+    }
+
+    //TODO redirect to list view
+    public void cancelEdit(){
+        ConversationUtils.safeEnd(conversation);
     }
 
     private Set<Long> getExpandedCatalogIds() {
@@ -238,9 +272,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
         return getMediaFileFullName();
     }
 
-    public String getHeader(){
+    public String getHeader() {
         boolean edit = selectedContent != null && selectedContent.getId() != null;
-        if(edit){
+        if (edit) {
             return "Edit " + selectedContent.getTitle();
         }
         return "Add new content";
@@ -258,6 +292,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         if (selectedContent == null || selectedContent.getCover() == null) return null;
         return viewHelper.get().getImgUrlExt(selectedContent.getCover(), format);
     }
+
 
 }
 

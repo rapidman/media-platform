@@ -24,8 +24,8 @@
             width: 24px;
             height: 24px;
         }
-
     </h:outputStylesheet>
+
     <div class="treeCatalog">
         <fieldset>
             <legend style="font-weight: bold;font-size: large;">Жанры</legend>
@@ -38,26 +38,31 @@
                                        iconLeaf="#{empty node.icon ? '/images/icons/minus.jpg' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}">
 
                             &nbsp;<h:outputText value="[#{node.childrenSize}]" rendered="#{node.childrenSize > 0}"/>&nbsp;
-                            <h:outputText id="textId" value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}">
-                                <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="textId"/>
-                            </h:outputText>
-                            <h:commandLink id="linkId" action="#{contentManager.viewByCatalogId(node.id)}" value="#{node.title}" actionListener="#{catalogTreeBean.changeSelection(node)}"
-                                           rendered="#{!catalogTreeBean.isSelected(node)}">
+                            <h:panelGroup>
+                                <h:outputText id="textId" value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}"/>
+                                    <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="textId"/>
+                            </h:panelGroup>
+                            <h:link id="linkId" value="#{node.title}" outcome="genre" style="white-space: nowrap;" rendered="#{!catalogTreeBean.isSelected(node)}">
+                                <f:param name="id" value="#{node.id}"/>
                                 <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="linkId"/>
-                            </h:commandLink>
+                            </h:link>
                             <rich:contextMenu mode="server" target="nodeId" >
-                                <rich:menuItem label="Add" render="popupContent" action="#{catalogManager.addCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                <rich:menuItem label="Добавить" render="popupContent" action="#{catalogManager.addCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
                                                mode="server" icon="/images/icons/edit.gif" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}" />
-                                <rich:menuItem label="Edit" render="popupContent" action="#{catalogManager.editCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
+                                <rich:menuItem label="Редактировать" render="popupContent" action="#{catalogManager.editCatalog(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
                                                mode="server" icon="/images/icons/edit.gif" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}" />
-                                <rich:menuItem label="View content list" render="popupContent" action="#{contentManager.viewByCatalogId(node.id)}" actionListener="#{catalogTreeBean.changeSelection(node)}"
-                                               mode="server" icon="/images/icons/edit.gif" />
+                                <rich:menuItem label="Просмотр" render="@none" icon="/images/icons/find.gif" mode="client" onclick="viewGenre('#{node.id}');"/>
                             </rich:contextMenu>
                         </rich:treeNode>
                     </rich:tree>
                     <br/>
                     <h:commandButton action="#{catalogManager.addRootCatalog()}" value="Add Root" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"/>
                 </h:form>
+                <script type="text/javascript">
+                    function viewGenre(genreId){
+                        jQuery(location).attr('href','#{facesContext.externalContext.requestContextPath}/genre/' + genreId);
+                    }
+                </script>
             </h:panelGrid>
 
         </fieldset>

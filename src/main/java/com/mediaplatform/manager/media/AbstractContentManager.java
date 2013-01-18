@@ -1,9 +1,11 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
+import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.*;
 
 import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -15,6 +17,9 @@ import static com.mediaplatform.web.NotificationListenerServlet.*;
  * Time: 9:18 PM
  */
 public abstract class AbstractContentManager extends AbstractManager {
+
+    @Inject
+    protected Instance<UserManager> userManagerInstance;
 
     @Inject
     protected Conversation conversation;
@@ -37,7 +42,7 @@ public abstract class AbstractContentManager extends AbstractManager {
             User author = currentUser;
             content.setAuthor(author);
             appEm.persist(content);
-            author = appEm.find(User.class, author.getUsername());
+            author = userManagerInstance.get().findByUsername(author.getUsername());
             author.getContents().add(content);
             appEm.merge(author);
         } else {

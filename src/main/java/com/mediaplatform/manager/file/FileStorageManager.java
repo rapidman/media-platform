@@ -124,9 +124,13 @@ public class FileStorageManager implements Serializable{
         return result;
     }
 
-
     public String getImageFileUrl(FileEntry fileEntry, ImageFormat format) {
-        File file = getImageFile(fileEntry, format);
+        File file;
+        if(fileEntry == null){
+            file = getDefaultImage(format);
+        }else{
+            file = getImageFile(fileEntry, format);
+        }
         String result = StringUtils.substringAfter(file.getAbsolutePath(), fileStorageDir.getAbsolutePath());
         return result;
     }

@@ -59,6 +59,10 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     public void validateLiveContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+        if("conversation_ended".equals(obj)){
+            FacesUtil.redirect("conversation_ended");
+            return;
+        }
         boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Stream ID not defined");
         if(ok){
             Long id = Long.parseLong(String.valueOf(obj));
