@@ -65,8 +65,8 @@
 
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn and identity.hasRole('admin', 'USERS', 'GROUP')}">
                             <h:form>
-                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">Events</h:commandLink>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="Events"/>
+                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">События</h:commandLink>
+                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="События"/>
                             </h:form>
                         </rich:toolbarGroup>
 
@@ -100,14 +100,14 @@
                                                    value="jQuery(#{rich:element('ll')}.parentNode).offset().left"/>
                                     </rich:hashParam>
                                 </rich:componentControl>
-                                Login
+                                #{bundles.messages.home_loginAction}
                             </h:outputLink>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right">
                             <h:form>
                                 <h:inputText value="#{contentSearchManager.query}" styleClass="barsearch"/>
-                                <h:commandButton styleClass="barsearchbutton" action="#{contentSearchManager.search}" value="Search"/>
+                                <h:commandButton styleClass="barsearchbutton" action="#{contentSearchManager.search}" value="Поиск"/>
                             </h:form>
                         </rich:toolbarGroup>
                     </rich:toolbar>
@@ -124,7 +124,7 @@
 
                         <h:panelGrid columns="2">
                             <h:commandButton id="login" action="#{identity.login}" value="#{bundles.messages.home_loginAction}"/>
-                            <input type="button" value="Cancel" onclick="#{rich:component('lp')}.hide(event); return false;"/>
+                            <input type="button" value="Закрыть" onclick="#{rich:component('lp')}.hide(event); return false;"/>
                         </h:panelGrid>
 
                         <h:panelGrid columns="2">

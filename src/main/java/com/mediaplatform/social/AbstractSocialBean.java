@@ -1,5 +1,6 @@
 package com.mediaplatform.social;
 
+import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.User;
 import com.mediaplatform.model.UserInfo;
 import com.mediaplatform.util.jsf.FacesUtil;
@@ -7,6 +8,7 @@ import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Identity;
 import org.jboss.solder.logging.Logger;
 
+import javax.enterprise.inject.Instance;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -31,6 +33,9 @@ public abstract class AbstractSocialBean implements Serializable {
 
     @Inject
     protected Messages messages;
+
+    @Inject
+    protected Instance<UserManager> userManagerInstance;
 
 
     public void login(){

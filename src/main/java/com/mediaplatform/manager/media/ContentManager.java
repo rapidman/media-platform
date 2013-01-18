@@ -173,12 +173,12 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @User
     public void saveOrUpdate() {
-        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+        boolean edit = selectedContent.getId() != null;
+        if(edit && !Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
             FacesUtil.redirectToDeniedPage();
             return;
         }
         FileEntry mediaFile = null;
-        boolean edit = selectedContent.getId() != null;
         super.saveOrUpdate(selectedContent, selectedGenre, null, null);
         if (fileUploadBean.getSize() > 0) {
             mediaFile = fileStorageManager.get().saveFile(
@@ -263,7 +263,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public String getVideoUrl() {
-        if (selectedContent == null || selectedContent.getMediaFile() == null) return "";
+        if (selectedContent == null || selectedContent.getMediaFile() == null) return null;
         return viewHelper.get().getVideoUrl(selectedContent.getMediaFile());
     }
 
@@ -275,9 +275,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
     public String getHeader() {
         boolean edit = selectedContent != null && selectedContent.getId() != null;
         if (edit) {
-            return "Edit " + selectedContent.getTitle();
+            return "Редактирование " + selectedContent.getTitle();
         }
-        return "Add new content";
+        return "Создание";
     }
 
     public FileUploadBean getFileUploadBean() {

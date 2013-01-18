@@ -37,7 +37,7 @@ public class FacebookBean extends AbstractSocialBean {
     @Named("fbUser")
     private UserProfile fbUser;
 
-    @OAuthApplication(apiKey = "135636733179752", apiSecret = "9fd8e67d6a8ed31d606aeac39e3e0189", callback = "http://timur.asuscomm.com:8080/media-platform/social/facebookCallback.xhtml")
+    @OAuthApplication(apiKey = "135636733179752", apiSecret = "9fd8e67d6a8ed31d606aeac39e3e0189", callback = "http://videoblog.tomsk.ru:8080/media-platform/social/facebookCallback.xhtml")
     @Facebook
     @Produces
     public FacebookService facebookServiceProducer(FacebookService fs) {
@@ -62,8 +62,7 @@ public class FacebookBean extends AbstractSocialBean {
     @Override
     protected User findUser() {
         fbUser = service.getMyProfile();
-        User user = appEm.find(User.class, fbUser.getId());
-        return user;
+        return userManagerInstance.get().findByUsername(fbUser.getId());
     }
 
     @Override

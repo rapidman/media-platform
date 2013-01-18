@@ -41,7 +41,7 @@ public class TwitterBean extends AbstractSocialBean {
     @Named("twUser")
     private TwitterProfile twUser;
 
-    @OAuthApplication(apiKey = "YajUl0D4ZJhfXawKwNjWzQ", apiSecret = "QWi1vHsJzsInr4Y3Bcfv7LcTiCoHB3n9hjsfggKA8", callback = "http://timur.asuscomm.com:8080/media-platform/social/twitterCallback.xhtml")
+    @OAuthApplication(apiKey = "YajUl0D4ZJhfXawKwNjWzQ", apiSecret = "QWi1vHsJzsInr4Y3Bcfv7LcTiCoHB3n9hjsfggKA8", callback = "http://videoblog.tomsk.ru:8080/media-platform/social/twitterCallback.xhtml")
     @Twitter
     @Produces
     public TwitterService twitterServiceProducer(TwitterService ts) {
@@ -62,7 +62,7 @@ public class TwitterBean extends AbstractSocialBean {
     @Override
     protected User findUser() {
         twUser = service.getMyProfile();
-        return appEm.find(User.class, twUser.getScreenName());
+        return userManagerInstance.get().findByUsername(twUser.getScreenName());
     }
 
     @Override
