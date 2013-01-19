@@ -33,6 +33,11 @@ public class FacesUtil {
         redirect("");
     }
 
+    public static void redirectToEndConversation() {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Превышено время ожидания, операция отменена.", null));
+        redirect("conversation_ended");
+    }
+    
     public static void redirect(String page) {
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();

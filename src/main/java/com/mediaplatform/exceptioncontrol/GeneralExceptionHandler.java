@@ -63,5 +63,6 @@ public class GeneralExceptionHandler {
             @Handles CaughtException<NonexistentConversationException> evt) {
         logger.error("NonexistentConversationException!\n" + evt.getException().getMessage(), evt.getException());
         evt.handled();
+        FacesUtil.redirectToEndConversation();
     }
 }

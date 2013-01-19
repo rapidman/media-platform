@@ -6,6 +6,7 @@ import javax.enterprise.context.NonexistentConversationException;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.solder.logging.Logger;
 import org.jboss.solder.exception.control.CaughtException;
 import org.jboss.solder.exception.control.Handles;
@@ -25,10 +26,6 @@ public class ConversationExceptionHandler {
      */
     public void conversationEndedExceptionHandler(@Handles CaughtException<NonexistentConversationException> event, Logger log) {
         log.info("Conversation ended: " + event.getException().getMessage());
-        try {
-            facesContext.getExternalContext().redirect("conversation_ended");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FacesUtil.redirectToEndConversation();
     }
 }

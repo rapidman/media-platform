@@ -25,7 +25,25 @@
                 </h:panelGrid>
 
                 <h:panelGroup>
-                    <rich:editor id="editor" toolbar="full" value="#{contentManager.selectedContent.description}" style="margin-bottom: 1em">
+                    <rich:editor id="editor" value="#{contentManager.selectedContent.description}" style="margin-bottom: 1em">
+                        <f:facet name="config">
+                            toolbar: 'custom',
+                            language: 'ru',
+                            startupFocus: true,
+                            toolbar_custom:
+                            [
+                            { name: 'document', items : [ 'NewPage','Preview' ] },
+                            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
+                            { name: 'insert', items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
+                            '/',
+                            { name: 'styles', items : [ 'Styles','Format' ] },
+                            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
+                            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+                            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+                            { name: 'tools', items : [ 'Maximize' ] }
+                            ]
+                        </f:facet>
                         <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
                         <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
                             <a4j:attachQueue requestDelay="1000" />
@@ -34,7 +52,7 @@
 
                     <rich:panel id="panel">
                         <f:facet name="header">
-                            Вывод из редактора
+                            Предварительный просмотр
                             <a4j:status name="panelUpdateStatus">
                                 <f:facet name="start">
                                     (Обновление)
@@ -45,8 +63,7 @@
                     </rich:panel>
                 </h:panelGroup>
 
-                <f:facet name="footer">
-                    <h:panelGroup>
+                    <h:panelGrid columns="1">
                         <h:panelGrid columns="2">
                             <h:commandButton value="Сохранить" action="#{contentManager.saveOrUpdate}" />
                             <h:commandButton action="#{contentManager.cancelEdit}" value="Закрыть"/>
@@ -64,35 +81,34 @@
                             </h:commandButton>
                             <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
                         </h:panelGroup>
-                    </h:panelGroup>
-                </f:facet>
 
-                <h:panelGrid columns="1" columnClasses="top">
-                    <h:panelGroup>
-                        <h:outputText value="Обложка:"/>
-                        <h:graphicImage value="#{viewHelper.getImgUrlByStr(contentManager.selectedContent.cover, 'rc94x147.jpg')}" />
-                    </h:panelGroup>
-                    <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Обложка"
-                                     addLabel="Добавить" clearAllLabel="Очистить все" clearLabel="Очистить" uploadLabel="Загрузить"
-                                     ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');" maxFilesQuantity="1" style="height: 100px;">
-                        <a4j:param value="#{contentManager.conversation.id}" name="cid"/>
-                    </rich:fileUpload>
-                </h:panelGrid>
+                        <h:panelGrid columns="1" columnClasses="top">
+                            <h:panelGroup>
+                                <h:outputText value="Обложка:"/>
+                                <h:graphicImage value="#{viewHelper.getImgUrlByStr(contentManager.selectedContent.cover, 'rc94x147.jpg')}" />
+                            </h:panelGroup>
+                            <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Обложка"
+                                             addLabel="Добавить" clearAllLabel="Очистить все" clearLabel="Очистить" uploadLabel="Загрузить"
+                                             ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');" maxFilesQuantity="1" style="height: 100px;">
+                                <a4j:param value="#{contentManager.conversation.id}" name="cid"/>
+                            </rich:fileUpload>
+                        </h:panelGrid>
 
-                <h:panelGrid columns="1" columnClasses="top">
-                    <h:panelGroup>
-                        <h:outputText value="Видео файл:"/>
-                        <h:outputText value="#{request.contextPath}#{contentManager.videoUrl}" rendered="#{!empty contentManager.videoUrl}"/>
-                    </h:panelGroup>
-                    <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4,mp3" title="Видео файл" style="height: 100px;"
-                                     addLabel="Добавить" clearAllLabel="Очистить все" clearLabel="Очистить"  uploadLabel="Загрузить"
-                                     ontyperejected="alert('Разрешены только flv,mp4,mp3 файлы');" maxFilesQuantity="1">
-                        <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>
-                        <f:facet name="label">
-                            <h:outputText value="Загружено с {_KB}KB по {KB}KB --- {mm}:{ss}" />
-                        </f:facet>
-                    </rich:fileUpload>
-                </h:panelGrid>
+                        <h:panelGrid columns="1" columnClasses="top">
+                            <h:panelGroup>
+                                <h:outputText value="Видео файл:"/>
+                                <h:outputText value="#{request.contextPath}#{contentManager.videoUrl}" rendered="#{!empty contentManager.videoUrl}"/>
+                            </h:panelGroup>
+                            <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4,mp3" title="Видео файл" style="height: 100px;"
+                                             addLabel="Добавить" clearAllLabel="Очистить все" clearLabel="Очистить"  uploadLabel="Загрузить"
+                                             ontyperejected="alert('Разрешены только flv,mp4,mp3 файлы');" maxFilesQuantity="1">
+                                <a4j:param value="#{catalogManager.conversation.id}" name="cid"/>
+                                <f:facet name="label">
+                                    <h:outputText value="Загружено с {_KB}KB по {KB}KB --- {mm}:{ss}" />
+                                </f:facet>
+                            </rich:fileUpload>
+                        </h:panelGrid>
+                    </h:panelGrid>
             </h:form>
         </rich:panel>
 

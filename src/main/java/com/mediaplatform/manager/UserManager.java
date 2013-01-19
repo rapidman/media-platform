@@ -158,7 +158,7 @@ public class UserManager extends AbstractManager implements Serializable{
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
         if("conversation_ended".equals(obj)){
-            FacesUtil.redirect("conversation_ended");
+            FacesUtil.redirectToEndConversation();
             return;
         }
 
