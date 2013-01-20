@@ -48,6 +48,7 @@ public class User extends AbstractEntity {
     private UserInfo userInfo;
     private List<Content> contents;
     private FileEntry avatar;
+    private boolean admin;
 
     public User() {
         super(EntityType.USER);
@@ -140,6 +141,20 @@ public class User extends AbstractEntity {
     public void setAvatar(FileEntry avatar) {
         this.avatar = avatar;
     }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    @Transient
+    public int getPostCount(){
+        return getContents().size();
+    }
+
 
     @Override
     public String toString() {

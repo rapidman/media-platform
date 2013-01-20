@@ -50,6 +50,11 @@
         <view-id>/account/userProfile.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="topusers">
+        <pattern value="/topusers"></pattern>
+        <view-id>/account/viewTopUserList.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="conversation_ended">
         <pattern value="/conversation_ended"></pattern>
         <view-id>/conversation_ended.xhtml</view-id>

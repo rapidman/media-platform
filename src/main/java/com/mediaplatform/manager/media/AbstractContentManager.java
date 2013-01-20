@@ -75,7 +75,10 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public List<Content> findPopularList(int maxResult) {
-        return appEm.createQuery("select c from Content c order by c.id desc").setMaxResults(maxResult).getResultList();
+        if(appCacheBean.getPopularContents() == null){
+            appCacheBean.setPopularContents(appEm.createQuery("select c from Content c order by c.id desc").setMaxResults(maxResult).getResultList());
+        }
+        return appCacheBean.getPopularContents();
     }
 
     public Content findContentByFileName(String name) {

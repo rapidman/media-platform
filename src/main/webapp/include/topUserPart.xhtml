@@ -1,0 +1,24 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <tr>
+        <td valign="middle">#{st.index + 1}.</td>
+        <td valign="middle"><h:graphicImage value="#{empty user.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(user.avatar, 'rc23x23.jpg')}" /></td>
+        <td valign="middle" class="bordered">
+            <h:link id="viewUser" value="#{user.name}" outcome="user" style="white-space: nowrap;">
+                <f:param name="id" value="#{user.username}"/>
+            </h:link>
+        </td>
+        <td align="center" valign="middle" class="bordered"><h:outputText value="#{user.postCount}" /></td>
+
+        <td align="center" valign="middle" class="bordered"><h:outputText value="#{user.postCount}"/></td>
+    </tr>
+
+</ui:composition>

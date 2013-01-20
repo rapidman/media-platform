@@ -1,0 +1,33 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+    <fieldset>
+        <legend class="blockHeader">Топ 10 пользователей</legend>
+        <table class="topUsersTbl">
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th class="bordered"><h:outputText value="Cтатьи"/></th>
+                <th class="bordered"><h:outputText value="Рэйт"/></th>
+            </tr>
+
+
+            <a4j:repeat value="#{userManager.topUserList}" var="user" rows="10" id="repeatTopUsers"
+                        iterationStatusVar="st">
+                <ui:include src="topUserPart.xhtml"/>
+            </a4j:repeat>
+        </table>
+
+        <br/>
+
+        <h:link id="viewTopUsers" value="Смотреть всех &rarr;" outcome="topusers" style="white-space: nowrap;"/>
+    </fieldset>
+
+</ui:composition>

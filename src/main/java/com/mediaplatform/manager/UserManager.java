@@ -1,6 +1,7 @@
 package com.mediaplatform.manager;
 
 import com.mediaplatform.account.CurrentUserManager;
+import com.mediaplatform.event.DeleteCatalogEvent;
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
@@ -13,10 +14,12 @@ import com.mediaplatform.security.Restrictions;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.ViewHelper;
 import com.mediaplatform.util.jsf.FacesUtil;
+import org.richfaces.component.SortOrder;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -36,14 +39,12 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class UserManager extends AbstractManager implements Serializable {
+public class UserManager extends AbstractUserManager{
     @Inject
     protected Conversation conversation;
 
     @Inject
     private Instance<CurrentUserManager> currentUserManager;
-
-    private List<User> users;
 
     private User selectedUser;
 
@@ -62,10 +63,47 @@ public class UserManager extends AbstractManager implements Serializable {
     private Instance<ViewHelper> viewHelper;
 
     private FileUploadBean imgFileUploadBean = new FileUploadBean();
+
     @Inject
     private Instance<FileStorageManager> fileStorageManager;
 
+    @Inject
+    private Event<User> deleteEvent;
+
+    @Inject
+    private Event<User> updateEvent;
+
+    private SortOrder nameOrder = SortOrder.unsorted;
+
+    private SortOrder contentCountOrder = SortOrder.unsorted;
+
+    private SortOrder rateOrder = SortOrder.unsorted;
+
     private boolean changePassword = false;
+
+    private List<User> sortedTopUsers;
+
+    public void sortByName() {
+        sortedTopUsers = null;
+        contentCountOrder = SortOrder.unsorted;
+        rateOrder = SortOrder.unsorted;
+        if (nameOrder.equals(SortOrder.ascending)) {
+            setNameOrder(SortOrder.descending);
+        } else {
+            setNameOrder(SortOrder.ascending);
+        }
+    }
+
+    public void sortByPostCount() {
+        sortedTopUsers = null;
+        nameOrder = SortOrder.unsorted;
+        rateOrder = SortOrder.unsorted;
+        if (contentCountOrder.equals(SortOrder.ascending)) {
+            setContentCountOrder(SortOrder.descending);
+        } else {
+            setContentCountOrder(SortOrder.ascending);
+        }
+    }
 
     @com.mediaplatform.security.User
     public void save() {
@@ -88,55 +126,7 @@ public class UserManager extends AbstractManager implements Serializable {
         }
         messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
         ConversationUtils.safeEnd(conversation);
-    }
-
-    private boolean checkRights() {
-        if (identity == null || currentUser == null || selectedUser == null) {
-            FacesUtil.redirectToEndConversation();
-            return false;
-        }
-        if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
-            FacesUtil.redirectToDeniedPage();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isCanEdit() {
-       return checkCanEdit(selectedUser);
-    }
-
-    public boolean checkCanEdit(User checkedUser) {
-        if (!identity.isLoggedIn()) return false;
-        boolean canEdit;
-        if (Restrictions.isAdminOrOwner(identity, currentUser, checkedUser)) {
-            canEdit = true;
-        } else {
-            canEdit = false;
-        }
-        return canEdit;
-    }
-
-
-    public boolean isOwner() {
-        return checkOwner(selectedUser);
-    }
-
-    public boolean checkOwner(User owner) {
-        if (!identity.isLoggedIn()) return false;
-        boolean isOwner;
-        if (Restrictions.isOwner(currentUser, owner)) {
-            isOwner = true;
-        } else {
-            isOwner = false;
-        }
-        return isOwner;
-    }
-
-    public void show() {
-        ConversationUtils.safeBegin(conversation);
-        refresh();
+        updateEvent.fire(selectedUser);
     }
 
     @com.mediaplatform.security.User
@@ -145,6 +135,12 @@ public class UserManager extends AbstractManager implements Serializable {
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
         ConversationUtils.safeEnd(conversation);
+        refresh();
+        deleteEvent.fire(user);
+    }
+
+    public void show() {
+        ConversationUtils.safeBegin(conversation);
         refresh();
     }
 
@@ -156,13 +152,7 @@ public class UserManager extends AbstractManager implements Serializable {
         ConversationUtils.safeBegin(conversation);
     }
 
-    public User findByUsername(String userName) {
-        try {
-            return (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
+
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
         if ("conversation_ended".equals(obj)) {
@@ -184,18 +174,57 @@ public class UserManager extends AbstractManager implements Serializable {
 
     private void refresh() {
         selectedUser = null;
-        users = null;
     }
 
-    public List<User> getUsers() {
-        if (users == null) {
-            users = appEm.createQuery("select u from User u").getResultList();
+    private boolean checkRights() {
+        if (identity == null || currentUser == null || selectedUser == null) {
+            FacesUtil.redirectToEndConversation();
+            return false;
         }
-        return users;
+        if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
+            FacesUtil.redirectToDeniedPage();
+            return false;
+        }
+        return true;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public boolean isCanEdit() {
+        return checkCanEdit(selectedUser);
+    }
+
+    public boolean checkCanEdit(User checkedUser) {
+        if (!identity.isLoggedIn()) return false;
+        boolean canEdit;
+        if (Restrictions.isAdminOrOwner(identity, currentUser, checkedUser)) {
+            canEdit = true;
+        } else {
+            canEdit = false;
+        }
+        return canEdit;
+    }
+
+    public boolean isOwner() {
+        return checkOwner(selectedUser);
+    }
+
+    public boolean checkOwner(User owner) {
+        if (!identity.isLoggedIn()) return false;
+        boolean isOwner;
+        if (Restrictions.isOwner(currentUser, owner)) {
+            isOwner = true;
+        } else {
+            isOwner = false;
+        }
+        return isOwner;
+    }
+
+    public List<User> getSortedTopUserList(){
+        if(sortedTopUsers == null){
+            sortedTopUsers = findUsers(nameOrder, contentCountOrder, rateOrder);
+        }
+
+        return sortedTopUsers;
     }
 
     public User getSelectedUser() {
@@ -245,6 +274,30 @@ public class UserManager extends AbstractManager implements Serializable {
 
     public void setChangePassword(boolean changePassword) {
         this.changePassword = changePassword;
+    }
+
+    public SortOrder getNameOrder() {
+        return nameOrder;
+    }
+
+    public void setNameOrder(SortOrder nameOrder) {
+        this.nameOrder = nameOrder;
+    }
+
+    public SortOrder getContentCountOrder() {
+        return contentCountOrder;
+    }
+
+    public void setContentCountOrder(SortOrder contentCountOrder) {
+        this.contentCountOrder = contentCountOrder;
+    }
+
+    public SortOrder getRateOrder() {
+        return rateOrder;
+    }
+
+    public void setRateOrder(SortOrder rateOrder) {
+        this.rateOrder = rateOrder;
     }
 }
 

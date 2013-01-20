@@ -38,4 +38,7 @@ public class AbstractManager implements Serializable{
     @Inject
     protected ConfigBean configBean;
 
+    @Inject
+    protected AppCacheBean appCacheBean;
+
 }

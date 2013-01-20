@@ -71,13 +71,13 @@ public class CatalogManager extends AbstractCatalogManager {
     public String getHeader() {
         boolean edit = selectedGenre.getId() != null;
         if (edit) {
-            return "Edit " + selectedGenre.getTitle();
+            return "Редактирование " + selectedGenre.getTitle();
         }
         if (selectedGenre.getParent() != null) {
-            return "Adding new catalog to " + selectedGenre.getParent().getTitle();
+            return "Добавление нового жанра в " + selectedGenre.getParent().getTitle();
         }
 
-        return "Adding root catalog";
+        return "Добавление корневого жанра.";
     }
 
     public void setSelectedGenre(Genre selectedGenre) {
@@ -105,9 +105,9 @@ public class CatalogManager extends AbstractCatalogManager {
         updateEvent.fire(new UpdateCatalogEvent(selectedGenre.getId()));
 
         if (update) {
-            messages.info("Update successfull");
+            messages.info("Обновленно успешно!");
         } else {
-            messages.info("Create successfull");
+            messages.info("Создано успешно");
         }
         fileUploadBean.clearUploadData();
     }
@@ -117,7 +117,7 @@ public class CatalogManager extends AbstractCatalogManager {
         super.delete(selectedGenre);
         deleteEvent.fire(new DeleteCatalogEvent(selectedGenre.getId()));
         this.selectedGenre = null;
-        messages.info("Delete successfull");
+        messages.info("Удалено успешно");
 
         if (!conversation.isTransient()) {
             conversation.end();

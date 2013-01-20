@@ -9,6 +9,10 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="sitemap">
+        <ui:include src="../include/contentSiteMap.xhtml"/>
+    </ui:define>
+
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam validator="#{contentManager.validateContentId}" name="id" value="#{id}" />
