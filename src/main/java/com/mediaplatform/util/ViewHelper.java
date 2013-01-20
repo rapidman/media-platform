@@ -1,5 +1,6 @@
 package com.mediaplatform.util;
 
+import com.mediaplatform.model.User;
 import org.apache.commons.lang.StringUtils;
 import com.mediaplatform.manager.ConfigBean;
 import com.mediaplatform.manager.file.FileStorageManager;
@@ -53,4 +54,13 @@ public class ViewHelper implements Serializable {
     public String viewDescription(String desc){
         return StringUtils.abbreviate(desc, MAX_DESC_LENGTH);
     }
+
+    public String userProfileHeader(User user){
+        return "Страница пользователя '" + user.getName() + "'";
+    }
+
+    public String userOwnerProfileHeader(User user){
+        return "Ваша страница";
+    }
+
 }

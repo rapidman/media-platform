@@ -9,22 +9,29 @@
                  xmlns:cc="http://java.sun.com/jsf/composite">
 
     <rich:panel bodyClass="pbody">
-        <h:panelGrid columns="1">
+        <h:panelGrid columns="1" columnClasses="top">
+            <h:graphicImage value="#{viewHelper.getImgUrlByStr(content.cover, 'rc94x147.jpg')}" />
             <h:panelGroup>
                 <h:link id="viewContent" value="#{viewHelper.viewTitle(content.title)}" outcome="vod" style="white-space: nowrap;">
                     <f:param name="id" value="#{content.id}"/>
-                    <rich:contextMenu mode="server" target="viewContent" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}">
+                    <rich:contextMenu mode="server" target="viewContent" rendered="#{identity.loggedIn and userManager.checkCanEdit(currentUser)}">
                         <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
-                                       rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
+                                       rendered="#{identity.loggedIn and userManager.checkCanEdit(currentUser)}"
                                        mode="server" icon="/images/icons/edit.gif" />
                     </rich:contextMenu>
                 </h:link>
             </h:panelGroup>
-
-            <h:outputText value="#{viewHelper.viewDescription(content.description)}" />
-
+            <h:panelGroup>
+                <h:outputText value="Автор:"/>
+                <h:link id="viewUser" value="#{content.author.name}" outcome="user" style="white-space: nowrap;">
+                    <f:param name="id" value="#{content.author.username}"/>
+                </h:link>
+            </h:panelGroup>
         </h:panelGrid>
-        <h:graphicImage value="#{viewHelper.getImgUrlByStr(content.cover, 'rc94x147.jpg')}" />
+
+        <rich:tooltip styleClass="tooltip" layout="block" showDelay="500">
+            <span style="white-space: nowrap"><h:outputText value="#{viewHelper.viewDescription(content.description)}" escape="false"/></span>
+        </rich:tooltip>
     </rich:panel>
 
 </ui:composition>

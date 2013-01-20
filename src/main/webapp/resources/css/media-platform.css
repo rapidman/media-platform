@@ -53,8 +53,6 @@ p {
 }
 
 #document{
-    margin-left: 20px;
-    margin-right: 20px;
 }
 
 #sidebar{
@@ -381,3 +379,16 @@ p.twitter-login {
     width: 280px;
     /*overflow-x: auto;*/
 }
+
+.top {
+    height: auto;
+    width: auto;
+    vertical-align: top;
+}
+
+.pbody{
+    width: 100px;
+    height: 200px;
+}
+
+

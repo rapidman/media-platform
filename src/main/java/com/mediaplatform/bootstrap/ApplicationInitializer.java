@@ -91,54 +91,56 @@ public class ApplicationInitializer {
         // use manual transaction control since this is a managed bean
         try {
             utx.begin();
-            // AS7-2045
+            if(entityManager.createQuery("select g from Genre g").getResultList().size() == 0){
+                // AS7-2045
 //            entityManager.createQuery("delete from User").executeUpdate();
 //
 //            entityManager.createQuery("delete from Content").executeUpdate();
 //            entityManager.createQuery("delete from Genre").executeUpdate();
 
-            persist(users);
-            for (TwoTuple<String, String> genre : genres) {
-                if ("ИСТОРИИ".equals(genre.getFirst())) {
-                    createGenre(new Genre(genre.getFirst(), genre.getSecond()),
-                            Arrays.asList(
-                                    new TwoTuple<Genre, List<Content>>(
-                                            new Genre("ЛИЧНЫЙ ОПЫТ", "Рассказ читателям о результатах собственных экспериментов."),
-                                            new ArrayList<Content>()
-                                    )
-                            )
-                    );
-                } else if ("ОБЗОРЫ".equals(genre.getFirst())) {
-                    createGenre(new Genre(genre.getFirst(), genre.getSecond()),
-                            Arrays.asList(
-                                    new TwoTuple<Genre, List<Content>>(
-                                            new Genre("ГАДЖЕТЫ", "Обзор гаджетов."),
-                                            new ArrayList<Content>()
-                                    )
-                            )
-                    );
-                } else if ("РАЗВЛЕЧЕНИЯ".equals(genre.getFirst())) {
-                    createGenre(new Genre(genre.getFirst(), genre.getSecond()),
-                            Arrays.asList(
-                                    new TwoTuple<Genre, List<Content>>(
-                                            new Genre("Юмор", "Анекдоты, шутки..."),
-                                            new ArrayList<Content>()
-                                    )
-                            )
-                    );
-                } else if ("ПРОЧЕЕ".equals(genre.getFirst())) {
-                    createGenre(new Genre(genre.getFirst(), genre.getSecond()),
-                            Arrays.asList(
-                                    new TwoTuple<Genre, List<Content>>(
-                                            new Genre("ВИДЕО", "Любительское видео"),
-                                            new ArrayList<Content>()
-                                    )
-                            )
-                    );
-                } else {
-                    createGenre(new Genre(genre.getFirst(), genre.getSecond()),
-                            new ArrayList<TwoTuple<Genre, List<Content>>>()
-                    );
+                persist(users);
+                for (TwoTuple<String, String> genre : genres) {
+                    if ("ИСТОРИИ".equals(genre.getFirst())) {
+                        createGenre(new Genre(genre.getFirst(), genre.getSecond()),
+                                Arrays.asList(
+                                        new TwoTuple<Genre, List<Content>>(
+                                                new Genre("ЛИЧНЫЙ ОПЫТ", "Рассказ читателям о результатах собственных экспериментов."),
+                                                new ArrayList<Content>()
+                                        )
+                                )
+                        );
+                    } else if ("ОБЗОРЫ".equals(genre.getFirst())) {
+                        createGenre(new Genre(genre.getFirst(), genre.getSecond()),
+                                Arrays.asList(
+                                        new TwoTuple<Genre, List<Content>>(
+                                                new Genre("ГАДЖЕТЫ", "Обзор гаджетов."),
+                                                new ArrayList<Content>()
+                                        )
+                                )
+                        );
+                    } else if ("РАЗВЛЕЧЕНИЯ".equals(genre.getFirst())) {
+                        createGenre(new Genre(genre.getFirst(), genre.getSecond()),
+                                Arrays.asList(
+                                        new TwoTuple<Genre, List<Content>>(
+                                                new Genre("Юмор", "Анекдоты, шутки..."),
+                                                new ArrayList<Content>()
+                                        )
+                                )
+                        );
+                    } else if ("ПРОЧЕЕ".equals(genre.getFirst())) {
+                        createGenre(new Genre(genre.getFirst(), genre.getSecond()),
+                                Arrays.asList(
+                                        new TwoTuple<Genre, List<Content>>(
+                                                new Genre("ВИДЕО", "Любительское видео"),
+                                                new ArrayList<Content>()
+                                        )
+                                )
+                        );
+                    } else {
+                        createGenre(new Genre(genre.getFirst(), genre.getSecond()),
+                                new ArrayList<TwoTuple<Genre, List<Content>>>()
+                        );
+                    }
                 }
             }
             indextData();

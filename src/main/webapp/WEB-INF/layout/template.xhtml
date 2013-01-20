@@ -23,6 +23,66 @@
             }
         </h:outputScript>
         <ui:insert name="head"/>
+        <script type="text/javascript">
+            function viewGenre(genreId){
+                jQuery(location).attr('href','#{facesContext.externalContext.requestContextPath}/genre/' + genreId);
+            }
+            function search(query){
+                if("" == query) return;
+                jQuery(location).attr('href','#{facesContext.externalContext.requestContextPath}/full-search/' + query);
+            }
+        </script>
+        <h:outputStylesheet>
+            .search-form {
+                position: absolute;
+                right: 10px;
+                top: 4px;
+                width: 170px;
+                height: 21px;
+                margin: 0;
+                background: white;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                -khtml-border-radius: 15px;
+                border-radius: 15px;
+            }
+
+            .search-form .search-but {
+                float: left;
+                width: 13px;
+                height: 13px;
+                border-width: 0;
+                margin: 5px 4px 0 8px;
+                text-indent: 100px;
+                background: url(#{facesContext.externalContext.requestContextPath}/images/search-but-pich.png) 0 0 no-repeat;
+                cursor: pointer;
+            }
+
+            input, select, textarea, button {
+                font-family: Arial, Helvetica, FreeSans, sans-serif;
+            }
+
+            .search-form .search-input {
+                float: left;
+                width: 135px;
+                height: 21px;
+                line-height: 21px;
+                border-width: 0;
+                padding: 0;
+                background: none;
+                color: #555;
+                font-size: 11px;
+                vertical-align: top;
+            }
+
+            .search-form .rf-ii-fld {
+                background: white none;
+                border: 0px none;
+                height: 20px;
+                color: black;
+                height: 20px;
+            }
+        </h:outputStylesheet>
     </h:head>
 
 
@@ -104,11 +164,15 @@
                             </h:outputLink>
                         </rich:toolbarGroup>
 
-                        <rich:toolbarGroup location="right">
-                            <h:form>
-                                <h:inputText value="#{contentSearchManager.query}" styleClass="barsearch"/>
-                                <h:commandButton styleClass="barsearchbutton" action="#{contentSearchManager.search}" value="Поиск"/>
-                            </h:form>
+                        <rich:toolbarGroup location="right" itemStyle="width: 170px">
+                            <h:panelGroup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h:panelGroup>
+                            <h:panelGroup id="search-form" styleClass="search-form" >
+                                <div>
+                                    <input type="button" id="search-but" class="search-but" onclick="search(jQuery('#search-inputInput').val());"/>
+                                    <rich:inplaceInput style="height:20px" id="search-input" defaultLabel="Поиск..."
+                                                       value="" styleClass="search-input ac_input" onkeydown="if ( event.keyCode == 13 ) search(jQuery('#search-inputInput').val());"/>
+                                </div>
+                            </h:panelGroup>
                         </rich:toolbarGroup>
                     </rich:toolbar>
                 <rich:popupPanel id="lp" autosized="true" modal="false" moveable="false" resizeable="false" followByScroll="false" rendered="#{not identity.loggedIn}">
@@ -156,7 +220,10 @@
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
                         <td width="100%" valign="top">
-                            <div align="left" >
+                            <div align="left">
+                                <ui:insert name="sitemap"/>
+                            </div>
+                            <div align="left">
                                 <ui:insert name="globalMessages">
                                     <h:messages style="background-color: #D3EAA4; height: 25px;" globalOnly="true"
                                                 errorStyle="color: #a52a2a; font-size: large;" infoStyle="color: #336699; font-size: large;" id="globalMessages"/>

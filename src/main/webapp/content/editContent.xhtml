@@ -8,6 +8,10 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 template="/WEB-INF/layout/template.xhtml">
 
+    <ui:define name="sitemap">
+
+    </ui:define>
+
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
     </ui:define>
@@ -64,23 +68,22 @@
                 </h:panelGroup>
 
                     <h:panelGrid columns="1">
-                        <h:panelGrid columns="2">
+                        <h:panelGrid columns="2" columnClasses="top">
                             <h:commandButton value="Сохранить" action="#{contentManager.saveOrUpdate}" />
-                            <h:commandButton action="#{contentManager.cancelEdit}" value="Закрыть"/>
+                            <h:button onclick="viewGenre('#{contentManager.selectedGenre.id}'); return false;" value="Закрыть"/>
                         </h:panelGrid>
-                        <h:panelGroup rendered="#{!empty contentManager.selectedContent.id}">
-                            &nbsp;&nbsp;
+                        <h:panelGrid columns="5" rendered="#{!empty contentManager.selectedContent.id}" columnClasses="top">
+                            <h:panelGroup rendered="#{empty contentManager.selectedContent.mediaFile}"/>
+                            <h:link id="viewContent" value="Смотреть (VOD)" outcome="vod" style="white-space: nowrap;" rendered="#{!empty contentManager.selectedContent.mediaFile}">
+                                <f:param name="id" value="#{contentManager.selectedContent.id}"/>
+                            </h:link>
                             <h:commandButton value="Опубликовать с высоким качеством" action="#{contentManager.publish(true)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                            &nbsp;&nbsp;
                             <h:commandButton value="Опубликовать с низким качеством" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                            &nbsp;&nbsp;
-                            <h:commandButton value="Видео по запросу (VOD)" action="#{contentManager.viewVideoOnDemand(contentManager.selectedContent.id)}" disabled="#{empty contentManager.selectedContent.mediaFile}" />
-                            &nbsp;&nbsp;
                             <h:commandButton value="Удалить" >
                                 <rich:componentControl target="popup" operation="show" />
                             </h:commandButton>
                             <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
-                        </h:panelGroup>
+                        </h:panelGrid>
 
                         <h:panelGrid columns="1" columnClasses="top">
                             <h:panelGroup>

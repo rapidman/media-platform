@@ -9,11 +9,11 @@
                  xmlns:cc="http://java.sun.com/jsf/composite">
 
     <h:form rendered="#{identity.loggedIn}">
-        <rich:panel header="Add comment" style="max-width: 400px;" >
+        <rich:panel header="Добавление комментария" style="max-width: 400px;" >
             <h:inputHidden value="#{commentManager.contentId}"/>
             <h:panelGrid columns="1">
                 <h:inputTextarea id="desc" value="#{commentManager.currentComment.description}" style="width: 350px" rows="5"/>
-                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Send" render="commentsGrid,desc"/>
+                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Добавить" render="commentsGrid,desc"/>
             </h:panelGrid>
         </rich:panel>
     </h:form>
@@ -21,7 +21,7 @@
         <rich:dataGrid id="commentsGrid" value="#{commentManager.comments}" var="comment" columns="1"
                        elements="9" width="400px" border="0">
             <h:panelGrid columns="2" width="400px">
-                <h:graphicImage value="#{contentManager.getCoverUrl('rc48x48.jpg')}" />
+                <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.author.avatar, 'rc48x48.jpg')}" />
                 <h:panelGroup>
                     <h:panelGrid columns="2" width="100%">
                         <h:link id="viewUser" value="#{comment.author.name}" outcome="user" style="white-space: nowrap;">

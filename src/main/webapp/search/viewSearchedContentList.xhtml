@@ -9,9 +9,15 @@
                 template="/WEB-INF/layout/template.xhtml">
 
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="q" value="#{q}"/>
+            <f:event type="preRenderView" listener="#{contentSearchManager.search(q)}"/>
+        </f:metadata>
+    </ui:define>
+
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
-
     </ui:define>
 
     <ui:define name="content">
@@ -19,38 +25,43 @@
             .label {
                 font-weight: bold;
             }
-            .rf-dg, .rf-dg-c{
-                border:none;
+
+            .rf-dg, .rf-dg-c {
+                border: none;
             }
+
             .pbody {
                 width: 200px;
             }
         </h:outputStylesheet>
-        <h:form>
-            <rich:dataGrid id="searchContentGrid" value="#{contentSearchManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                <rich:panel bodyClass="pbody">
-                    <f:facet name="header">
-                        <h:outputText value="#{viewHelper.viewTitle(content.title)}"></h:outputText>
-                    </f:facet>
-                    <h:panelGrid columns="2">
-                        <h:outputText value="Name:" styleClass="label"></h:outputText>
-                        <h:commandLink action="#{contentManager.viewVideoOnDemand(content.id)}" value="#{content.title}" id="contentId" >
-                            <rich:contextMenu mode="server" target="contentId" >
-                                <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"
-                                               mode="server" icon="/images/icons/edit.gif" />
-                            </rich:contextMenu>
-                        </h:commandLink>
+        <rich:panel header="Поиск">
+            <rich:panel>
+                <h:panelGrid columns="2">
+                    <input type="text" value="#{contentSearchManager.query}" id="searchFormInput" autocomplete="off"/>
+                    <input type="button" value="Искать" onclick="search(jQuery('#searchFormInput').val());"/>
+                </h:panelGrid>
 
-                        <h:outputText value="Desc:" styleClass="label"></h:outputText>
-                        <h:outputText value="#{content.description}" />
-                    </h:panelGrid>
+                <rich:tooltip styleClass="tooltip" layout="block" showDelay="500">
+                    <span style="white-space: nowrap">Поиск по статьям. В поиске задействованны название статьи, текст и имя автора статьи.</span>
+                </rich:tooltip>
+            </rich:panel>
 
-                    <h:graphicImage value="#{viewHelper.getImgUrlExt(content.cover, 'rc94x147.jpg')}" rendered="#{!empty content.cover}"/>
-                </rich:panel>
-            </rich:dataGrid>
-            <rich:dataScroller for="searchContentGrid" renderIfSinglePage="false" />
-            <br/>
-        </h:form>
+            <h:form>
+                <h:panelGrid columns="2" rendered="#{!empty contentSearchManager.contentList}">
+                    <h:outputText value="Результаты поиска по запросу '#{contentSearchManager.query}':" style="font: larger;font-weight: bold;"/>
+                    <h:panelGroup>
+                        <hr/>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <rich:dataGrid id="searchContentGrid" value="#{contentSearchManager.contentList}" var="content"
+                               columns="3" elements="9" width="600px" border="0">
+                    <ui:include src="../include/contentPart.xhtml"/>
+                </rich:dataGrid>
+                <rich:dataScroller for="searchContentGrid" renderIfSinglePage="false"/>
+                <br/>
+            </h:form>
+        </rich:panel>
     </ui:define>
 
 </ui:composition>

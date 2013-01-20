@@ -88,7 +88,7 @@ public class FacesUtil {
                 Long.parseLong(String.valueOf(obj));
             } catch (NumberFormatException e) {
                 ok = false;
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect number '" + obj + "'", null));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Неверное число '" + obj + "'", null));
             }
         }
         return ok;

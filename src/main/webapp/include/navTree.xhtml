@@ -58,11 +58,6 @@
                     <br/>
                     <h:commandButton action="#{catalogManager.addRootCatalog()}" value="Add Root" rendered="#{identity.hasRole('admin', 'USERS', 'GROUP')}"/>
                 </h:form>
-                <script type="text/javascript">
-                    function viewGenre(genreId){
-                        jQuery(location).attr('href','#{facesContext.externalContext.requestContextPath}/genre/' + genreId);
-                    }
-                </script>
             </h:panelGrid>
 
         </fieldset>

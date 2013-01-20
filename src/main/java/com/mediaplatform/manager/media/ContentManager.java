@@ -197,10 +197,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
         super.saveOrUpdate(selectedContent, selectedGenre, mediaFile, cover);
         if (edit) {
-            messages.info("Updated successfull!");
+            messages.info("Обновленно успешно!");
             updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
         } else {
-            messages.info("Created successfull!");
+            messages.info("Сохранено успешно!");
             createEvent.fire(new CreateContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
         }
 
@@ -217,7 +217,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         }
         DeleteContentEvent event = new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds());
         super.delete(selectedContent);
-        messages.info("Deleted successfull!");
+        messages.info("Удалено успешно!");
         deleteEvent.fire(event);
         selectedContent = null;
         selectedGenre = catalogManager.getById(selectedGenre.getId());
@@ -226,7 +226,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     //TODO redirect to list view
-    public void cancelEdit(){
+    public void endConversation(){
         ConversationUtils.safeEnd(conversation);
     }
 

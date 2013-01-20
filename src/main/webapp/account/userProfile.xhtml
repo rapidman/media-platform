@@ -20,26 +20,26 @@
     </ui:define>
 
     <ui:define name="content">
-        <rich:panel header="#{userManager.owner ? 'Your Account' : 'Account'}">
+        <rich:panel header="#{userManager.isOwner() ? viewHelper.userProfileHeader(userManager.selectedUser) : viewHelper.userOwnerProfileHeader(userManager.selectedUser)}">
             <div class="errors">
                 <h:messages id="messages" globalOnly="true"/>
             </div>
             <h:form id="userProfileForm">
                 <h:panelGrid columns="2">
-                    <h:outputLabel for="name">Full name:</h:outputLabel>
+                    <h:outputLabel for="name">Полное имя:</h:outputLabel>
                     <h:inputText id="name" value="#{userManager.selectedUser.name}" rendered="#{userManager.canEdit}"/>
                     <h:outputText value="#{userManager.selectedUser.name}" rendered="#{!userManager.canEdit}"/>
 
-                    <h:outputLabel for="username">Username:</h:outputLabel>
+                    <h:outputLabel for="username">Ник:</h:outputLabel>
                     <h:outputText id="username" value="#{userManager.selectedUser.username}" />
 
-                    <h:outputLabel for="email">Email:</h:outputLabel>
+                    <h:outputLabel for="email">Емайл:</h:outputLabel>
                     <h:outputText id="email" value="#{userManager.selectedUser.email}"/>
                 </h:panelGrid>
 
-                <rich:collapsiblePanel header="Change password" switchType="ajax" immediate="true" expanded="false">
+                <rich:collapsiblePanel header="Смена пароля" switchType="ajax" immediate="true" expanded="false">
                     <h:panelGrid columns="2" rendered="#{userManager.canEdit}">
-                        <h:outputLabel for="currentPassword">Current password:</h:outputLabel>
+                        <h:outputLabel for="currentPassword">Текущий пароль:</h:outputLabel>
                         <h:panelGroup>
                             <h:inputSecret id="currentPassword" value="#{userManager.selectedUser.password}">
                                 <f:validator validatorId="currentPassword"/>
@@ -47,13 +47,13 @@
                             <h:message for="currentPassword" />
                         </h:panelGroup>
 
-                        <h:outputLabel for="newPassword">New password:</h:outputLabel>
+                        <h:outputLabel for="newPassword">Новый пароль:</h:outputLabel>
                         <h:panelGroup>
                             <h:inputSecret id="newPassword" value="#{userManager.newPassword}"/>
                             <h:message for="newPassword" />
                         </h:panelGroup>
 
-                        <h:outputLabel for="confirmPassword" >Confirm password:</h:outputLabel>
+                        <h:outputLabel for="confirmPassword" >Подтвердить пароль:</h:outputLabel>
                         <h:panelGroup>
                             <h:inputSecret id="confirmPassword" value="#{userManager.confirmPassword}"/>
                             <h:message for="confirmPassword" />
@@ -64,19 +64,20 @@
 
                 <h:panelGrid columns="1" columnClasses="top">
                     <h:panelGroup>
-                        <h:outputText value="Avatar:"/>
+                        <h:outputText value="Аватар:"/>
                         <h:graphicImage value="#{userManager.getAvatarUrl('rc50x50.jpg')}" />
                         <h:outputText value="empty" rendered="#{empty userManager.getAvatarUrl('rc94x147.jpg')}"/>
                     </h:panelGroup>
-                    <rich:fileUpload fileUploadListener="#{userManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Cover"
-                                     ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');" maxFilesQuantity="1" style="height: 100px;">
+                    <rich:fileUpload fileUploadListener="#{userManager.imgFileUploadBean.listener}" id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Аватар"
+                                     addLabel="Добавить" clearAllLabel="Очистить все" clearLabel="Очистить"  uploadLabel="Загрузить"
+                                     ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');" maxFilesQuantity="1" style="height: 100px;">
                         <a4j:param value="#{userManager.conversation.id}" name="cid"/>
                     </rich:fileUpload>
                 </h:panelGrid>
 
                 <s:validateForm id="passwordCheck" validatorId="confirmPassword" fields="newPassword=userProfileForm:newPassword confirmPassword=userProfileForm:confirmPassword"/>
                 <h:panelGroup rendered="#{userManager.canEdit}">
-                    <h:commandButton id="Save" value="Save" action="#{userManager.save}"  />
+                    <h:commandButton id="Save" value="Сохранить" action="#{userManager.save}"  />
                 </h:panelGroup>
             </h:form>
         </rich:panel>

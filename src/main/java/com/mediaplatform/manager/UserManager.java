@@ -36,7 +36,7 @@ import java.util.List;
 @Stateful
 @ConversationScoped
 @Named
-public class UserManager extends AbstractManager implements Serializable{
+public class UserManager extends AbstractManager implements Serializable {
     @Inject
     protected Conversation conversation;
 
@@ -49,10 +49,6 @@ public class UserManager extends AbstractManager implements Serializable{
 
     @Inject
     private FacesContext facesContext;
-
-    private Boolean canEdit;
-
-    private Boolean owner;
 
     @NotNull
     @Size(min = 5, max = 15)
@@ -76,7 +72,7 @@ public class UserManager extends AbstractManager implements Serializable{
         if (!checkRights()) return;
 
         UploadedFile uploadedAvatar = null;
-        if(imgFileUploadBean.getSize() > 0){
+        if (imgFileUploadBean.getSize() > 0) {
             uploadedAvatar = imgFileUploadBean.getFiles().get(0);
         }
         FileEntry avatar = fileStorageManager.get().saveFile(
@@ -87,7 +83,7 @@ public class UserManager extends AbstractManager implements Serializable{
         appEm.persist(avatar);
         selectedUser.setAvatar(avatar);
         appEm.merge(selectedUser);
-        if(Restrictions.isOwner(currentUser, selectedUser)){
+        if (Restrictions.isOwner(currentUser, selectedUser)) {
             currentUserManager.get().updateCurrentUser(selectedUser);
         }
         messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
@@ -95,6 +91,10 @@ public class UserManager extends AbstractManager implements Serializable{
     }
 
     private boolean checkRights() {
+        if (identity == null || currentUser == null || selectedUser == null) {
+            FacesUtil.redirectToEndConversation();
+            return false;
+        }
         if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
             FacesUtil.redirectToDeniedPage();
@@ -103,28 +103,35 @@ public class UserManager extends AbstractManager implements Serializable{
         return true;
     }
 
-    public boolean isCanEdit(){
-        if(!identity.isLoggedIn()) return false;
-        if(canEdit == null){
-            if(Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)){
-                canEdit = true;
-            }else{
-                canEdit = false;
-            }
+    public boolean isCanEdit() {
+       return checkCanEdit(selectedUser);
+    }
+
+    public boolean checkCanEdit(User checkedUser) {
+        if (!identity.isLoggedIn()) return false;
+        boolean canEdit;
+        if (Restrictions.isAdminOrOwner(identity, currentUser, checkedUser)) {
+            canEdit = true;
+        } else {
+            canEdit = false;
         }
         return canEdit;
     }
 
-    public boolean isOwner(){
-        if(!identity.isLoggedIn()) return false;
-        if(owner == null){
-            if(Restrictions.isOwner(currentUser, selectedUser)){
-                owner = true;
-            }else{
-                owner = false;
-            }
+
+    public boolean isOwner() {
+        return checkOwner(selectedUser);
+    }
+
+    public boolean checkOwner(User owner) {
+        if (!identity.isLoggedIn()) return false;
+        boolean isOwner;
+        if (Restrictions.isOwner(currentUser, owner)) {
+            isOwner = true;
+        } else {
+            isOwner = false;
         }
-        return owner;
+        return isOwner;
     }
 
     public void show() {
@@ -137,18 +144,19 @@ public class UserManager extends AbstractManager implements Serializable{
         if (!checkRights()) return;
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
+        ConversationUtils.safeEnd(conversation);
         refresh();
     }
 
     @com.mediaplatform.security.User
     public void viewUser(String userName) {
-        if (!checkRights()) return;
         refresh();
-        ConversationUtils.safeBegin(conversation);
         this.selectedUser = findByUsername(userName);
+        if (!checkRights()) return;
+        ConversationUtils.safeBegin(conversation);
     }
 
-    public User findByUsername(String userName){
+    public User findByUsername(String userName) {
         try {
             return (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();
         } catch (NoResultException e) {
@@ -156,20 +164,20 @@ public class UserManager extends AbstractManager implements Serializable{
         }
     }
 
-    public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        if("conversation_ended".equals(obj)){
+    public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
+        if ("conversation_ended".equals(obj)) {
             FacesUtil.redirectToEndConversation();
             return;
         }
 
         boolean ok = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
-        if(ok){
-            if(findByUsername(String.valueOf(obj)) == null){
+        if (ok) {
+            if (findByUsername(String.valueOf(obj)) == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + obj + "' not found", null));
                 ok = false;
             }
         }
-        if(!ok){
+        if (!ok) {
             FacesUtil.redirectToHomePage();
         }
     }
@@ -177,8 +185,6 @@ public class UserManager extends AbstractManager implements Serializable{
     private void refresh() {
         selectedUser = null;
         users = null;
-        canEdit = null;
-        owner = null;
     }
 
     public List<User> getUsers() {

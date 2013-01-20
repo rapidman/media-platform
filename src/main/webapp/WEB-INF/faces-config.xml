@@ -83,7 +83,6 @@
             <redirect/>
         </navigation-case>
 
-
         <navigation-case>
             <from-action>#{contentManager.viewVideoOnDemand(content.id)}</from-action>
             <if>#{true}</if>
@@ -106,16 +105,9 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{contentSearchManager.search}</from-action>
+            <from-outcome>full-search</from-outcome>
             <if>#{true}</if>
             <to-view-id>/search/viewSearchedContentList.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <navigation-case>
-            <from-action>#{contentManager.viewVideoOnDemand(contentManager.selectedContent.id)}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 

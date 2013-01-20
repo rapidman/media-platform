@@ -8,6 +8,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
@@ -17,17 +18,12 @@ import java.util.List;
  * Date: 1/3/13
  * Time: 6:54 PM
  */
-@Stateful
-@ConversationScoped
+@ViewScoped
 @Named
 public class MainPageManager extends AbstractManager{
-    @Inject
-    protected Conversation conversation;
-
     private List<LiveStream> publishedLiveStreams;
 
     public void show(){
-        ConversationUtils.safeEnd(conversation);
         refresh();
     }
 

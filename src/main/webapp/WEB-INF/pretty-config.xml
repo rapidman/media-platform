@@ -40,6 +40,11 @@
         <view-id>/content/viewContentList.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="full-search">
+        <pattern value="/full-search/#{q}"></pattern>
+        <view-id>/search/viewSearchedContentList.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="user">
         <pattern value="/user/#{id}"></pattern>
         <view-id>/account/userProfile.xhtml</view-id>
@@ -64,11 +69,6 @@
     <url-mapping id="login">
         <pattern value="/login"></pattern>
         <view-id>/login.xhtml</view-id>
-    </url-mapping>
-
-    <url-mapping id="content-search">
-        <pattern value="/content-search"></pattern>
-        <view-id>/search/viewSearchedContentList.xhtml</view-id>
     </url-mapping>
 
     <url-mapping>
