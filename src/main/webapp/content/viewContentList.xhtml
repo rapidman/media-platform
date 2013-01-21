@@ -45,7 +45,7 @@
                 <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
                 <rich:panel>
                     <h:outputText value="Список статей пока пуст." rendered="#{empty contentManager.contentList}"/>
-                    <br/>
+                    <br/> <br/>
                     <h:commandButton id="btnAdd" action="#{contentManager.add()}" value="Добавить" disabled="#{!identity.loggedIn}"/>
                     <rich:tooltip styleClass="tooltip" layout="block" showDelay="500" rendered="#{!identity.loggedIn}">
                         <span style="white-space: nowrap"> Чтобы добавить пост требуется авторизация.</span>

@@ -61,9 +61,10 @@ public class User extends AbstractEntity {
         this.email = email;
     }
 
-    public User(final String name, final String username, final String email, final String password) {
+    public User(final String name, final String username, final String email, final String password, boolean admin) {
         this(name, username, email);
         this.password = password;
+        this.admin = admin;
     }
 
     @NotNull

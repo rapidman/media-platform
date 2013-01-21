@@ -152,8 +152,6 @@ public class UserManager extends AbstractUserManager{
         ConversationUtils.safeBegin(conversation);
     }
 
-
-
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
         if ("conversation_ended".equals(obj)) {
             FacesUtil.redirectToEndConversation();

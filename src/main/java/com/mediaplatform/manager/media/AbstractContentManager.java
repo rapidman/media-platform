@@ -3,7 +3,10 @@ package com.mediaplatform.manager.media;
 import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.*;
+import com.mediaplatform.model.User;
+import com.mediaplatform.security.*;
 
+import javax.ejb.TransactionAttribute;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -28,7 +31,7 @@ public abstract class AbstractContentManager extends AbstractManager {
         return appEm.find(Content.class, id);
     }
 
-    public void saveOrUpdate(Content content, Genre genre, FileEntry video, FileEntry cover) {
+    protected void saveOrUpdate(Content content, Genre genre, FileEntry video, FileEntry cover) {
         content.setGenre(genre);
         if (video != null) {
             appEm.persist(video);
@@ -54,11 +57,11 @@ public abstract class AbstractContentManager extends AbstractManager {
         }
     }
 
-    public void update(Content content) {
+    protected void update(Content content) {
         appEm.merge(content);
     }
 
-    public void delete(Content content) {
+    protected void delete(Content content) {
         content = getContentById(content.getId());
         Genre genre = content.getGenre();
         genre.getContentList().remove(content);

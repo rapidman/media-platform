@@ -45,7 +45,15 @@
                 ]
             });
         </script>
-        <ui:include src="/include/commentPart.xhtml"/>
+
+        <ui:include src="/include/contentInfoPart.xhtml"/>
+        <br/>
+        <h:panelGroup layout="block">
+            <rich:collapsiblePanel header="Описание видео" expanded="true" switchType="client">
+                <h:outputText value="#{contentManager.selectedContent.description}" escape="false"/>
+            </rich:collapsiblePanel>
+            <ui:include src="/include/commentPart.xhtml"/>
+        </h:panelGroup>
     </ui:define>
 </ui:composition>
 

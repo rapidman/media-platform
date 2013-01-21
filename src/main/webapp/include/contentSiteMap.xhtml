@@ -15,7 +15,7 @@
             <f:param name="id" value="#{contentManager.selectedGenre.id}"/>
         </h:link>
         <h:panelGroup>&rarr;</h:panelGroup>
-        <h:outputText value="#{contentManager.selectedContent.title}"/>
+        <h:outputText value="#{empty contentManager.selectedContent.title ? '?' : contentManager.selectedContent.title}"/>
     </h:panelGrid>
 
 </ui:composition>

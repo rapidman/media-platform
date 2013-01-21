@@ -1,0 +1,51 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <h:outputStylesheet>
+        .firstCntCol {
+            width: 50px;
+            text-align: left;
+        }
+
+        .secondCntCol {
+            text-align: left;
+            width: 100%;
+        }
+
+        .thirdCntCol {
+            text-align: right;
+            width: 100%;
+        }
+
+    </h:outputStylesheet>
+    <h:form>
+        <h:panelGrid columns="3" columnClasses="firstCntCol,secondCntCol,thirdCntCol">
+            <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.author.avatar, 'rc48x48.jpg')}"/>
+
+            <h:panelGroup>
+                <h:link id="viewUser" value="#{contentManager.selectedContent.author.name}" outcome="user"
+                        style="white-space: nowrap;">
+                    <f:param name="id" value="#{contentManager.selectedContent.author.username}"/>
+                </h:link>
+                |
+                <h:outputText value="#{contentManager.selectedContent.createDateTime}">
+                    <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                </h:outputText>
+                |
+                <h:outputText value="#{contentManager.selectedContent.viewCount} Просмотров"/>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{userManager.checkCanEdit(contentManager.selectedContent.author)}">
+                <h:commandLink action="#{contentManager.editContent(content.id)}" value="Редактировать"/>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:form>
+
+</ui:composition>

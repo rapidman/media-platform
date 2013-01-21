@@ -40,6 +40,19 @@ public class CommentManager extends AbstractManager implements Serializable{
         currentComment = null;
     }
 
+    @TransactionAttribute
+    @User
+    public void delete(Comment comment){
+        comment = appEm.find(Comment.class, comment.getId());
+        appEm.remove(comment);
+        messages.info("Комментарий успешно удален.");
+        refresh();
+    }
+
+    private void refresh() {
+        comments = null;
+    }
+
     public void assignContentId(String id) {
         if(id != null){
             this.contentId = Long.parseLong(id);

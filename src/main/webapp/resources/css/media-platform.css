@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     /*background: #94aebc url('#{facesContext.externalContext.requestContextPath}/images/body-bg.jpg') left bottom repeat;*/
-    font: normal 12px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
+    font: normal 10px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
     height: 100%;
 }
 

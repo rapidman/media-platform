@@ -25,6 +25,7 @@ public class Content extends AbstractContent{
     private FileEntry cover;
     private ModerationStatus moderationStatus = ModerationStatus.WAITING_FOR_MODERATION;
     private List<Comment> comments;
+    private int viewCount;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -84,5 +85,17 @@ public class Content extends AbstractContent{
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public void incViewCount(){
+        viewCount++;
     }
 }

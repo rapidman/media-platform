@@ -13,6 +13,7 @@ import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.solder.servlet.http.RequestParam;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -117,6 +118,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         return "/view-content-list";
     }
 
+
     @com.mediaplatform.security.User
     public void add() {
         ConversationUtils.safeBegin(conversation);
@@ -142,7 +144,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         }
     }
 
-    @User
+    @com.mediaplatform.security.User
     public void editContent(Long id) {
         view(id);
         if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
@@ -152,8 +154,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
         ConversationUtils.safeBegin(conversation);
     }
 
+    @TransactionAttribute
     private void view(Long id) {
         selectedContent = getContentById(id);
+        selectedContent.incViewCount();
+        update(selectedContent);
         selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
     }
 
@@ -171,7 +176,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
         }
     }
 
-    @User
+    @com.mediaplatform.security.User
+    @TransactionAttribute
     public void saveOrUpdate() {
         boolean edit = selectedContent.getId() != null;
         if(edit && !Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
@@ -209,7 +215,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
         imgFileUploadBean.clearUploadData();
     }
 
-    @Admin
+    @com.mediaplatform.security.User
+    @TransactionAttribute
     public void delete() {
         if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
             FacesUtil.redirectToDeniedPage();

@@ -54,8 +54,8 @@ public class ApplicationInitializer {
 
     private static List<User> users =
             Arrays.asList(
-                    new User("admin", "admin", "admin@example.com", "admin"),
-                    new User("Shane Bryzak", "shane", "shane@example.com", "brisbane")
+                    new User("admin", "admin", "admin@example.com", "admin", true),
+                    new User("Shane Bryzak", "shane", "shane@example.com", "brisbane", false)
             );
     private static final TwoTuple<String, String>[] genres = new TwoTuple[]{
             new TwoTuple<String, String>("ИНФОРМАЦИЯ", "Статьи о конкретном термине или явлении."),

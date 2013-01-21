@@ -112,7 +112,7 @@
         </navigation-case>
 
         <navigation-case>
-            <from-outcome>topusers</from-outcome>
+            <from-outcome>users</from-outcome>
             <if>#{true}</if>
             <to-view-id>/account/viewTopUserList.xhtml</to-view-id>
             <redirect/>
