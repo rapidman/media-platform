@@ -1,0 +1,32 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                 xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <h:outputStylesheet>
+        .miniContent{
+            width: 47px;
+            height: 73px;
+        }
+    </h:outputStylesheet>
+
+    <rich:panel bodyClass="miniContent">
+        <h:panelGrid columns="1" columnClasses="top">
+            <h:panelGroup>
+                <h:link id="viewContent" outcome="vod" style="white-space: nowrap;">
+                    <h:graphicImage value="#{viewHelper.getImgUrlByStr(content.cover, 'rc47x73.jpg')}" />
+                    <f:param name="id" value="#{content.id}"/>
+                </h:link>
+            </h:panelGroup>
+        </h:panelGrid>
+        <rich:tooltip styleClass="tooltip" layout="block" showDelay="500">
+            <span style="white-space: nowrap"><h:outputText value="#{viewHelper.viewDescription(content.description)}" escape="false"/></span>
+        </rich:tooltip>
+    </rich:panel>
+
+</ui:composition>

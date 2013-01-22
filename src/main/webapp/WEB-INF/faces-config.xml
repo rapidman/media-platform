@@ -77,6 +77,13 @@
         </navigation-case>
 
         <navigation-case>
+            <from-action>#{contentManager.editContent(contentManager.selectedContent.id)}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/content/editContent.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
             <from-action>#{liveStreamManager.viewLiveVideo(stream)}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveVideo.xhtml</to-view-id>

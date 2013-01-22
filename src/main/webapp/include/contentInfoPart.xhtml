@@ -39,11 +39,38 @@
                     <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
                 </h:outputText>
                 |
-                <h:outputText value="#{contentManager.selectedContent.viewCount} Просмотров"/>
+                <h:outputText value="Просмотров "/>
+                <h:outputText value="[#{contentManager.selectedContent.viewCount}]" style="font-weight: bold"/>
+                |
+                <h:outputText value="Рэйтинг "/>
+                <h:panelGroup id="rate">
+                    <h:panelGroup rendered="#{identity.loggedIn and contentManager.canRate()}">
+                        <a4j:commandLink action="${contentManager.addRate(true)}" render="rate">
+                            <h:graphicImage width="16" height="16" value="/images/plus.png"/>
+                        </a4j:commandLink>
+                        &nbsp;
+                        <a4j:commandLink action="${contentManager.addRate(false)}" render="rate">
+                            <h:graphicImage width="16" height="16" value="/images/minus.png"/>
+                        </a4j:commandLink>
+                        &nbsp;
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{!identity.loggedIn}" id="rateUnauth">
+                        <h:graphicImage width="16" height="16" value="/images/plus.png"/>
+                        &nbsp;
+                        <h:graphicImage width="16" height="16" value="/images/minus.png"/>
+                        &nbsp;
+                        <rich:tooltip id="rateWarn" styleClass="tooltip" layout="block">
+                            <span style="white-space: nowrap">Голосовать могут только зарегистрированные пользователи.</span>
+                        </rich:tooltip>
+                    </h:panelGroup>
+
+                    <h:outputText value="[#{contentManager.selectedContent.rate}]" style="font-weight: bold" />
+                </h:panelGroup>
+
             </h:panelGroup>
 
             <h:panelGroup rendered="#{userManager.checkCanEdit(contentManager.selectedContent.author)}">
-                <h:commandLink action="#{contentManager.editContent(content.id)}" value="Редактировать"/>
+                <h:commandLink action="#{contentManager.editContent(contentManager.selectedContent.id)}" value="Редактировать"/>
             </h:panelGroup>
         </h:panelGrid>
     </h:form>

@@ -23,6 +23,21 @@
 
     <ui:define name="sidebar">
         <ui:include src="/include/navTree.xhtml"/>
+        <h:panelGroup rendered="#{!empty contentManager.getAuthorTopContentList()}">
+            <br/>
+            <fieldset>
+                <legend>
+                    <h:outputText value="Другие посты автора" style="font-weight: bold;"/>
+                    <h:link value=" #{contentManager.selectedContent.author.name}" outcome="user" style="white-space: nowrap;">
+                        <f:param name="id" value="#{contentManager.selectedContent.author.username}"/>
+                    </h:link>
+                </legend>
+                <rich:dataGrid id="leftContentGrid" value="#{contentManager.getAuthorTopContentList()}" var="content" columns="2" elements="9" border="0">
+                    <ui:include src="../include/miniContentPart.xhtml"/>
+                </rich:dataGrid>
+                <rich:dataScroller for="leftContentGrid" renderIfSinglePage="false" />
+            </fieldset>
+        </h:panelGroup>
     </ui:define>
 
     <ui:define name="content">

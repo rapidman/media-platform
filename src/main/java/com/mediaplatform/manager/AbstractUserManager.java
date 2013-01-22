@@ -29,7 +29,7 @@ public abstract class AbstractUserManager extends AbstractManager{
 
     public List<User> getTopUserList(){
         if(appCacheBean.getTopUsers() == null || appCacheBean.getTopUsers().size() == 0){
-            List topUsers = findUsers(null, SortOrder.ascending, null);
+            List topUsers = findUsers(null, SortOrder.descending, null);
             appCacheBean.setTopUsers(topUsers);
         }
         return appCacheBean.getTopUsers();
@@ -56,4 +56,8 @@ public abstract class AbstractUserManager extends AbstractManager{
         return order != null && SortOrder.unsorted != order;
     }
 
+    public User getById(Long id) {
+        return appEm.find(User.class, id);
+
+    }
 }

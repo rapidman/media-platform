@@ -32,6 +32,7 @@ public abstract class AbstractEntity implements Serializable{
         this.id = id;
     }
 
+    @Column(name = "entity_type")
     @NotNull
     @Enumerated(EnumType.STRING)
     public EntityType getEntityType() {

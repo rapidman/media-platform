@@ -1,9 +1,7 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.event.*;
-import com.mediaplatform.jsf.CatalogTreeBean;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
-import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
 import com.mediaplatform.security.*;
@@ -63,10 +61,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     private static final int HOME_PAGE_LIST_MAX_SIZE = 10;
 
-
     @Inject
     @RequestParam("cntid")
     private Instance<Long> selectedContentId;
+
+    private List<Content> authorTopContentList;
 
 
     @Produces
@@ -160,6 +159,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedContent.incViewCount();
         update(selectedContent);
         selectedGenre = catalogManager.getById(selectedContent.getGenre().getId());
+        authorTopContentList = null;
     }
 
     public void validateGenreId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
@@ -232,6 +232,19 @@ public class ContentManager extends AbstractContentManager implements Serializab
         imgFileUploadBean.clearUploadData();
     }
 
+    @com.mediaplatform.security.User
+    @TransactionAttribute
+    public void addRate(boolean direction){
+        RateInfo rateInfo = new RateInfo(currentUser.getId(), direction);
+        if(selectedContent.getContentRates().contains(rateInfo)){
+            return;
+        }
+        selectedContent.getContentRates().add(rateInfo);
+        selectedContent.addRate(direction);
+        update(selectedContent);
+        updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
+    }
+
     //TODO redirect to list view
     public void endConversation(){
         ConversationUtils.safeEnd(conversation);
@@ -269,6 +282,16 @@ public class ContentManager extends AbstractContentManager implements Serializab
         return findPopularList(HOME_PAGE_LIST_MAX_SIZE);
     }
 
+    public List<Content> getAuthorTopContentList(){
+        if(authorTopContentList == null){
+            authorTopContentList = appEm.createQuery("select c from Content c where c.author.id= :userId and c.id <> :currentContentId order by c.rate desc").
+                    setParameter("userId", selectedContent.getAuthor().getId()).
+                    setParameter("currentContentId", selectedContent.getId()).getResultList();
+
+        }
+        return authorTopContentList;
+    }
+
     public String getVideoUrl() {
         if (selectedContent == null || selectedContent.getMediaFile() == null) return null;
         return viewHelper.get().getVideoUrl(selectedContent.getMediaFile());
@@ -299,6 +322,13 @@ public class ContentManager extends AbstractContentManager implements Serializab
         if (selectedContent == null || selectedContent.getCover() == null) return null;
         return viewHelper.get().getImgUrlExt(selectedContent.getCover(), format);
     }
+
+    public boolean canRate(){
+        if(!identity.isLoggedIn()) return false;
+        if(selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
+        return true;
+    }
+
 
 
 }

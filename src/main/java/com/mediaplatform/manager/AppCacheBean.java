@@ -73,6 +73,14 @@ public class AppCacheBean {
         refreshUsers();
     }
 
+    public void observeUpdateUser(@Observes CreateContentEvent createContentEvent){
+        refreshUsers();
+    }
+
+    public void observeUpdateUser(@Observes UpdateContentEvent updateContentEvent){
+        refreshUsers();
+    }
+
     private void refreshUsers() {
         allUsers = null;
         topUsers = null;

@@ -1,6 +1,5 @@
 package com.mediaplatform.model;
 
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.*;
 import org.jboss.solder.core.Veto;
 
@@ -26,6 +25,8 @@ public class Content extends AbstractContent{
     private ModerationStatus moderationStatus = ModerationStatus.WAITING_FOR_MODERATION;
     private List<Comment> comments;
     private int viewCount;
+    private int rate;
+    private List<RateInfo> contentRates;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -97,5 +98,34 @@ public class Content extends AbstractContent{
 
     public void incViewCount(){
         viewCount++;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    @CollectionTable(name = "content_rates", joinColumns = {@JoinColumn(name="rated_obj_id", referencedColumnName = "id"), @JoinColumn(name="rated_obj_type", referencedColumnName = "entity_type")})
+    @ElementCollection(targetClass = RateInfo.class)
+    public List<RateInfo> getContentRates() {
+        if(contentRates == null){
+            contentRates = new ArrayList<RateInfo>();
+        }
+        return contentRates;
+    }
+
+    public void setContentRates(List<RateInfo> contentRates) {
+        this.contentRates = contentRates;
+    }
+
+    public void addRate(boolean up){
+        if(up){
+            rate++;
+        }else{
+            rate--;
+        }
     }
 }
