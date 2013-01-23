@@ -217,6 +217,10 @@ public class UserManager extends AbstractUserManager{
         return isOwner;
     }
 
+    public boolean checkAdmin(){
+        return Restrictions.checkAdmin(identity);
+    }
+
     public List<User> getSortedTopUserList(){
         if(sortedTopUsers == null){
             sortedTopUsers = findUsers(nameOrder, contentCountOrder, rateOrder);

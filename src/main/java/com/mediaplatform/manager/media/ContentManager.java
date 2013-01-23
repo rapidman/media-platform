@@ -68,9 +68,6 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private List<Content> authorTopContentList;
 
 
-    @Produces
-    @ConversationScoped
-    @Named("currentContent")
     public Content getSelectedContent() {
         if (selectedContent == null) {
             selectedContent = new Content();
@@ -163,11 +160,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public void validateGenreId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
-        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Genre ID not defined");
+        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Не указан ИД жанра");
         if(ok){
             Long id = Long.parseLong(String.valueOf(obj));
             if(catalogManager.getById(id) == null){
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Genre with ID '" + id + "' not found", null));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Жанр с ИД '" + id + "' не найден", null));
                 ok = false;
             }
         }
@@ -203,10 +200,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
         super.saveOrUpdate(selectedContent, selectedGenre, mediaFile, cover);
         if (edit) {
-            messages.info("Обновленно успешно!");
+            messages.info("Обновленно успешно! После модерации пост будет доступен другим пользователям.");
             updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
         } else {
-            messages.info("Сохранено успешно!");
+            messages.info("Сохранено успешно! После модерации пост будет доступен другим пользователям.");
             createEvent.fire(new CreateContentEvent(selectedContent.getId(), getExpandedCatalogIds()));
         }
 

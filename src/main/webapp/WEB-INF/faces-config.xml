@@ -84,6 +84,13 @@
         </navigation-case>
 
         <navigation-case>
+            <from-action>#{adminContentManager.show}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/admin/viewContentList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
             <from-action>#{liveStreamManager.viewLiveVideo(stream)}</from-action>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveVideo.xhtml</to-view-id>
