@@ -242,6 +242,22 @@ public class ContentManager extends AbstractContentManager implements Serializab
         updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
     }
 
+    @Admin
+    @TransactionAttribute
+    public void moderationAllow(){
+        selectedContent.setModerationStatus(ModerationStatus.ALLOWED);
+        update(selectedContent);
+        messages.info("Статус модерации изменен на Принято.");
+    }
+
+    @Admin
+    @TransactionAttribute
+    public void moderationDisallow(){
+        selectedContent.setModerationStatus(ModerationStatus.DISALLOWED);
+        update(selectedContent);
+        messages.info("Статус модерации изменен Отклонено.");
+    }
+
     //TODO redirect to list view
     public void endConversation(){
         ConversationUtils.safeEnd(conversation);

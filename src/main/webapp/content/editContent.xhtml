@@ -72,6 +72,20 @@
                             <h:commandButton value="Сохранить" action="#{contentManager.saveOrUpdate}" />
                             <h:button onclick="viewGenre('#{contentManager.selectedGenre.id}'); return false;" value="Закрыть"/>
                         </h:panelGrid>
+                        <h:panelGroup rendered="#{userManager.checkAdmin}">
+                            <fieldset>
+                                <legend style="font-weight: bold;">Модерация</legend>
+                                <h:panelGrid columns="2" columnClasses="top">
+                                    <h:outputLabel for="moderationReason" value="Причина:"/>
+                                    <h:inputTextarea value="#{contentManager.selectedContent.moderationReason}" id="moderationReason" cols="100" rows="4"/>
+
+                                    <h:commandButton action="#{contentManager.moderationAllow}" value="Принять" rendered="#{contentManager.selectedContent.moderationStatusAsInt == 2 or contentManager.selectedContent.moderationStatusAsInt == 0}"/>
+                                    <h:commandButton action="#{contentManager.moderationDisallow}" value="Отклонить" rendered="#{contentManager.selectedContent.moderationStatusAsInt == 1 or contentManager.selectedContent.moderationStatusAsInt == 0}"/>
+                                    <h:panelGroup rendered="#{contentManager.selectedContent.moderationStatusAsInt != 0}"/>
+                                </h:panelGrid>
+                            </fieldset>
+                        </h:panelGroup>
+
                         <h:panelGrid columns="5" rendered="#{!empty contentManager.selectedContent.id}" columnClasses="top">
                             <h:panelGroup rendered="#{empty contentManager.selectedContent.mediaFile}"/>
                             <h:link id="viewContent" value="Смотреть (VOD)" outcome="vod" style="white-space: nowrap;" rendered="#{!empty contentManager.selectedContent.mediaFile}">

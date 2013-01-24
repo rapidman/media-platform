@@ -27,6 +27,7 @@ public class Content extends AbstractContent{
     private int viewCount;
     private int rate;
     private List<RateInfo> contentRates;
+    private String moderationReason;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -65,6 +66,11 @@ public class Content extends AbstractContent{
 
     public void setCover(FileEntry cover) {
         this.cover = cover;
+    }
+
+    @Transient
+    public int getModerationStatusAsInt(){
+        return getModerationStatus().ordinal();
     }
 
     @Enumerated(EnumType.ORDINAL)
@@ -119,6 +125,14 @@ public class Content extends AbstractContent{
 
     public void setContentRates(List<RateInfo> contentRates) {
         this.contentRates = contentRates;
+    }
+
+    public String getModerationReason() {
+        return moderationReason;
+    }
+
+    public void setModerationReason(String moderationReason) {
+        this.moderationReason = moderationReason;
     }
 
     public void addRate(boolean up){
