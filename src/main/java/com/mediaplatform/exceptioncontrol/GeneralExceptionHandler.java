@@ -19,6 +19,7 @@ package com.mediaplatform.exceptioncontrol;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.Identity;
 import org.jboss.solder.logging.Logger;
 import org.jboss.solder.exception.control.CaughtException;
 import org.jboss.solder.exception.control.Handles;
@@ -41,6 +42,9 @@ public class GeneralExceptionHandler {
     @Inject
     private Logger logger;
 
+    @Inject
+    private Identity identity;
+
     public void printExceptionMessage(@Handles CaughtException<Throwable> event, Logger log) {
             log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
         if (event.getException().getMessage() != null &&
@@ -55,7 +59,12 @@ public class GeneralExceptionHandler {
 
     public void handleAuthorizationException(@Handles CaughtException<AuthorizationException> evt) {
         evt.handled();
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You do not have the necessary permissions to perform that operation", null));
+        if(!identity.isLoggedIn()){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "У Вас недостаточно прав для выполнения данной операции. Требуется авторизация.", null));
+            FacesUtil.redirectToLoginPage();
+            return;
+        }
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "У Вас недостаточно прав для выполнения данной операции", null));
         FacesUtil.redirectToDeniedPage();
     }
 

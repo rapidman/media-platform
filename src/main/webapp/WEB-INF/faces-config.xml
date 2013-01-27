@@ -203,18 +203,6 @@
 
     </navigation-rule>
 
-    <navigation-rule>
-        <from-view-id>/password.xhtml</from-view-id>
-
-        <navigation-case>
-            <from-action>#{passwordManager.changePassword}</from-action>
-            <if>#{passwordManager.changed}</if>
-            <to-view-id>/account/userProfile.xhtml?id=#{currentUser.username}</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-    </navigation-rule>
-
     <application>
         <resource-bundle>
             <base-name>messages</base-name>

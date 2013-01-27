@@ -24,6 +24,7 @@ public class CommentManager extends AbstractManager implements Serializable{
     private Comment currentComment;
     private List<Comment> comments;
     private Long contentId;
+    private Long parentCommentId;
     @Inject
     private ContentManager contentManager;
 

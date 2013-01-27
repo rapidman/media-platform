@@ -1,0 +1,25 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <h:form rendered="#{identity.loggedIn}">
+        <rich:collapsiblePanel header="Оставить комментарий" expanded="false" switchType="client">
+            <h:inputHidden value="#{commentManager.contentId}"/>
+            <h:inputHidden value="#{commentManager.contentId}"/>
+            <h:panelGrid columns="1">
+                <h:inputTextarea id="desc" value="#{commentManager.currentComment.description}" cols="100"
+                                 rows="5"/>
+                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Написать"
+                                   render="commentsGrid,desc"/>
+            </h:panelGrid>
+        </rich:collapsiblePanel>
+    </h:form>
+
+
+</ui:composition>

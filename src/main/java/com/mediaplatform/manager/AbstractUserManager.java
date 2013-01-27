@@ -12,6 +12,11 @@ import java.util.List;
  * Time: 8:48 PM
  */
 public abstract class AbstractUserManager extends AbstractManager{
+
+    protected void update(User user) {
+        appEm.merge(user);
+    }
+
     public User findByUsername(String userName) {
         try {
             return (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();

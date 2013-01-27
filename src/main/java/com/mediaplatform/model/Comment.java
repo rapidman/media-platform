@@ -2,11 +2,10 @@ package com.mediaplatform.model;
 
 import org.jboss.solder.core.Veto;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: timur
@@ -20,7 +19,8 @@ import javax.validation.constraints.NotNull;
 @Veto
 public class Comment extends AbstractContent{
     private Content content;
-
+    private List<Comment> replies;
+    private Comment parent;
     public Comment() {
         super(EntityType.COMMENT);
     }
@@ -33,5 +33,26 @@ public class Comment extends AbstractContent{
 
     public void setContent(Content content) {
         this.content = content;
+    }
+
+    @OneToMany(mappedBy = "parent")
+    public List<Comment> getReplies() {
+        if(replies == null){
+            replies = new ArrayList<Comment>();
+        }
+        return replies;
+    }
+
+    public void setReplies(List<Comment> replies) {
+        this.replies = replies;
+    }
+
+    @ManyToOne
+    public Comment getParent() {
+        return parent;
+    }
+
+    public void setParent(Comment parent) {
+        this.parent = parent;
     }
 }

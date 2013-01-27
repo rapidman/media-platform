@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.manager.UserManager;
+import com.mediaplatform.model.User;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.international.status.builder.BundleTemplateMessage;
 
@@ -46,8 +47,12 @@ public class CurrentPasswordValidator implements Validator {
     Messages messages;
 
     public void validate(final FacesContext ctx, final UIComponent comp, final Object value) throws ValidatorException {
+        User selectedUser = userManager.getSelectedUser();
+        if(selectedUser.getUserInfo() != null && selectedUser.getUserInfo().getSocialNetType() != null && selectedUser.getPassword() == null){
+            return; //для юзеров пришедших из соц. сетей текущий пароль при смене его не проверяем
+        }
         String currentPassword = (String) value;
-        if ((userManager.getSelectedUser().getPassword() != null) && !userManager.getSelectedUser().getPassword().equals(currentPassword)) {
+        if ((selectedUser.getPassword() != null) && !selectedUser.getPassword().equals(currentPassword)) {
             /*
              * FIXME: This is an ugly way to put i18n in FacesMessages: https://jira.jboss.org/browse/SEAMFACES-24
              */

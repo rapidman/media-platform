@@ -18,6 +18,7 @@ package com.mediaplatform.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -25,6 +26,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.*;
 import org.hibernate.validator.constraints.Email;
 import org.jboss.solder.core.Veto;
 
@@ -40,6 +43,7 @@ import org.jboss.solder.core.Veto;
 @Entity
 @Table(name = "platform_user", uniqueConstraints = @UniqueConstraint(columnNames={"username"}))
 @Veto
+@Indexed
 public class User extends AbstractEntity {
     private String username;
     private String password;
@@ -49,6 +53,11 @@ public class User extends AbstractEntity {
     private List<Content> contents;
     private FileEntry avatar;
     private boolean admin;
+    private String description;
+    private Date createDate = new Date();
+    private Gender gender;
+    //сообщения для этого юзера
+    private List<UserMessage> userMessages;
 
     public User() {
         super(EntityType.USER);
@@ -67,6 +76,7 @@ public class User extends AbstractEntity {
         this.admin = admin;
     }
 
+    @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
     @NotNull
     @Size(min = 1, max = 100)
     public String getName() {
@@ -156,6 +166,47 @@ public class User extends AbstractEntity {
         return getContents().size();
     }
 
+    @Lob
+    @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
+    @Boost(3)
+    @Type(type="org.hibernate.type.StringClobType")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Temporal(TemporalType.DATE)
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    @OneToMany
+    public List<UserMessage> getUserMessages() {
+        if(userMessages == null){
+            userMessages = new ArrayList<UserMessage>();
+        }
+        return userMessages;
+    }
+
+    public void setUserMessages(List<UserMessage> userMessages) {
+        this.userMessages = userMessages;
+    }
 
     @Override
     public String toString() {

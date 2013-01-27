@@ -1,0 +1,40 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <h:panelGrid columns="2" width="480px" columnClasses="firstCol,secondCol">
+        <h:graphicImage value="#{viewHelper.getImgUrlByStr(msg.author.avatar, 'rc48x48.jpg')}"/>
+        <h:panelGrid columns="1" width="100%">
+
+            <h:panelGroup layout="block">
+                <h:panelGroup layout="block" style="float: left;">
+                    <h:link id="viewUser" value="#{msg.author.name}" outcome="user"
+                            style="white-space: nowrap;">
+                        <f:param name="id" value="#{msg.author.username}"/>
+                    </h:link>
+                    |
+                    <h:outputText value="#{msg.createDateTime}">
+                        <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                    </h:outputText>
+                </h:panelGroup>
+                <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(msg.author)}">
+                    <a4j:commandLink action="#{userManager.delete(msg)}"
+                                     render="messageGrid">Удалить X</a4j:commandLink>
+                </h:panelGroup>
+            </h:panelGroup>
+            <h:panelGroup layout="block">
+                <hr/>
+                <br/>
+
+                <p><h:outputText value="#{msg.description}"></h:outputText></p>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGrid>
+
+</ui:composition>

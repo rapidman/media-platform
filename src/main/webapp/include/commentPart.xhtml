@@ -18,46 +18,14 @@
         }
 
     </h:outputStylesheet>
-    <h:form rendered="#{identity.loggedIn}">
-        <rich:collapsiblePanel header="Оставить комментарий" expanded="false" switchType="client">
-            <h:inputHidden value="#{commentManager.contentId}"/>
-            <h:panelGrid columns="1">
-                <h:inputTextarea id="desc" value="#{commentManager.currentComment.description}" cols="100"
-                                 rows="5"/>
-                <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Написать"
-                                   render="commentsGrid,desc"/>
-            </h:panelGrid>
-        </rich:collapsiblePanel>
-    </h:form>
+
+    <ui:include src="commentFormPart.xhtml"/>
     <h:form>
         <rich:dataGrid id="commentsGrid" value="#{commentManager.comments}" var="comment" columns="1"
                        elements="9" width="100%" border="0">
-            <h:panelGrid columns="2" width="480px" columnClasses="firstCol,secondCol">
-                <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.author.avatar, 'rc48x48.jpg')}"/>
-                <h:panelGrid columns="1" width="100%">
-
-                    <h:panelGroup layout="block">
-                        <h:panelGroup layout="block" style="float: left;">
-                            <h:link id="viewUser" value="#{comment.author.name}" outcome="user"
-                                    style="white-space: nowrap;">
-                                <f:param name="id" value="#{comment.author.username}"/>
-                            </h:link>
-                            |
-                            <h:outputText value="#{comment.createDateTime}">
-                                <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
-                            </h:outputText>
-                        </h:panelGroup>
-                        <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(comment.author)}">
-                            <a4j:commandLink action="#{commentManager.delete(comment)}" render="commentsGrid">Удалить X</a4j:commandLink>
-                        </h:panelGroup>
-                    </h:panelGroup>
-                    <h:panelGroup layout="block">
-                        <hr/><br/>
-                        <p><h:outputText value="#{comment.description}"></h:outputText></p>
-                    </h:panelGroup>
-                </h:panelGrid>
-
-            </h:panelGrid>
+            <ui:include src="../include/messagePart.xhtml">
+                <ui:param name="msg" value="#{comment}"/>
+            </ui:include>
         </rich:dataGrid>
         <rich:dataScroller for="commentsGrid" renderIfSinglePage="false"/>
     </h:form>

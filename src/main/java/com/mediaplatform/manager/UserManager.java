@@ -1,15 +1,12 @@
 package com.mediaplatform.manager;
 
 import com.mediaplatform.account.CurrentUserManager;
-import com.mediaplatform.event.DeleteCatalogEvent;
+import com.mediaplatform.account.PasswordManager;
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
-import com.mediaplatform.model.DataType;
-import com.mediaplatform.model.FileEntry;
-import com.mediaplatform.model.ParentRef;
-import com.mediaplatform.model.User;
+import com.mediaplatform.model.*;
 import com.mediaplatform.security.Restrictions;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.ViewHelper;
@@ -23,12 +20,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -49,15 +45,10 @@ public class UserManager extends AbstractUserManager{
     private User selectedUser;
 
     @Inject
+    private Instance<PasswordManager> passwordManagerInstance;
+
+    @Inject
     private FacesContext facesContext;
-
-    @NotNull
-    @Size(min = 5, max = 15)
-    private String confirmPassword;
-
-    @NotNull
-    @Size(min = 5, max = 15)
-    private String newPassword;
 
     @Inject
     private Instance<ViewHelper> viewHelper;
@@ -78,8 +69,6 @@ public class UserManager extends AbstractUserManager{
     private SortOrder contentCountOrder = SortOrder.unsorted;
 
     private SortOrder rateOrder = SortOrder.unsorted;
-
-    private boolean changePassword = false;
 
     private List<User> sortedTopUsers;
 
@@ -107,31 +96,36 @@ public class UserManager extends AbstractUserManager{
 
     @com.mediaplatform.security.User
     public void save() {
-        if (!checkRights()) return;
+        if (!checkRightsToEdit()) return;
 
-        UploadedFile uploadedAvatar = null;
         if (imgFileUploadBean.getSize() > 0) {
-            uploadedAvatar = imgFileUploadBean.getFiles().get(0);
+            UploadedFile uploadedAvatar = imgFileUploadBean.getFiles().get(0);
+            FileEntry avatar = fileStorageManager.get().saveFile(
+                    new ParentRef(selectedUser.getId(),
+                            selectedUser.getEntityType()),
+                    uploadedAvatar,
+                    DataType.AVATAR);
+            appEm.persist(avatar);
+            selectedUser.setAvatar(avatar);
         }
-        FileEntry avatar = fileStorageManager.get().saveFile(
-                new ParentRef(selectedUser.getId(),
-                        selectedUser.getEntityType()),
-                uploadedAvatar,
-                DataType.AVATAR);
-        appEm.persist(avatar);
-        selectedUser.setAvatar(avatar);
-        appEm.merge(selectedUser);
-        if (Restrictions.isOwner(currentUser, selectedUser)) {
-            currentUserManager.get().updateCurrentUser(selectedUser);
-        }
+        update(selectedUser);
+        currentUserManager.get().updateCurrentUser(selectedUser);
         messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
         ConversationUtils.safeEnd(conversation);
         updateEvent.fire(selectedUser);
     }
 
     @com.mediaplatform.security.User
+    public void changePassword() {
+        if (!checkRightsToEdit()) return;
+        selectedUser.setPassword(passwordManagerInstance.get().getConfirmPassword());
+        update(selectedUser);
+        messages.info(new DefaultBundleKey("account_password_changed")).defaults("Пароль изменен.");
+    }
+
+    @com.mediaplatform.security.User
     public void remove(User currentUser) {
-        if (!checkRights()) return;
+        if (!checkRightsToEdit()) return;
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
         ConversationUtils.safeEnd(conversation);
@@ -148,7 +142,7 @@ public class UserManager extends AbstractUserManager{
     public void viewUser(String userName) {
         refresh();
         this.selectedUser = findByUsername(userName);
-        if (!checkRights()) return;
+        if (!checkRightsForView()) return;
         ConversationUtils.safeBegin(conversation);
     }
 
@@ -174,16 +168,31 @@ public class UserManager extends AbstractUserManager{
         selectedUser = null;
     }
 
-    private boolean checkRights() {
+    private boolean checkRightsToEdit() {
         if (identity == null || currentUser == null || selectedUser == null) {
             FacesUtil.redirectToEndConversation();
             return false;
         }
         if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedUser)) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Insufficient rights", null));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Недостаточно прав", null));
             FacesUtil.redirectToDeniedPage();
             return false;
         }
+        return true;
+    }
+
+    private boolean checkRightsForView() {
+        if (!identity.isLoggedIn()) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Недостаточно прав", null));
+            FacesUtil.redirectToDeniedPage();
+            return false;
+        }
+
+        if (identity == null || currentUser == null || selectedUser == null) {
+            FacesUtil.redirectToEndConversation();
+            return false;
+        }
+
         return true;
     }
 
@@ -237,22 +246,6 @@ public class UserManager extends AbstractUserManager{
         this.selectedUser = selectedUser;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
     public String getAvatarUrl(String format) {
         if (selectedUser == null || selectedUser.getAvatar() == null) return null;
         return viewHelper.get().getImgUrlExt(selectedUser.getAvatar(), format);
@@ -268,14 +261,6 @@ public class UserManager extends AbstractUserManager{
 
     public Conversation getConversation() {
         return conversation;
-    }
-
-    public boolean isChangePassword() {
-        return changePassword;
-    }
-
-    public void setChangePassword(boolean changePassword) {
-        this.changePassword = changePassword;
     }
 
     public SortOrder getNameOrder() {
@@ -300,6 +285,10 @@ public class UserManager extends AbstractUserManager{
 
     public void setRateOrder(SortOrder rateOrder) {
         this.rateOrder = rateOrder;
+    }
+
+    public Gender[] getGenderValues() {
+       return Gender.values();
     }
 }
 

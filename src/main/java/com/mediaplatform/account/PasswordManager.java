@@ -16,51 +16,20 @@
  */
 package com.mediaplatform.account;
 
-import javax.ejb.Stateful;
 import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.mediaplatform.i18n.DefaultBundleKey;
-import com.mediaplatform.model.User;
-import org.jboss.seam.international.status.Messages;
-
-/**
- * The view controller for changing the user password
- *
- * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
- */
-@Stateful
 @Model
 public class PasswordManager {
-    @PersistenceContext
-    private EntityManager em;
-
-    @Inject
-    private Messages messages;
-
-    @Inject
-    @Authenticated
-    private User user;
-
     @NotNull
-    @Size(min = 5, max = 15)
+    @Size(min = 5, max = 15, message = "Ошибка: Значение должно быть в интервале от 5 до 15")
     private String confirmPassword;
 
-    private boolean changed;
+    @NotNull
+    @Size(min = 5, max = 15, message = "Ошибка: Значение должно быть в интервале от 5 до 15")
+    private String newPassword;
 
-    public void changePassword() {
-        em.merge(user);
-        messages.info(new DefaultBundleKey("account_passwordChanged")).defaults("Password successfully updated.");
-        changed = true;
-    }
-
-    public boolean isChanged() {
-        return changed;
-    }
 
     public void setConfirmPassword(final String password) {
         confirmPassword = password;
@@ -70,4 +39,11 @@ public class PasswordManager {
         return confirmPassword;
     }
 
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
 }
