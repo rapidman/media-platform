@@ -9,26 +9,49 @@
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
     <h:outputStylesheet>
-        .firstCol{
-            width: 50px;
-            text-align: left;
+        .top{
+            vertical-align: top;
+            width: 50%;
         }
-        .secondCol{
-            width: 100%;
+        .bold{
+            font-weight: bold;
         }
-
+        .rf-ctx-lbl{
+            z-index: 999;
+            position: fixed;
+        }
+        .rf-trn-ico-cst{
+            display: none;
+        }
     </h:outputStylesheet>
-
     <ui:include src="commentFormPart.xhtml"/>
     <h:form>
-        <rich:dataGrid id="commentsGrid" value="#{commentManager.comments}" var="comment" columns="1"
-                       elements="9" width="100%" border="0">
-            <ui:include src="../include/messagePart.xhtml">
-                <ui:param name="msg" value="#{comment}"/>
-            </ui:include>
-        </rich:dataGrid>
-        <rich:dataScroller for="commentsGrid" renderIfSinglePage="false"/>
+        <rich:tree id="commentTree" nodeType="#{comment.type}" var="comment" value="#{commentManager.comments}" toggleType="client">
+            <rich:treeNode type="root"  id="rootNodeId" expanded="#{comment.expanded}"
+                           iconCollapsed="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
+                           iconExpanded="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
+                           iconLeaf="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}">
+
+                <ui:include src="commentInnerPart.xhtml"/>
+            </rich:treeNode>
+            <rich:treeNode type="reply"  id="replyNodeId" style="background-color: #f0f8ff;" expanded="#{comment.expanded}"
+                           iconCollapsed="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
+                           iconExpanded="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
+                           iconLeaf="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}">
+
+                <ui:include src="commentInnerPart.xhtml"/>
+            </rich:treeNode>
+        </rich:tree>
     </h:form>
-
-
+    <h:form>
+        <a4j:jsFunction name="addReply" render="commentTree" action="#{commentManager.replyComment}">
+            <a4j:param name="desc" assignTo="#{commentManager.currentComment.description}" />
+            <a4j:param name="parentId" assignTo="#{commentManager.parentCommentId}" />
+        </a4j:jsFunction>
+    </h:form>
+    <h:form>
+        <a4j:jsFunction name="delReply" render="commentTree" action="#{commentManager.deleteReply}">
+            <a4j:param name="commentId" assignTo="#{commentManager.commentId}" />
+        </a4j:jsFunction>
+    </h:form>
 </ui:composition>

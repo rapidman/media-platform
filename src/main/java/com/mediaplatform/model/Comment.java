@@ -21,6 +21,8 @@ public class Comment extends AbstractContent{
     private Content content;
     private List<Comment> replies;
     private Comment parent;
+    private Boolean deleted;
+
     public Comment() {
         super(EntityType.COMMENT);
     }
@@ -54,5 +56,18 @@ public class Comment extends AbstractContent{
 
     public void setParent(Comment parent) {
         this.parent = parent;
+    }
+
+    @Transient
+    public String getType(){
+        return parent == null ? "root" : "reply";
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

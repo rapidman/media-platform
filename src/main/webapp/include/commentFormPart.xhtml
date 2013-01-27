@@ -11,12 +11,11 @@
     <h:form rendered="#{identity.loggedIn}">
         <rich:collapsiblePanel header="Оставить комментарий" expanded="false" switchType="client">
             <h:inputHidden value="#{commentManager.contentId}"/>
-            <h:inputHidden value="#{commentManager.contentId}"/>
             <h:panelGrid columns="1">
                 <h:inputTextarea id="desc" value="#{commentManager.currentComment.description}" cols="100"
                                  rows="5"/>
                 <a4j:commandButton action="#{commentManager.addComment}" execute="@form" value="Написать"
-                                   render="commentsGrid,desc"/>
+                                   render="commentTree,desc"/>
             </h:panelGrid>
         </rich:collapsiblePanel>
     </h:form>

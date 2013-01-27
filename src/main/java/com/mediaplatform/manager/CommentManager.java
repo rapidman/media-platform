@@ -1,5 +1,6 @@
 package com.mediaplatform.manager;
 
+import com.mediaplatform.jsf.CommentTreeNode;
 import com.mediaplatform.manager.media.ContentManager;
 import com.mediaplatform.model.Comment;
 import com.mediaplatform.model.Content;
@@ -10,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,33 +23,66 @@ import java.util.List;
 @ViewScoped
 @Named
 public class CommentManager extends AbstractManager implements Serializable{
+
     private Comment currentComment;
-    private List<Comment> comments;
+    private List<CommentTreeNode> comments;
     private Long contentId;
     private Long parentCommentId;
+    private Long commentId;
     @Inject
     private ContentManager contentManager;
 
     @TransactionAttribute
     @User
     public void addComment(){
-        Content currentContent = contentManager.getContentById(contentId);
-        currentComment.setContent(currentContent);
-        currentComment.setAuthor(currentUser);
-        appEm.persist(currentComment);
+        Content currentContent = saveComment();
         currentContent.getComments().add(currentComment);
         appEm.merge(currentContent);
         comments = null;
         currentComment = null;
     }
 
+    private Content saveComment() {
+        Content currentContent = contentManager.getContentById(contentId);
+        currentComment.setContent(currentContent);
+        currentComment.setAuthor(currentUser);
+        appEm.persist(currentComment);
+        return currentContent;
+    }
+
+    @TransactionAttribute
+    @User
+    public void replyComment(){
+        Comment parentComment = findById(parentCommentId);
+        currentComment.setParent(parentComment);
+        saveComment();
+        parentComment.getReplies().add(currentComment);
+        appEm.merge(parentComment);
+        comments = null;
+        currentComment = null;
+        parentCommentId = null;
+    }
+
     @TransactionAttribute
     @User
     public void delete(Comment comment){
-        comment = appEm.find(Comment.class, comment.getId());
-        appEm.remove(comment);
-        messages.info("Комментарий успешно удален.");
+        comment = findById(comment.getId());
+        comment.setDeleted(true);
+        appEm.merge(comment);
+        messages.info("Комментарий удален.");
         refresh();
+    }
+
+    @TransactionAttribute
+    @User
+    public void deleteReply(){
+        Comment comment = findById(commentId);
+        delete(comment);
+        commentId = null;
+    }
+
+    private Comment findById(Long id) {
+        return appEm.find(Comment.class, id);
     }
 
     private void refresh() {
@@ -71,14 +106,18 @@ public class CommentManager extends AbstractManager implements Serializable{
         this.currentComment = currentComment;
     }
 
-    public List<Comment> getComments() {
+    public List<CommentTreeNode> getComments() {
         if(comments == null){
-            comments = appEm.createQuery("select c from Comment c where c.content.id = :contentId order by c.createDateTime desc").setParameter("contentId", contentId).getResultList();
+            comments = new ArrayList<CommentTreeNode>();
+            List<Comment> result = appEm.createQuery("select c from Comment c where c.content.id = :contentId and c.parent is null order by c.createDateTime desc").setParameter("contentId", contentId).getResultList();
+            for(Comment comment:result){
+                comments.add(new CommentTreeNode(comment, null, null));
+            }
         }
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<CommentTreeNode> comments) {
         this.comments = comments;
     }
 
@@ -90,5 +129,19 @@ public class CommentManager extends AbstractManager implements Serializable{
         this.contentId = contentId;
     }
 
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
 
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
+    }
 }

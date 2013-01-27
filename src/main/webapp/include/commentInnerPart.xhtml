@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <rich:panel rendered="#{!comment.entity.deleted}">
+        <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(comment.entity.author)}">
+            <h:outputLink value="javascript:void(0)" onclick="delReply('#{comment.id}');">Удалить X</h:outputLink>
+        </h:panelGroup>
+        <h:panelGrid columns="2" width="400px">
+            <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"/>
+            <h:panelGroup>
+                <h:panelGrid columns="2" width="100%">
+                    <h:link value="#{comment.entity.author.name}" outcome="user" style="white-space: nowrap;">
+                        <f:param name="id" value="#{comment.entity.author.username}"/>
+                    </h:link>
+                    <h:outputText value="#{comment.entity.createDateTime}">
+                        <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                    </h:outputText>
+                </h:panelGrid>
+                <h:outputText value="#{comment.description}"></h:outputText>
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <textarea class="desc" cols="100" rows="5"/>
+        <input type="button" onclick="addReply(jQuery(this).parent().find('.desc').val(), '#{comment.entity.id}');" value="Ответить"/>
+    </rich:panel>
+    <h:outputText value="Комментарий удален" rendered="#{comment.entity.deleted}"/>
+</ui:composition>

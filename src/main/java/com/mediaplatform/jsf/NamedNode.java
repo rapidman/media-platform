@@ -18,12 +18,12 @@ public abstract class NamedNode implements Serializable {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getType() {
