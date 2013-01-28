@@ -9,26 +9,40 @@
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
     <rich:panel rendered="#{!comment.entity.deleted}">
-        <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(comment.entity.author)}">
-            <h:outputLink value="javascript:void(0)" onclick="delReply('#{comment.id}');">Удалить X</h:outputLink>
-        </h:panelGroup>
-        <h:panelGrid columns="2" width="400px">
+        <f:facet name="header">
+            <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(comment.entity.author)}">
+                <h:outputLink value="javascript:void(0)" onclick="delReply('#{comment.id}');">Удалить X</h:outputLink>
+            </h:panelGroup>
+        </f:facet>
+
+
+        <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -10px;" columnClasses="firstInnerReply,">
             <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"/>
             <h:panelGroup>
-                <h:panelGrid columns="2" width="100%">
-                    <h:link value="#{comment.entity.author.name}" outcome="user" style="white-space: nowrap;">
-                        <f:param name="id" value="#{comment.entity.author.username}"/>
-                    </h:link>
-                    <h:outputText value="#{comment.entity.createDateTime}">
-                        <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
-                    </h:outputText>
-                </h:panelGrid>
-                <h:outputText value="#{comment.description}"></h:outputText>
+                <h:link value="#{comment.entity.author.name}" outcome="user" style="white-space: nowrap;">
+                    <f:param name="id" value="#{comment.entity.author.username}"/>
+                </h:link>
+                |
+                <h:outputText value="#{comment.entity.createDateTime}">
+                    <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                </h:outputText>
             </h:panelGroup>
         </h:panelGrid>
+        <br/>
+        <p>
+            <h:outputText value="#{comment.description}"></h:outputText>
+        </p>
 
-        <textarea class="desc" cols="100" rows="5"/>
-        <input type="button" onclick="addReply(jQuery(this).parent().find('.desc').val(), '#{comment.entity.id}');" value="Ответить"/>
+        <a href="javascript:void(0);" class="replylink">{Ответить}</a>
+        <rich:panel style="display: none;" styleClass="reply">
+            <f:facet name="header">
+                <a href="javascript:void(0);" class="replyClose" style="float: right;">X</a>&nbsp;
+            </f:facet>
+            <textarea class="desc" cols="90" rows="5"/>
+            <br/>
+            <input type="button" onclick="addReply(jQuery(this).parent().find('.desc').val(), '#{comment.entity.id}');" style="position: relative; margin-top: 3px;"
+                   value="Написать"/>
+        </rich:panel>
     </rich:panel>
     <h:outputText value="Комментарий удален" rendered="#{comment.entity.deleted}"/>
 </ui:composition>

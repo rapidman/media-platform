@@ -9,24 +9,75 @@
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
     <h:outputStylesheet>
-        .top{
+        .top {
             vertical-align: top;
             width: 50%;
         }
-        .bold{
+
+        .bold {
             font-weight: bold;
         }
-        .rf-ctx-lbl{
+
+        .rf-ctx-lbl {
             z-index: 999;
             position: fixed;
         }
-        .rf-trn-ico-cst{
+
+        .commentTree .rf-trn-ico-cst {
             display: none;
         }
+
+        .commentReplyHeader {
+            height: 10px;
+        }
+
+        a.replylink {
+            color: #00469B;
+            border-bottom: dashed 1px #00469B;
+            text-decoration: none;
+        }
+
+        .rf-p-hdr {
+            padding: 0px;
+            border-width: 0px;
+            background: transparent none;
+            height: 0px;
+        }
+
+        .rf-cp {
+            background: none;
+        }
+
+        .rf-p-b {
+            padding: 7px;
+        }
+
+        .firstInnerReply{
+            width: 48px;
+        }
+
+        .commentTree .rf-trn-lbl {
+            cursor: default;
+        }
+
     </h:outputStylesheet>
+    <script type="text/javascript">
+        function initPage(){
+            jQuery(".replylink").click(function() {
+                jQuery(this).parent().find('.reply').slideDown(500);
+            });
+            jQuery(".replyClose").click(function() {
+                jQuery(this).parent().parent().parent().find('.reply').slideUp(500);
+            });
+        }
+
+        jQuery(document).ready(function() {
+            initPage();
+        });
+    </script>
     <ui:include src="commentFormPart.xhtml"/>
     <h:form>
-        <rich:tree id="commentTree" nodeType="#{comment.type}" var="comment" value="#{commentManager.comments}" toggleType="client">
+        <rich:tree id="commentTree" nodeType="#{comment.type}" var="comment" value="#{commentManager.comments}" toggleType="client" styleClass="commentTree">
             <rich:treeNode type="root"  id="rootNodeId" expanded="#{comment.expanded}"
                            iconCollapsed="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
                            iconExpanded="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
@@ -34,7 +85,7 @@
 
                 <ui:include src="commentInnerPart.xhtml"/>
             </rich:treeNode>
-            <rich:treeNode type="reply"  id="replyNodeId" style="background-color: #f0f8ff;" expanded="#{comment.expanded}"
+            <rich:treeNode type="reply"  id="replyNodeId" expanded="#{comment.expanded}"
                            iconCollapsed="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
                            iconExpanded="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"
                            iconLeaf="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}">
@@ -44,13 +95,13 @@
         </rich:tree>
     </h:form>
     <h:form>
-        <a4j:jsFunction name="addReply" render="commentTree" action="#{commentManager.replyComment}">
+        <a4j:jsFunction name="addReply" render="commentTree" action="#{commentManager.replyComment}" oncomplete="initPage()">
             <a4j:param name="desc" assignTo="#{commentManager.currentComment.description}" />
             <a4j:param name="parentId" assignTo="#{commentManager.parentCommentId}" />
         </a4j:jsFunction>
     </h:form>
     <h:form>
-        <a4j:jsFunction name="delReply" render="commentTree" action="#{commentManager.deleteReply}">
+        <a4j:jsFunction name="delReply" render="commentTree" action="#{commentManager.deleteReply}" oncomplete="initPage()">
             <a4j:param name="commentId" assignTo="#{commentManager.commentId}" />
         </a4j:jsFunction>
     </h:form>
