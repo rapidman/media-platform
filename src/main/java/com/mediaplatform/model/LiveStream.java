@@ -15,17 +15,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "live_stream")
 @Veto
-public class LiveStream extends AbstractEntity{
+public class LiveStream extends AbstractContent{
     private String source;
-    private String title;
-    private String description;
     private boolean published;
 
     public LiveStream(String source, String title, String description, boolean published) {
         this();
         this.source = source;
-        this.title = title;
-        this.description = description;
+        setTitle(title);
+        setDescription(description);
         this.published = published;
     }
 
@@ -39,22 +37,6 @@ public class LiveStream extends AbstractEntity{
 
     public void setSource(String source) {
         this.source = source;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public boolean isPublished() {

@@ -28,10 +28,15 @@ public class UserMessageManager extends AbstractManager implements Serializable{
     @Inject
     private UserManager userManager;
 
+    @Inject
+    private AntiSamyBean antiSamyBean;
+
     @TransactionAttribute
     @User
     public void addMessage(){
         com.mediaplatform.model.User selectedUser = userManager.getSelectedUser();
+        currentMessage.setDescription(antiSamyBean.cleanHtml(currentMessage.getDescription()));
+        currentMessage.setTitle(HtmlTextHelper.htmlToPlain(HtmlTextHelper.truncateTitle(currentMessage.getTitle())));
         currentMessage.setAuthor(currentUser);
         appEm.persist(currentMessage);
         selectedUser.getUserMessages().add(currentMessage);

@@ -8,73 +8,6 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
-    <h:outputStylesheet>
-        .top {
-            vertical-align: top;
-            width: 50%;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .rf-ctx-lbl {
-            z-index: 999;
-            position: fixed;
-        }
-
-        .commentTree .rf-trn-ico-cst {
-            display: none;
-        }
-
-        .commentReplyHeader {
-            height: 10px;
-        }
-
-        a.replylink {
-            color: #00469B;
-            border-bottom: dashed 1px #00469B;
-            text-decoration: none;
-        }
-
-        .rf-p-hdr {
-            padding: 0px;
-            border-width: 0px;
-            background: transparent none;
-            height: 0px;
-        }
-
-        .rf-cp {
-            background: none;
-        }
-
-        .rf-p-b {
-            padding: 7px;
-        }
-
-        .firstInnerReply{
-            width: 48px;
-        }
-
-        .commentTree .rf-trn-lbl {
-            cursor: default;
-        }
-
-    </h:outputStylesheet>
-    <script type="text/javascript">
-        function initPage(){
-            jQuery(".replylink").click(function() {
-                jQuery(this).parent().find('.reply').slideDown(500);
-            });
-            jQuery(".replyClose").click(function() {
-                jQuery(this).parent().parent().parent().find('.reply').slideUp(500);
-            });
-        }
-
-        jQuery(document).ready(function() {
-            initPage();
-        });
-    </script>
     <ui:include src="commentFormPart.xhtml"/>
     <h:form>
         <rich:tree id="commentTree" nodeType="#{comment.type}" var="comment" value="#{commentManager.comments}" toggleType="client" styleClass="commentTree">
@@ -95,13 +28,13 @@
         </rich:tree>
     </h:form>
     <h:form>
-        <a4j:jsFunction name="addReply" render="commentTree" action="#{commentManager.replyComment}" oncomplete="initPage()">
+        <a4j:jsFunction name="addReply" render="commentTree" action="#{commentManager.replyComment}">
             <a4j:param name="desc" assignTo="#{commentManager.currentComment.description}" />
             <a4j:param name="parentId" assignTo="#{commentManager.parentCommentId}" />
         </a4j:jsFunction>
     </h:form>
     <h:form>
-        <a4j:jsFunction name="delReply" render="commentTree" action="#{commentManager.deleteReply}" oncomplete="initPage()">
+        <a4j:jsFunction name="delReply" render="commentTree" action="#{commentManager.deleteReply}">
             <a4j:param name="commentId" assignTo="#{commentManager.commentId}" />
         </a4j:jsFunction>
     </h:form>

@@ -11,7 +11,9 @@
     <rich:panel rendered="#{!comment.entity.deleted}">
         <f:facet name="header">
             <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(comment.entity.author)}">
-                <h:outputLink value="javascript:void(0)" onclick="delReply('#{comment.id}');">Удалить X</h:outputLink>
+                <a href="javascript:void(0)" onclick="delReply('#{comment.id}');" class="delReply" style="text-decoration: none;">
+                    <span class="ui-clickable">Удалить <h:graphicImage value="/images/icon-clear.png"/></span>
+                </a>
             </h:panelGroup>
         </f:facet>
 
@@ -33,16 +35,16 @@
             <h:outputText value="#{comment.description}"></h:outputText>
         </p>
 
-        <a href="javascript:void(0);" class="replylink">{Ответить}</a>
+        <a href="javascript:void(0);" class="replylink" onclick="jQuery(this).parent().find('.reply').slideDown(500);">{Ответить}</a>
         <rich:panel style="display: none;" styleClass="reply">
             <f:facet name="header">
-                <a href="javascript:void(0);" class="replyClose" style="float: right;">X</a>&nbsp;
+                <a href="javascript:void(0);" class="replyClose" onclick="jQuery(this).parent().parent().parent().find('.reply').slideUp(500);"><span class="ui-clickable">Закрыть <h:graphicImage value="/images/icon-clear.png"/></span></a>
             </f:facet>
+            <br/>
             <textarea class="desc" cols="90" rows="5"/>
             <br/>
-            <input type="button" onclick="addReply(jQuery(this).parent().find('.desc').val(), '#{comment.entity.id}');" style="position: relative; margin-top: 3px;"
-                   value="Написать"/>
+            <input class="btnAddReply" type="button" value="Написать" onclick="addReply(jQuery(this).parent().find('.desc').val(), '#{comment.entity.id}')"/>
         </rich:panel>
     </rich:panel>
-    <h:outputText value="Комментарий удален" rendered="#{comment.entity.deleted}"/>
+    <h:outputText value="Комментарий удален" rendered="#{comment.entity.deleted}" styleClass="archived"/>
 </ui:composition>

@@ -1,5 +1,6 @@
 package com.mediaplatform.manager.media;
 
+import com.mediaplatform.manager.AntiSamyBean;
 import com.mediaplatform.model.LiveStream;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
@@ -10,6 +11,7 @@ import com.mediaplatform.util.jsf.FacesUtil;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
@@ -25,6 +27,9 @@ public class LiveStreamManager extends AbstractContentManager {
     private List<LiveStream> liveStreams;
 
     private LiveStream currentStream;
+
+    @Inject
+    private AntiSamyBean antiSamyBean;
 
     public List<LiveStream> getLiveStreams(){
         if(liveStreams == null){
@@ -78,6 +83,7 @@ public class LiveStreamManager extends AbstractContentManager {
 
     @Admin
     public void saveOrCreate(){
+        antiSamyBean.prepare(currentStream);
         if(currentStream.getId() == null){
             appEm.persist(currentStream);
         }else{

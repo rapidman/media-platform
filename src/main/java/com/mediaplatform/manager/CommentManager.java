@@ -32,6 +32,9 @@ public class CommentManager extends AbstractManager implements Serializable{
     @Inject
     private ContentManager contentManager;
 
+    @Inject
+    private AntiSamyBean antiSamyBean;
+
     @TransactionAttribute
     @User
     public void addComment(){
@@ -44,6 +47,7 @@ public class CommentManager extends AbstractManager implements Serializable{
 
     private Content saveComment() {
         Content currentContent = contentManager.getContentById(contentId);
+        antiSamyBean.prepare(currentContent);
         currentComment.setContent(currentContent);
         currentComment.setAuthor(currentUser);
         appEm.persist(currentComment);
@@ -109,7 +113,7 @@ public class CommentManager extends AbstractManager implements Serializable{
     public List<CommentTreeNode> getComments() {
         if(comments == null){
             comments = new ArrayList<CommentTreeNode>();
-            List<Comment> result = appEm.createQuery("select c from Comment c where c.content.id = :contentId and c.parent is null order by c.createDateTime desc").setParameter("contentId", contentId).getResultList();
+            List<Comment> result = appEm.createQuery("select c from Comment c where c.content.id = :contentId and c.parent is null order by c.createDateTime asc").setParameter("contentId", contentId).getResultList();
             for(Comment comment:result){
                 comments.add(new CommentTreeNode(comment, null, null));
             }

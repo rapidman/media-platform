@@ -17,6 +17,7 @@
 package com.mediaplatform.account;
 
 import javax.ejb.Stateful;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
 import javax.faces.component.UIInput;
@@ -29,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.mediaplatform.i18n.DefaultBundleKey;
+import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.User;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.international.status.builder.BundleKey;
@@ -54,8 +56,11 @@ public class Registrar {
 
     private final User newUser = new User();
 
+    @Inject
+    private Instance<UserManager> userManagerInstance;
+
     @NotNull
-    @Size(min = 5, max = 15)
+    @Size(min = 5, max = 15, message = "Ошибка: Значение должно быть в интервале от 5 до 15")
     private String confirmPassword;
 
     private boolean registered;
@@ -68,7 +73,7 @@ public class Registrar {
             em.persist(newUser);
 
             messages.info(new DefaultBundleKey("registration_registered"))
-                    .defaults("You have been successfully registered as the user {0}! You can now login.")
+                    .defaults("Вы зарегистрировались как пользователь {0}! Теперь Вы можете зайти на сайт.")
                     .params(newUser.getUsername());
         } else {
             registrationInvalid = true;
@@ -92,7 +97,7 @@ public class Registrar {
     public void notifyIfRegistrationIsInvalid() {
         if (facesContext.isValidationFailed() || registrationInvalid) {
             messages.warn(new DefaultBundleKey("registration_invalid")).defaults(
-                    "Invalid registration. Please correct the errors and try again.");
+                    "Регистрация не удалась. Пожалуйста исправьте ошибки и попробуйте еще раз.");
         }
     }
 
@@ -123,10 +128,10 @@ public class Registrar {
     }
 
     private boolean verifyUsernameIsAvailable() {
-        User existing = em.find(User.class, newUser.getUsername());
+        User existing = userManagerInstance.get().findByUsername(newUser.getUsername());
         if (existing != null) {
             messages.warn(new BundleKey("messages", "account_usernameTaken"))
-                    .defaults("The username '{0}' is already taken. Please choose another username.")
+                    .defaults("Ник '{0}' уже испльзуется. Пожалуйста выберите другой ник.")
                     .targets(usernameInput.getClientId()).params(newUser.getUsername());
             return false;
         }

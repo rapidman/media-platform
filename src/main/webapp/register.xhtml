@@ -19,7 +19,7 @@
     <ui:define name="content">
 
         <div class="section">
-            <h1>Register</h1>
+            <h1>Регистрация</h1>
         </div>
 
         <div class="section">
@@ -27,37 +27,37 @@
             <h:form id="regForm" prependId="false">
 
                 <fieldset>
-                    <p:input id="name" label="Full name">
+                    <p:input id="name" label="Полное имя">
                         <h:inputText id="input" value="#{newUser.name}"/>
                     </p:input>
 
-                    <p:input id="username" label="Username">
+                    <p:input id="username" label="Ник">
                         <h:inputText id="input" value="#{newUser.username}"
                                      binding="#{registrar.usernameInput}"/>
                     </p:input>
 
-                    <p:input id="email" label="Email">
+                    <p:input id="email" label="Емайл">
                         <h:inputText id="input" value="#{newUser.email}"/>
                     </p:input>
 
-                    <p:input id="password" label="Password">
+                    <p:input id="password" label="Пароль">
                         <h:inputSecret id="input" value="#{newUser.password}" redisplay="true"/>
                     </p:input>
 
-                    <p:input id="confirmPassword" label="Confirm password">
+                    <p:input id="confirmPassword" label="Подтвердите пароль">
                         <h:inputSecret id="input" value="#{registrar.confirmPassword}" redisplay="true"/>
                     </p:input>
 
                     <div class="buttonBox">
-                        <h:commandButton id="register" value="Register" action="#{registrar.register}"/>
+                        <h:commandButton id="register" value="Регистрировать" action="#{registrar.register}"/>
                         #{' '}
-                        <h:button id="cancel" value="Cancel" outcome="/home.xhtml"/>
+                        <h:button id="cancel" value="Отменить" outcome="/home.xhtml"/>
                     </div>
 
                 </fieldset>
 
                 <s:validateForm id="passwordCheck" validatorId="confirmPassword"
-                                fields="password=password:input confirmPassword=confirmPassword:input"/>
+                                fields="newPassword=password:input confirmPassword=confirmPassword:input"/>
 
             </h:form>
 

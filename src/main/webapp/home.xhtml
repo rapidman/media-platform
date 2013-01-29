@@ -22,7 +22,7 @@
                         <ui:include src="include/streamPart.xhtml"/>
                     </rich:dataGrid>
                 </h:form>
-                <h:outputText value="Не найдено ни одного опубликованного Live видео" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
+                <h:outputText styleClass="archived" value="Не найдено ни одного опубликованного Live видео" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
             </rich:panel>
         </h:panelGrid>
 

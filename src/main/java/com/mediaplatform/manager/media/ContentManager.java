@@ -2,6 +2,7 @@ package com.mediaplatform.manager.media;
 
 import com.mediaplatform.event.*;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.manager.AntiSamyBean;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
 import com.mediaplatform.security.*;
@@ -48,6 +49,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private Event<DeleteContentEvent> deleteEvent;
     @Inject
     private CatalogManager catalogManager;
+
+
 
     private FileUploadBean fileUploadBean = new FileUploadBean();
 

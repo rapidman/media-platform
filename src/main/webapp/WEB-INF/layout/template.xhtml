@@ -16,12 +16,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>#{bundles.messages.template_title}</title>
         <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-        <h:outputStylesheet library="css" name="media-platform.css" target="head" />
-        <h:outputScript>
-            A4J.AJAX.onError = function(req, status, message){
-                window.alert("Custom onError handler "+message);
-            }
-        </h:outputScript>
+        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/media-platform.css"/>
         <ui:insert name="head"/>
         <script type="text/javascript">
             function viewGenre(genreId){
@@ -31,66 +26,23 @@
                 if("" == query) return;
                 jQuery(location).attr('href','#{facesContext.externalContext.requestContextPath}/full-search/' + query);
             }
+            function wait_cursor() {
+                document.body.style.cursor = 'wait';
+            }
+            function restore_cursor() {
+                document.body.style.cursor = 'default';
+            }
         </script>
-        <h:outputStylesheet>
-            .search-form {
-                position: absolute;
-                right: 10px;
-                top: 4px;
-                width: 170px;
-                height: 21px;
-                margin: 0;
-                background: white;
-                -moz-border-radius: 15px;
-                -webkit-border-radius: 15px;
-                -khtml-border-radius: 15px;
-                border-radius: 15px;
-            }
-
-            .search-form .search-but {
-                float: left;
-                width: 13px;
-                height: 13px;
-                border-width: 0;
-                margin: 5px 4px 0 8px;
-                text-indent: 100px;
-                background: url(#{facesContext.externalContext.requestContextPath}/images/search-but-pich.png) 0 0 no-repeat;
-                cursor: pointer;
-            }
-
-            input, select, textarea, button {
-                font-family: Arial, Helvetica, FreeSans, sans-serif;
-            }
-
-            .search-form .search-input {
-                float: left;
-                width: 135px;
-                height: 21px;
-                line-height: 21px;
-                border-width: 0;
-                padding: 0;
-                background: none;
-                color: #555;
-                font-size: 11px;
-                vertical-align: top;
-            }
-
-            .search-form .rf-ii-fld {
-                background: white none;
-                border: 0px none;
-                height: 20px;
-                color: black;
-                height: 20px;
-            }
-        </h:outputStylesheet>
     </h:head>
 
 
     <h:body styleClass="#{empty pageClass ? 'page' : 'home'}">
+
         <div id="document" align="center" class="wrapper">
-            <a4j:status>
+
+            <a4j:status onstart="wait_cursor();" onstop="restore_cursor();">
                 <f:facet name="start">
-                    <h:graphicImage  value="/images/ai.gif" style="position: absolute; top: 300px; z-index: 999"/>
+                    <h:graphicImage  value="/images/ai.gif" style="display: block; position: absolute; margin: 50% 50% 50% 50%; z-index: 999"/>
                 </f:facet>
             </a4j:status>
 
@@ -232,8 +184,7 @@
                             </div>
                             <div align="left">
                                 <ui:insert name="globalMessages">
-                                    <h:messages style="background-color: #D3EAA4; height: 25px;" globalOnly="true"
-                                                errorStyle="color: #a52a2a; font-size: large;" infoStyle="color: #336699; font-size: large;" id="globalMessages"/>
+                                    <h:messages globalOnly="true" errorClass="globalMessagesError" infoClass="globalMessagesInfo" id="globalMessages"/>
                                 </ui:insert>
                             </div>
                             <div id="content"><ui:insert name="content"/></div>

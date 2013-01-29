@@ -110,7 +110,7 @@ public class UserManager extends AbstractUserManager{
         }
         update(selectedUser);
         currentUserManager.get().updateCurrentUser(selectedUser);
-        messages.info(new DefaultBundleKey("account_saved")).defaults("Account successfully updated.");
+        messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен..");
         ConversationUtils.safeEnd(conversation);
         updateEvent.fire(selectedUser);
     }
@@ -152,10 +152,10 @@ public class UserManager extends AbstractUserManager{
             return;
         }
 
-        boolean ok = FacesUtil.validateRequired(facesContext, obj, "Username not defined");
+        boolean ok = FacesUtil.validateRequired(facesContext, obj, "Не задан ник пользователя");
         if (ok) {
             if (findByUsername(String.valueOf(obj)) == null) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + obj + "' not found", null));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Контент с указанным '" + obj + "' ИД не найден.", null));
                 ok = false;
             }
         }

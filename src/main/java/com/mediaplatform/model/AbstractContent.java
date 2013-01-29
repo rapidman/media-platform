@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 12:31 AM
  */
 @MappedSuperclass
-public abstract class AbstractContent extends AbstractEntity{
+public abstract class AbstractContent extends AbstractEntity implements HtmlContainer{
     private String title;
     private String description;
     private User author;

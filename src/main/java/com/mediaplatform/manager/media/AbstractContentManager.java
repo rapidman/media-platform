@@ -1,6 +1,8 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
+import com.mediaplatform.manager.AntiSamyBean;
+import com.mediaplatform.manager.HtmlTextHelper;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.*;
 import com.mediaplatform.model.User;
@@ -27,11 +29,17 @@ public abstract class AbstractContentManager extends AbstractManager {
     @Inject
     protected Conversation conversation;
 
+    @Inject
+    private AntiSamyBean antiSamyBean;
+
     public Content getContentById(Long id) {
         return appEm.find(Content.class, id);
     }
 
     protected void saveOrUpdate(Content content, Genre genre, FileEntry video, FileEntry cover) {
+        antiSamyBean.prepare(content);
+        antiSamyBean.prepare(genre);
+
         content.setGenre(genre);
         if (video != null) {
             appEm.persist(video);
@@ -58,6 +66,7 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     protected void update(Content content) {
+        antiSamyBean.prepare(content);
         appEm.merge(content);
     }
 

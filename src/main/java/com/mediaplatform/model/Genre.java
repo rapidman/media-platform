@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "genre")
 @Veto
-public class Genre extends AbstractEntity {
+public class Genre extends AbstractEntity implements HtmlContainer{
     private String title;
     private String description;
     private Genre parent;

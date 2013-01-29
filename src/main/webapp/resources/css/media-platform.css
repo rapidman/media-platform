@@ -403,3 +403,147 @@ p.twitter-login {
 .topUsersTbl table {
     border: #600000;
 }
+
+.top {
+    vertical-align: top;
+    width: 50%;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.commentTree .rf-ctx-lbl {
+    z-index: 999;
+    position: fixed;
+}
+
+.commentTree .rf-trn-ico-cst {
+    display: none;
+}
+
+.commentReplyHeader {
+    height: 10px;
+}
+
+a.replylink {
+    color: #00469B;
+    border-bottom: dashed 1px #00469B;
+    text-decoration: none;
+}
+
+.commentTree .rf-p-hdr {
+    padding: 0px;
+    border-width: 0px;
+    background: transparent none;
+    height: 0px;
+}
+
+.commentTree .rf-cp {
+    background: none;
+}
+
+.commentTree .rf-p-b {
+    padding: 7px;
+}
+
+.firstInnerReply{
+    width: 48px;
+}
+
+.commentTree .rf-trn-lbl {
+    cursor: default;
+}
+
+a.replyClose, .delReply{
+    float: right;
+    z-index:999;
+    position:relative;
+    text-decoration: none;
+}
+
+.btnAddReply{
+    position: relative;
+    margin-top: 3px;
+}
+
+.ui-clickable {
+    border-bottom: 1px dotted;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: normal;
+    margin: 3px;
+}
+
+.archived, .archived a {
+    color: #999;
+}
+
+.ui-glyph-clear {
+    background-image: url("#{facesContext.externalContext.requestContextPath}/images/icon-clear.png");
+    background-position: 8px 55%;
+}
+
+.globalMessagesError{
+    font-size: large;
+    height: 25px;
+    background-color: yellowgreen;
+    color: #a52a2a;
+}
+
+.globalMessagesInfo{
+    font-size: large;
+    height: 25px;
+    background-color: #518DC2;
+    color: white;
+}
+
+.search-form {
+    position: absolute;
+    right: 10px;
+    top: 4px;
+    width: 170px;
+    height: 21px;
+    margin: 0;
+    background: white;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -khtml-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.search-form .search-but {
+    float: left;
+    width: 13px;
+    height: 13px;
+    border-width: 0;
+    margin: 5px 4px 0 8px;
+    text-indent: 100px;
+    background: url(#{facesContext.externalContext.requestContextPath}/images/search-but-pich.png) 0 0 no-repeat;
+    cursor: pointer;
+}
+
+input, select, textarea, button {
+    font-family: Arial, Helvetica, FreeSans, sans-serif;
+}
+
+.search-form .search-input {
+    float: left;
+    width: 135px;
+    height: 21px;
+    line-height: 21px;
+    border-width: 0;
+    padding: 0;
+    background: none;
+    color: #555;
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.search-form .rf-ii-fld {
+    background: white none;
+    border: 0px none;
+    height: 20px;
+    color: black;
+    height: 20px;
+}
