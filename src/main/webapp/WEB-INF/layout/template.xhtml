@@ -63,36 +63,31 @@
 
                         <rich:toolbarGroup location="right">
                             <h:form>
-                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/home.xhtml'}" action="#{mainPageManager.show}">#{bundles.messages.template_linkHome}</h:commandLink>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/home.xhtml'}" value="#{bundles.messages.template_linkHome}"/>
+                                <h:commandLink styleClass="#{facesContext.viewRoot.viewId == '/home.xhtml' ? 'linkActive' : ''}" action="#{mainPageManager.show}">#{bundles.messages.template_linkHome}</h:commandLink>
                             </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{userManager.checkAdmin}">
                             <h:form>
-                                <h:link id="liveStreams" value="#{bundles.messages.template_live_streams}" outcome="live-list" style="white-space: nowrap;" rendered="#{facesContext.viewRoot.viewId != '/content/viewLiveStreamList.xhtml'}"/>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml'}" value="#{bundles.messages.template_live_streams}"/>
+                                <h:link id="liveStreams" value="#{bundles.messages.template_live_streams}" outcome="live-list" style="white-space: nowrap;" styleClass="#{facesContext.viewRoot.viewId == '/content/viewLiveStreamList.xhtml' ? 'linkActive' : ''}"/>
                             </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{userManager.checkAdmin}">
                             <h:form>
-                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/event/viewEventList.xhtml'}" action="#{eventManager.show}">События</h:commandLink>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml'}" value="События"/>
+                                <h:commandLink styleClass="#{facesContext.viewRoot.viewId == '/event/viewEventList.xhtml' ? 'linkActive' : ''}" action="#{eventManager.show}">События</h:commandLink>
                             </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{userManager.checkAdmin}">
                             <h:form>
-                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/admin/viewContentList.xhtml'}" action="#{adminContentManager.show}">Модерация</h:commandLink>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/admin/viewContentList.xhtml'}" value="Модерация"/>
+                                <h:commandLink styleClass="#{facesContext.viewRoot.viewId == '/admin/viewContentList.xhtml' ? 'linkActive' : ''}" action="#{adminContentManager.show}">Модерация</h:commandLink>
                             </h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{userManager.checkAdmin}">
                             <h:form>
-                                <h:commandLink rendered="#{facesContext.viewRoot.viewId != '/account/viewUserList.xhtml'}" action="#{userManager.show}">#{bundles.messages.template_users}</h:commandLink>
-                                <h:outputText rendered="#{facesContext.viewRoot.viewId == '/account/viewUserList.xhtml'}" value="#{bundles.messages.template_users}"/>
+                                <h:commandLink styleClass="#{facesContext.viewRoot.viewId == '/account/viewUserList.xhtml' ? 'linkActive' : ''}" action="#{userManager.show}">#{bundles.messages.template_users}</h:commandLink>
                             </h:form>
                         </rich:toolbarGroup>
 

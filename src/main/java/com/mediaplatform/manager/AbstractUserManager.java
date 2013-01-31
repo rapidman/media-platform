@@ -46,7 +46,11 @@ public abstract class AbstractUserManager extends AbstractManager{
         if(hasOrder && hasOrder(contentCount)) sb.append(",");
         setOrder("u.contents.size", contentCount, sb);
         String orderBy = sb.length() > 0 ? " order by " + sb.toString() : "";
-        return appEm.createQuery("select u from User u left outer join fetch u.contents where u.admin = false " + orderBy).getResultList();
+        List<User> result = appEm.createQuery("select u from User u where u.admin = false " + orderBy).getResultList();
+        for(User u:result){
+            u.getContents().size();
+        }
+        return result;
     }
 
     private boolean setOrder(String field, SortOrder order, StringBuffer sb) {

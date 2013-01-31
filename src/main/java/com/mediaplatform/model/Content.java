@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.*;
 import org.jboss.solder.core.Veto;
 
@@ -28,6 +29,7 @@ public class Content extends AbstractContent{
     private int rate;
     private List<RateInfo> contentRates;
     private String moderationReason;
+    private String shortDescription;
 
     public Content(){
         super(EntityType.CONTENT);
@@ -38,6 +40,18 @@ public class Content extends AbstractContent{
         setTitle(title);
         setDescription(description);
         this.genre = genre;
+    }
+
+    @Lob
+    @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
+    @Boost(3)
+    @Type(type="org.hibernate.type.StringClobType")
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     @NotNull

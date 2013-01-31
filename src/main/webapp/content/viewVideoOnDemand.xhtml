@@ -32,7 +32,7 @@
                         <f:param name="id" value="#{contentManager.selectedContent.author.username}"/>
                     </h:link>
                 </legend>
-                <rich:dataGrid id="leftContentGrid" value="#{contentManager.getAuthorTopContentList()}" var="content" columns="2" elements="9" border="0">
+                <rich:dataGrid id="leftContentGrid" value="#{contentManager.getAuthorTopContentList()}" var="content" columns="3" elements="9" border="0">
                     <ui:include src="../include/miniContentPart.xhtml"/>
                 </rich:dataGrid>
                 <rich:dataScroller for="leftContentGrid" renderIfSinglePage="false" />

@@ -45,11 +45,11 @@
                 <h:outputText value="Рэйтинг "/>
                 <h:panelGroup id="rate">
                     <h:panelGroup rendered="#{identity.loggedIn and contentManager.canRate()}">
-                        <a4j:commandLink action="${contentManager.addRate(true)}" render="rate">
+                        <a4j:commandLink id="addRate" action="${contentManager.addRate(true)}" render="rate" execute="@this">
                             <h:graphicImage width="16" height="16" value="/images/plus.png"/>
                         </a4j:commandLink>
                         &nbsp;
-                        <a4j:commandLink action="${contentManager.addRate(false)}" render="rate">
+                        <a4j:commandLink id="minusRate" action="${contentManager.addRate(false)}" render="rate" execute="@this">
                             <h:graphicImage width="16" height="16" value="/images/minus.png"/>
                         </a4j:commandLink>
                         &nbsp;
@@ -66,7 +66,6 @@
 
                     <h:outputText value="[#{contentManager.selectedContent.rate}]" style="font-weight: bold" />
                 </h:panelGroup>
-
             </h:panelGroup>
 
             <h:panelGroup rendered="#{userManager.checkCanEdit(contentManager.selectedContent.author)}">

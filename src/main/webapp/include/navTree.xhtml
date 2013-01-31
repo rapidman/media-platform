@@ -38,11 +38,7 @@
                                        iconLeaf="#{empty node.icon ? '/images/icons/minus.jpg' : viewHelper.getImgUrlExt(node.icon, '32x.jpg')}">
 
                             &nbsp;<h:outputText value="[#{node.childrenSize}]" rendered="#{node.childrenSize > 0}"/>&nbsp;
-                            <h:panelGroup>
-                                <h:outputText id="textId" value="#{node.title}" rendered="#{catalogTreeBean.isSelected(node)}"/>
-                                    <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="textId"/>
-                            </h:panelGroup>
-                            <h:link id="linkId" value="#{node.title}" outcome="genre" style="white-space: nowrap;" rendered="#{!catalogTreeBean.isSelected(node)}">
+                            <h:link id="linkId" value="#{node.title}" outcome="genre" style="white-space: nowrap;" styleClass="#{catalogTreeBean.isSelected(node) ? 'linkActive' : ''}">
                                 <f:param name="id" value="#{node.id}"/>
                                 <rich:tooltip zindex="9999"  showDelay="1000" attached="true" value="#{node.description}" target="linkId"/>
                             </h:link>

@@ -55,6 +55,7 @@ public class GeneralExceptionHandler {
         }
         event.handled();
         logger.error(event.getException());
+        FacesUtil.redirect("error");
     }
 
     public void handleAuthorizationException(@Handles CaughtException<AuthorizationException> evt) {

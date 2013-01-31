@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -110,7 +111,7 @@ public class UserManager extends AbstractUserManager{
         }
         update(selectedUser);
         currentUserManager.get().updateCurrentUser(selectedUser);
-        messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен..");
+        messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен.");
         ConversationUtils.safeEnd(conversation);
         updateEvent.fire(selectedUser);
     }
@@ -201,7 +202,7 @@ public class UserManager extends AbstractUserManager{
     }
 
     public boolean checkCanEdit(User checkedUser) {
-        if (!identity.isLoggedIn()) return false;
+        if (checkedUser == null || !identity.isLoggedIn()) return false;
         boolean canEdit;
         if (Restrictions.isAdminOrOwner(identity, currentUser, checkedUser)) {
             canEdit = true;

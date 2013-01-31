@@ -77,6 +77,11 @@
         <view-id>/denied.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="error">
+        <pattern value="/error"></pattern>
+        <view-id>/error.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="login">
         <pattern value="/login"></pattern>
         <view-id>/login.xhtml</view-id>

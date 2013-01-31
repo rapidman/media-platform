@@ -22,13 +22,20 @@
                 <h:panelGrid columns="3">
                     <h:outputText value="Название:"/>
                     <h:inputText id="title" required="true"
-                                 value="#{contentManager.selectedContent.title}">
-                        <f:validateLength minimum="3"/>
+                                 value="#{contentManager.selectedContent.title}" validatorMessage="Ввведите название">
+                        <f:validateLength minimum="1" />
+                    </h:inputText>
+                    <rich:message for="title" ajaxRendered="false"/>
+
+                    <h:outputText value="Краткое описание:"/>
+                    <h:inputText id="shortDescription" required="true" value="#{contentManager.selectedContent.shortDescription}" validatorMessage="Ввведите краткое описание">
+                        <f:validateLength minimum="1"/>
                     </h:inputText>
                     <rich:message for="title" ajaxRendered="false"/>
                 </h:panelGrid>
 
                 <h:panelGroup>
+                    <h:outputLabel>Описание:</h:outputLabel>
                     <rich:editor id="editor" value="#{contentManager.selectedContent.description}" style="margin-bottom: 1em">
                         <f:facet name="config">
                             toolbar: 'custom',

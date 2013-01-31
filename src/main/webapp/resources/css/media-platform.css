@@ -547,3 +547,7 @@ input, select, textarea, button {
     color: black;
     height: 20px;
 }
+
+.linkActive{
+    color: #000000;
+}

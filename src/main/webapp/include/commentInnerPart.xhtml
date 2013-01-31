@@ -38,7 +38,11 @@
         <a href="javascript:void(0);" class="replylink" onclick="jQuery(this).parent().find('.reply').slideDown(500);">{Ответить}</a>
         <rich:panel style="display: none;" styleClass="reply">
             <f:facet name="header">
-                <a href="javascript:void(0);" class="replyClose" onclick="jQuery(this).parent().parent().parent().find('.reply').slideUp(500);"><span class="ui-clickable">Закрыть <h:graphicImage value="/images/icon-clear.png"/></span></a>
+                <h:panelGroup>
+                    <a href="javascript:void(0);" class="replyClose" onclick="jQuery(this).parent().parent().parent().find('.reply').slideUp(500);">
+                        <span class="ui-clickable">Закрыть <h:graphicImage value="/images/icon-clear.png"/></span>
+                    </a>
+                </h:panelGroup>
             </f:facet>
             <br/>
             <textarea class="desc" cols="90" rows="5"/>

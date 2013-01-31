@@ -236,6 +236,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @TransactionAttribute
     public void addRate(boolean direction){
         RateInfo rateInfo = new RateInfo(currentUser.getId(), direction);
+        selectedContent = getContentById(selectedContent.getId());
         if(selectedContent.getContentRates().contains(rateInfo)){
             return;
         }
