@@ -27,7 +27,7 @@
     </h:outputStylesheet>
     <h:form>
         <h:panelGrid columns="3" columnClasses="firstCntCol,secondCntCol,thirdCntCol">
-            <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.author.avatar, 'rc48x48.jpg')}"/>
+            <h:graphicImage value="#{empty comment.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(comment.author.avatar, 'rc23x23.jpg')}"/>
 
             <h:panelGroup>
                 <h:link id="viewUser" value="#{contentManager.selectedContent.author.name}" outcome="user"
@@ -69,7 +69,7 @@
             </h:panelGroup>
 
             <h:panelGroup rendered="#{userManager.checkCanEdit(contentManager.selectedContent.author)}">
-                <h:commandLink action="#{contentManager.editContent(contentManager.selectedContent.id)}" value="Редактировать"/>
+                <h:commandLink styleClass="ui-clickable" action="#{contentManager.editContent(contentManager.selectedContent.id)}" value="Редактировать"/>
             </h:panelGroup>
         </h:panelGrid>
     </h:form>

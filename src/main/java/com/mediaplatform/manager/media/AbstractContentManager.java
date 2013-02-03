@@ -63,6 +63,14 @@ public abstract class AbstractContentManager extends AbstractManager {
             genre.getContentList().add(content);
             appEm.merge(genre);
         }
+        if(video != null && video.getId() < 0){
+            video.setParentRef(new ParentRef(content.getId(), content.getEntityType()));
+            appEm.merge(video);
+        }
+        if(cover != null && cover.getId() < 0){
+            cover.setParentRef(new ParentRef(content.getId(), content.getEntityType()));
+            appEm.merge(cover);
+        }
     }
 
     protected void update(Content content) {

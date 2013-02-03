@@ -5,9 +5,9 @@ html {
 body {
     margin: 0;
     padding: 0;
-    /*background: #94aebc url('#{facesContext.externalContext.requestContextPath}/images/body-bg.jpg') left bottom repeat;*/
     font: normal 10px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
     height: 100%;
+    background-color: aliceblue;
 }
 
 * {
@@ -61,7 +61,7 @@ p {
 
 #content {
     height:auto;
-    margin-left: 15px;
+    /*margin-left: 15px;*/
 }
 
 #header {
@@ -550,4 +550,23 @@ input, select, textarea, button {
 
 .linkActive{
     color: #000000;
+}
+
+.rf-dg-c{
+    border: 0px;
+}
+
+.box-standard {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15), inset 0px 0px 0px 1px #fff;
+    border: solid 1px #D7D7D7;
+    margin: 5px;
+    background-color: #ffffff;
+}
+#sidebar .box {
+    margin-bottom: 10px;
+}
+
+.box {
+    margin: 5px;
+    /*box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);*/
 }

@@ -16,7 +16,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>#{bundles.messages.template_title}</title>
         <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
-        <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/media-platform.css"/>
+        <h:outputStylesheet library="css" name="media-platform.css"/>
         <ui:insert name="head"/>
         <script type="text/javascript">
             function viewGenre(genreId){
@@ -35,10 +35,9 @@
         </script>
     </h:head>
 
+    <h:body>
 
-    <h:body styleClass="#{empty pageClass ? 'page' : 'home'}">
-
-        <div id="document" align="center" class="wrapper">
+        <div id="document" align="center" class="wrapper" style="height: 100%">
 
             <a4j:status onstart="wait_cursor();" onstop="restore_cursor();">
                 <f:facet name="start">
@@ -155,34 +154,31 @@
                                 <h:link id="register" outcome="/register.xhtml"
                                         value="#{bundles.messages.home_registerAction}"/>
                             </div>
-
-                            <div class="subnotes" align="left">
-                                #{bundles.messages.home_useDemoAccount}
-                                <ul>
-                                    <li>admin/admin</li>
-                                    <li>shane/brisbane</li>
-                                </ul>
-                            </div>
                         </div>
                     </h:form>
                 </rich:popupPanel>
             </div>
-            <div id="container" align="left">
+            <div id="container" align="left" style="height: 100%">
                 <table cellpadding="5px" width="100%" style="height: 100%">
                     <tr>
                         <td valign="top" height="100%">
                             <div id="sidebar"><ui:insert name="sidebar"/></div>
                         </td>
-                        <td width="100%" valign="top">
+                        <td valign="top" width="100%">
                             <div align="left">
                                 <ui:insert name="sitemap"/>
                             </div>
                             <div align="left">
                                 <ui:insert name="globalMessages">
-                                    <h:messages globalOnly="true" errorClass="globalMessagesError" infoClass="globalMessagesInfo" id="globalMessages"/>
+                                    <h:messages globalOnly="true" errorClass="globalMessagesError" infoClass="globalMessagesInfo" id="globalMessages" layout="table" style="width:100%"/>
                                 </ui:insert>
                             </div>
                             <div id="content"><ui:insert name="content"/></div>
+                        </td>
+                        <td valign="top" height="100%">
+                            <rich:panel style="width:250px; height:100%">
+
+                            </rich:panel>
                         </td>
                     </tr>
                 </table>

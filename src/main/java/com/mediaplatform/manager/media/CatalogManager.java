@@ -3,6 +3,9 @@ package com.mediaplatform.manager.media;
 import com.mediaplatform.event.DeleteCatalogEvent;
 import com.mediaplatform.event.EditCatalogEvent;
 import com.mediaplatform.event.UpdateCatalogEvent;
+import com.mediaplatform.jsf.fileupload.FileAcceptor;
+import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.security.Admin;
 import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.ViewHelper;
@@ -40,6 +43,15 @@ public class CatalogManager extends AbstractCatalogManager {
     @Inject
     private ViewHelper viewHelper;
 
+
+    private UploadedFile icon;
+
+    protected FileUploadBean fileUploadBean = new FileUploadBean(new FileAcceptor() {
+        @Override
+        public void accept(UploadedFile file) {
+            icon = file;
+        }
+    });
 
     @Admin
     public void editCatalog(Long id) {
@@ -91,17 +103,17 @@ public class CatalogManager extends AbstractCatalogManager {
 
     @Admin
     public void saveOrUpdate() {
-        FileEntry icon = null;
+        FileEntry iconEntry = null;
         boolean update = selectedGenre.getId() != null;
-        super.saverOrUpdate(selectedGenre, icon);
-        if (fileUploadBean.getSize() > 0) {
-            icon = fileStorageManager.saveFile(
+        super.saverOrUpdate(selectedGenre, null);
+        if (icon != null) {
+            iconEntry = fileStorageManager.saveFile(
                     new ParentRef(selectedGenre.getId(),
                             selectedGenre.getEntityType()),
-                    fileUploadBean.getFiles().get(0),
+                    icon,
                     DataType.ICON);
         }
-        super.saverOrUpdate(selectedGenre, icon);
+        super.saverOrUpdate(selectedGenre, iconEntry);
         updateEvent.fire(new UpdateCatalogEvent(selectedGenre.getId()));
 
         if (update) {
@@ -110,6 +122,7 @@ public class CatalogManager extends AbstractCatalogManager {
             messages.info("Создано успешно");
         }
         fileUploadBean.clearUploadData();
+        iconEntry = null;
     }
 
     @Admin
@@ -125,5 +138,8 @@ public class CatalogManager extends AbstractCatalogManager {
         fileUploadBean.clearUploadData();
     }
 
+    public FileUploadBean getFileUploadBean() {
+        return fileUploadBean;
+    }
 }
 

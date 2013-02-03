@@ -19,7 +19,7 @@
 
 
         <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -10px;" columnClasses="firstInnerReply,">
-            <h:graphicImage value="#{viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc48x48.jpg')}"/>
+            <h:graphicImage value="#{empty comment.entity.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(comment.entity.author.avatar, 'rc23x23.jpg')}"/>
             <h:panelGroup>
                 <h:link value="#{comment.entity.author.name}" outcome="user" style="white-space: nowrap;">
                     <f:param name="id" value="#{comment.entity.author.username}"/>

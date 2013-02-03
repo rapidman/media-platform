@@ -101,4 +101,8 @@ public class FacesUtil {
         }
         return true;
     }
+
+    public static void addError(String clientId, String msg) {
+        FacesContext.getCurrentInstance().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
+    }
 }

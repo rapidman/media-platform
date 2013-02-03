@@ -26,9 +26,7 @@
         }
     </h:outputStylesheet>
 
-    <div class="treeCatalog">
-        <fieldset>
-            <legend class="blockHeader">Жанры</legend>
+    <rich:panel header="Жанры" styleClass="treeCatalog box-standard box">
             <h:panelGrid columns="1" columnClasses="top">
                 <h:form>
                     <rich:tree id="tree" nodeType="#{node.type}" var="node" value="#{catalogTreeBean.rootNodes}" toggleType="client">
@@ -56,7 +54,6 @@
                 </h:form>
             </h:panelGrid>
 
-        </fieldset>
-    </div>
+    </rich:panel>
 
 </ui:composition>

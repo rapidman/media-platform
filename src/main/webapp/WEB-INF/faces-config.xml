@@ -208,6 +208,7 @@
             <base-name>messages</base-name>
             <var>messages</var>
         </resource-bundle>
+        <message-bundle>messages</message-bundle>
     </application>
 
 

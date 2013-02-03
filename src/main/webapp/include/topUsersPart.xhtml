@@ -7,18 +7,8 @@
                 xmlns:rich="http://richfaces.org/rich"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:cc="http://java.sun.com/jsf/composite">
-    <fieldset>
-        <legend class="blockHeader">Топ 10 авторов</legend>
-        <table class="topUsersTbl">
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th class="bordered"><h:outputText value="Cтатьи"/></th>
-                <th class="bordered"><h:outputText value="Рэйт"/></th>
-            </tr>
-
-
+    <rich:panel header="Топ 10 авторов" styleClass="box-standard box">
+        <table class="topUsersTbl" cellpadding="3px" cellspacing="0">
             <a4j:repeat value="#{userManager.topUserList}" var="user" rows="10" id="repeatTopUsers"
                         iterationStatusVar="st">
                 <ui:include src="topUserPart.xhtml"/>
@@ -27,7 +17,7 @@
 
         <br/>
 
-        <h:link id="viewTopUsers" value="СМОТРЕТЬ ВСЕХ &rarr;" outcome="users" style="white-space: nowrap;"/>
-    </fieldset>
+        <h:link id="viewTopUsers" value="Смотреть всех &rarr;" outcome="users" style="white-space: nowrap;"/>
+    </rich:panel>
 
 </ui:composition>

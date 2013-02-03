@@ -9,16 +9,18 @@
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
     <tr>
-        <td valign="middle">#{st.index + 1}.</td>
-        <td valign="middle"><h:graphicImage value="#{empty user.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(user.avatar, 'rc23x23.jpg')}" /></td>
-        <td valign="middle" class="bordered">
+        <td valign="top" rowspan="2" class="bordered">#{st.index + 1}.</td>
+        <td valign="top" rowspan="2" class="bordered"><h:graphicImage value="#{empty user.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(user.avatar, 'rc23x23.jpg')}" /></td>
+        <td valign="top" colspan="3">
             <h:link id="viewUser" value="#{user.name}" outcome="user" style="white-space: nowrap;">
                 <f:param name="id" value="#{user.username}"/>
             </h:link>
         </td>
-        <td align="center" valign="middle" class="bordered"><h:outputText value="#{user.postCount}" /></td>
-
-        <td align="center" valign="middle" class="bordered"><h:outputText value="#{user.postCount}"/></td>
+    </tr>
+    <tr>
+        <td align="center" valign="top" class="bordered">Статьи: <h:outputText value="#{user.postCount}" /></td>
+        <td class="bordered">|</td>
+        <td align="center" valign="top" class="bordered">Рэйтинг: <h:outputText value="#{user.postCount}"/></td>
     </tr>
 
 </ui:composition>

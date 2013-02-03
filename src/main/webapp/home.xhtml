@@ -15,34 +15,36 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:panelGrid columns="2">
-            <rich:panel header="Live Видео">
-                <h:form rendered="#{mainPageManager.publishedLiveStreams.size() > 0}">
-                    <rich:dataGrid id="liveContentGrid" value="#{mainPageManager.publishedLiveStreams}"  var="stream" columns="3" elements="9" width="600px" border="0">
-                        <ui:include src="include/streamPart.xhtml"/>
-                    </rich:dataGrid>
-                </h:form>
-                <h:outputText styleClass="archived" value="Не найдено ни одного опубликованного Live видео" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
-            </rich:panel>
-        </h:panelGrid>
+        <h:outputStylesheet>
+            .rf-dg-c{
+                border: 0px;
+            }
 
-        <h:panelGrid columns="2">
-            <rich:panel header="Последнее добавленное видео">
-                <h:form>
-                    <rich:dataGrid id="latestContentGrid" value="#{contentManager.latestContentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                        <ui:include src="include/contentPart.xhtml"/>
-                    </rich:dataGrid>
-                </h:form>
-            </rich:panel>
+        </h:outputStylesheet>
+        <rich:panel header="Live Видео" styleClass="box-standard box">
+            <h:form rendered="#{mainPageManager.publishedLiveStreams.size() > 0}">
+                <rich:dataGrid id="liveContentGrid" value="#{mainPageManager.publishedLiveStreams}"  var="stream" columns="5" elements="5" width="600px" border="0" style="border:0px;">
+                    <ui:include src="include/streamPart.xhtml"/>
+                </rich:dataGrid>
+            </h:form>
+            <h:outputText styleClass="archived" value="Не найдено ни одного опубликованного Live видео" rendered="#{mainPageManager.publishedLiveStreams.size() == 0}"/>
+        </rich:panel>
 
-            <rich:panel header="Популярное видео">
-                <h:form>
-                    <rich:dataGrid id="popularContentGrid" value="#{contentManager.popularContentList}" var="content" columns="3" elements="9" width="600px" border="0">
-                        <ui:include src="include/contentPart.xhtml"/>
-                    </rich:dataGrid>
-                </h:form>
-            </rich:panel>
-        </h:panelGrid>
+        <rich:panel header="Последнее добавленное видео" styleClass="box-standard box">
+            <h:form>
+                <rich:dataGrid id="latestContentGrid" value="#{contentManager.latestContentList}" var="content" columns="5" elements="5" width="600px" border="0" style="border:0px;">
+                    <ui:include src="include/contentPart.xhtml"/>
+                </rich:dataGrid>
+            </h:form>
+        </rich:panel>
+
+        <rich:panel header="Популярное видео" styleClass="box-standard">
+            <h:form>
+                <rich:dataGrid id="popularContentGrid" value="#{contentManager.popularContentList}" var="content" columns="5" elements="5" width="600px" border="0" style="border:0px;">
+                    <ui:include src="include/contentPart.xhtml"/>
+                </rich:dataGrid>
+            </h:form>
+        </rich:panel>
     </ui:define>
 
 </ui:composition>

@@ -1,7 +1,9 @@
 package com.mediaplatform.manager.media;
 
 import com.mediaplatform.event.*;
+import com.mediaplatform.jsf.fileupload.FileAcceptor;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
+import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.AntiSamyBean;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * User: timur
@@ -50,11 +53,32 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @Inject
     private CatalogManager catalogManager;
 
+    private static final AtomicLong dirtyId = new AtomicLong(-1);
 
+    private FileEntry videoFile;
+    private FileEntry cover;
 
-    private FileUploadBean fileUploadBean = new FileUploadBean();
+    private FileUploadBean fileUploadBean = new FileUploadBean(new FileAcceptor() {
+        @Override
+        public void accept(UploadedFile file) {
 
-    private FileUploadBean imgFileUploadBean = new FileUploadBean();
+            videoFile = fileStorageManager.get().saveFile(
+                    new ParentRef(dirtyId.decrementAndGet(), selectedContent.getEntityType()),
+                    file,
+                    DataType.MEDIA_CONTENT);
+        }
+    });
+
+    private FileUploadBean imgFileUploadBean = new FileUploadBean(new FileAcceptor() {
+        @Override
+        public void accept(UploadedFile file) {
+            cover = fileStorageManager.get().saveFile(
+                    new ParentRef(dirtyId.decrementAndGet(),
+                            selectedContent.getEntityType()),
+                    file,
+                    DataType.COVER);
+        }
+    });
 
     @Inject
     private Instance<FileStorageManager> fileStorageManager;
@@ -146,7 +170,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @com.mediaplatform.security.User
     public void editContent(Long id) {
         view(id);
-        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+        if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
             return;
         }
@@ -162,16 +186,16 @@ public class ContentManager extends AbstractContentManager implements Serializab
         authorTopContentList = null;
     }
 
-    public void validateGenreId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj){
+    public void validateGenreId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
         boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Не указан ИД жанра");
-        if(ok){
+        if (ok) {
             Long id = Long.parseLong(String.valueOf(obj));
-            if(catalogManager.getById(id) == null){
+            if (catalogManager.getById(id) == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Жанр с ИД '" + id + "' не найден", null));
                 ok = false;
             }
         }
-        if(!ok){
+        if (!ok) {
             FacesUtil.redirectToHomePage();
         }
     }
@@ -180,28 +204,21 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @TransactionAttribute
     public void saveOrUpdate() {
         boolean edit = selectedContent.getId() != null;
-        if(edit && !Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+        if (edit && !Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
             return;
         }
-        FileEntry mediaFile = null;
-        super.saveOrUpdate(selectedContent, selectedGenre, null, null);
-        if (fileUploadBean.getSize() > 0) {
-            mediaFile = fileStorageManager.get().saveFile(
-                    new ParentRef(selectedContent.getId(), selectedContent.getEntityType()),
-                    fileUploadBean.getFiles().get(0),
-                    DataType.MEDIA_CONTENT);
+        boolean ok = true;
+        if(!edit && cover == null){
+            FacesUtil.addError(null, "Добавьте пожалуйста обложку для видео.");
+            ok = false;
         }
-        FileEntry cover = null;
-        if (imgFileUploadBean.getSize() > 0) {
-            cover = fileStorageManager.get().saveFile(
-                    new ParentRef(selectedContent.getId(),
-                            selectedContent.getEntityType()),
-                    imgFileUploadBean.getFiles().get(0),
-                    DataType.COVER);
+        if(!edit && videoFile == null){
+            FacesUtil.addError(null, "Добавьте пожалуйста видео.");
+            ok = false;
         }
-
-        super.saveOrUpdate(selectedContent, selectedGenre, mediaFile, cover);
+        if(!ok) return;
+        super.saveOrUpdate(selectedContent, selectedGenre, videoFile, cover);
         if (edit) {
             messages.info("Обновленно успешно! После модерации пост будет доступен другим пользователям.");
             updateEvent.fire(new UpdateContentEvent(selectedContent.getId()));
@@ -213,12 +230,14 @@ public class ContentManager extends AbstractContentManager implements Serializab
         updateCatalogEvent.fire(new UpdateCatalogEvent(selectedGenre.getId()));
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
+        videoFile = null;
+        cover = null;
     }
 
     @com.mediaplatform.security.User
     @TransactionAttribute
     public void delete() {
-        if(!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())){
+        if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
             return;
         }
@@ -234,10 +253,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @com.mediaplatform.security.User
     @TransactionAttribute
-    public void addRate(boolean direction){
+    public void addRate(boolean direction) {
         RateInfo rateInfo = new RateInfo(currentUser.getId(), direction);
         selectedContent = getContentById(selectedContent.getId());
-        if(selectedContent.getContentRates().contains(rateInfo)){
+        if (selectedContent.getContentRates().contains(rateInfo)) {
             return;
         }
         selectedContent.getContentRates().add(rateInfo);
@@ -248,7 +267,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @Admin
     @TransactionAttribute
-    public void moderationAllow(){
+    public void moderationAllow() {
         selectedContent.setModerationStatus(ModerationStatus.ALLOWED);
         update(selectedContent);
         messages.info("Статус модерации изменен на Принято.");
@@ -256,14 +275,14 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @Admin
     @TransactionAttribute
-    public void moderationDisallow(){
+    public void moderationDisallow() {
         selectedContent.setModerationStatus(ModerationStatus.DISALLOWED);
         update(selectedContent);
         messages.info("Статус модерации изменен Отклонено.");
     }
 
     //TODO redirect to list view
-    public void endConversation(){
+    public void endConversation() {
         ConversationUtils.safeEnd(conversation);
     }
 
@@ -299,8 +318,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
         return findPopularList(HOME_PAGE_LIST_MAX_SIZE);
     }
 
-    public List<Content> getAuthorTopContentList(){
-        if(authorTopContentList == null){
+    public List<Content> getAuthorTopContentList() {
+        if (authorTopContentList == null) {
             authorTopContentList = appEm.createQuery("select c from Content c where c.author.id= :userId and c.id <> :currentContentId order by c.rate desc").
                     setParameter("userId", selectedContent.getAuthor().getId()).
                     setParameter("currentContentId", selectedContent.getId()).getResultList();
@@ -310,6 +329,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public String getVideoUrl() {
+        if(videoFile != null) return viewHelper.get().getVideoUrl(videoFile);
         if (selectedContent == null || selectedContent.getMediaFile() == null) return null;
         return viewHelper.get().getVideoUrl(selectedContent.getMediaFile());
     }
@@ -336,16 +356,16 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public String getCoverUrl(String format) {
+        if(cover != null) return viewHelper.get().getImgUrlExt(cover, format);
         if (selectedContent == null || selectedContent.getCover() == null) return null;
         return viewHelper.get().getImgUrlExt(selectedContent.getCover(), format);
     }
 
-    public boolean canRate(){
-        if(!identity.isLoggedIn()) return false;
-        if(selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
+    public boolean canRate() {
+        if (!identity.isLoggedIn()) return false;
+        if (selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
         return true;
     }
-
 
 
 }

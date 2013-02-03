@@ -4,23 +4,31 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.solder.core.Veto;
 import org.richfaces.event.FileUploadEvent;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import java.io.*;
 import java.util.ArrayList;
 
-@Veto
 public class FileUploadBean implements Serializable {
 
     private ArrayList<UploadedFile> files = new ArrayList<UploadedFile>();
+    private FileAcceptor acceptor;
+
+    public FileUploadBean(FileAcceptor acceptor) {
+        this.acceptor = acceptor;
+    }
 
     public void paint(OutputStream stream, Object object) throws IOException {
         UploadedFile uploadedFile = getFiles().get((Integer) object);
-        if(uploadedFile.getFile() == null){
+        if (uploadedFile.getFile() == null) {
             stream.write(uploadedFile.getData());
-        }else{
+        } else {
             FileInputStream input = new FileInputStream(uploadedFile.getFile());
-            try{
+            try {
                 IOUtils.copy(input, stream);
-            }finally {
+            } finally {
                 IOUtils.closeQuietly(input);
             }
         }
@@ -39,10 +47,10 @@ public class FileUploadBean implements Serializable {
         tmpFile.deleteOnExit();
 
         FileOutputStream fos = new FileOutputStream(tmpFile);
-        try{
+        try {
             IOUtils.copy(item.getInputStream(), fos);
             file.setFile(tmpFile);
-        }finally {
+        } finally {
             IOUtils.closeQuietly(fos);
         }
 //        file.setLength(item.getData().length);
@@ -50,6 +58,16 @@ public class FileUploadBean implements Serializable {
         file.setName(item.getName());
 //        file.setData(item.getData());
         files.add(file);
+        acceptor.accept(file);
+    }
+
+    public void validateRequiredValue(FacesContext context, UIComponent component,
+                         Object value) throws ValidatorException {
+        File f = (File) value;
+        if (f == null) {
+            throw new ValidatorException(new FacesMessage("Требуется ввести значение!"));
+        }
+
     }
 
     public String clearUploadData() {

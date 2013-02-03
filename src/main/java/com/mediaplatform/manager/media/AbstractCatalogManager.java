@@ -18,7 +18,7 @@ import java.util.List;
  * Time: 9:33 PM
  */
 public class AbstractCatalogManager extends AbstractManager {
-    protected FileUploadBean fileUploadBean = new FileUploadBean();
+
     @Inject
     protected Conversation conversation;
 
@@ -29,6 +29,7 @@ public class AbstractCatalogManager extends AbstractManager {
 
     public Genre getById(Long id){
         Genre result = appEm.find(Genre.class, id);
+        if(result == null) return null;
         result.getContentList().size();
         result.getChildren().size();
         return result;
@@ -68,9 +69,7 @@ public class AbstractCatalogManager extends AbstractManager {
         }
     }
 
-    public FileUploadBean getFileUploadBean() {
-        return fileUploadBean;
-    }
+
 
     public Conversation getConversation() {
         return conversation;

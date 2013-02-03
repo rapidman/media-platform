@@ -3,6 +3,7 @@ package com.mediaplatform.manager;
 import com.mediaplatform.account.CurrentUserManager;
 import com.mediaplatform.account.PasswordManager;
 import com.mediaplatform.i18n.DefaultBundleKey;
+import com.mediaplatform.jsf.fileupload.FileAcceptor;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
@@ -54,7 +55,14 @@ public class UserManager extends AbstractUserManager{
     @Inject
     private Instance<ViewHelper> viewHelper;
 
-    private FileUploadBean imgFileUploadBean = new FileUploadBean();
+    private UploadedFile avatar;
+
+    private FileUploadBean imgFileUploadBean = new FileUploadBean(new FileAcceptor() {
+        @Override
+        public void accept(UploadedFile file) {
+            avatar = file;
+        }
+    });
 
     @Inject
     private Instance<FileStorageManager> fileStorageManager;
@@ -98,22 +106,21 @@ public class UserManager extends AbstractUserManager{
     @com.mediaplatform.security.User
     public void save() {
         if (!checkRightsToEdit()) return;
-
-        if (imgFileUploadBean.getSize() > 0) {
-            UploadedFile uploadedAvatar = imgFileUploadBean.getFiles().get(0);
-            FileEntry avatar = fileStorageManager.get().saveFile(
+        if (avatar != null) {
+            FileEntry avatarEntry = fileStorageManager.get().saveFile(
                     new ParentRef(selectedUser.getId(),
                             selectedUser.getEntityType()),
-                    uploadedAvatar,
+                    avatar,
                     DataType.AVATAR);
             appEm.persist(avatar);
-            selectedUser.setAvatar(avatar);
+            selectedUser.setAvatar(avatarEntry);
         }
         update(selectedUser);
         currentUserManager.get().updateCurrentUser(selectedUser);
         messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен.");
         ConversationUtils.safeEnd(conversation);
         updateEvent.fire(selectedUser);
+        avatar = null;
     }
 
     @com.mediaplatform.security.User
