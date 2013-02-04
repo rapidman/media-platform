@@ -8,7 +8,7 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                  xmlns:cc="http://java.sun.com/jsf/composite">
 
-    <rich:panel bodyClass="pbody">
+    <rich:panel styleClass="box-standard box">
         <h:panelGrid columns="1">
             <h:link id="viewStream" value="#{viewHelper.viewTitle(stream.title)}" outcome="live" style="white-space: nowrap;">
                 <f:param name="id" value="#{stream.id}"/>

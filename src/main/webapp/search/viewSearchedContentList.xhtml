@@ -34,8 +34,8 @@
                 width: 200px;
             }
         </h:outputStylesheet>
-        <rich:panel header="Поиск">
-            <rich:panel>
+        <rich:panel header="Поиск" styleClass="box-standard box">
+            <rich:panel styleClass="box-standard box">
                 <h:panelGrid columns="2">
                     <input type="text" value="#{contentSearchManager.query}" id="searchFormInput" autocomplete="off"/>
                     <input type="button" value="Искать" onclick="search(jQuery('#searchFormInput').val());"/>

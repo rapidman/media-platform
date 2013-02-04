@@ -93,6 +93,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private Instance<Long> selectedContentId;
 
     private List<Content> authorTopContentList;
+    private List<Content> contentList;
 
 
     public Content getSelectedContent() {
@@ -128,7 +129,19 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     public List<Content> getContentList() {
         if (selectedGenre == null) return new ArrayList<Content>();
-        return selectedGenre.getContentList();
+        if(contentList == null){
+            contentList = new ArrayList<Content>(selectedGenre.getContentList());
+            fillChildrensContent(contentList, selectedGenre.getChildren());
+        }
+        return contentList;
+    }
+
+    private void fillChildrensContent(List<Content> contentList, List<Genre> children) {
+        for(Genre child:children){
+            Genre genre = catalogManager.getById(child.getId());
+            contentList.addAll(genre.getContentList());
+            fillChildrensContent(contentList, genre.getChildren());
+        }
     }
 
     public String viewByGenreId(String genreIdStr) {
@@ -138,6 +151,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         TwoTuple<Genre, List<Content>> result = catalogManager.getCatalogContentList(genreId);
         selectedGenre = result.first;
         selectGenreEventEvent.fire(new SelectGenreEvent(selectedGenre.getId(), getExpandedCatalogIds()));
+        contentList = null;
         return "/view-content-list";
     }
 

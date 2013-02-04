@@ -17,7 +17,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <rich:panel header="User list">
+        <rich:panel header="User list" styleClass="box-standard box">
             <h:form id="form">
                 <rich:dataTable value="#{userManager.users}" var="user" iterationStatusVar="it" id="usersTable"
                                 rows="15">

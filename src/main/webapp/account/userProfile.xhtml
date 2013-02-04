@@ -25,7 +25,7 @@
             }
         </h:outputStylesheet>
         <rich:panel
-                header="#{!userManager.isOwner() ? viewHelper.userProfileHeader(userManager.selectedUser) : viewHelper.userOwnerProfileHeader(userManager.selectedUser)}">
+                header="#{!userManager.isOwner() ? viewHelper.userProfileHeader(userManager.selectedUser) : viewHelper.userOwnerProfileHeader(userManager.selectedUser)}" styleClass="box-standard box">
             <h:form>
                 <h:panelGrid columns="2" columnClasses="top,">
                     <h:outputLabel for="name">Полное имя:</h:outputLabel>

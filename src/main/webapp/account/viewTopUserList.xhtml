@@ -17,7 +17,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <rich:panel header="Список пользователей">
+        <rich:panel header="Список пользователей" styleClass="box-standard box">
             <h:form>
                 <rich:dataTable value="#{userManager.sortedTopUserList}" var="user" id="topUsersTable" rows="2">
                     <rich:column>

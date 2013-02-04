@@ -38,12 +38,12 @@
             }
         </h:outputStylesheet>
         <h:form>
-            <rich:panel header="Жанр:#{contentManager.selectedGenre.title}">
-                <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="3" elements="9" width="600px" border="0">
+            <rich:panel header="Жанр:#{contentManager.selectedGenre.title}" styleClass="box-standard box">
+                <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="5" elements="15" width="600px" border="0">
                     <ui:include src="../include/contentPart.xhtml"/>
                 </rich:dataGrid>
                 <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
-                <rich:panel>
+                <rich:panel styleClass="box-standard box">
                     <h:outputText value="Список пока пуст." rendered="#{empty contentManager.contentList}" styleClass="archived"/>
                     <br/> <br/>
                     <h:commandButton id="btnAdd" action="#{contentManager.add()}" value="Добавить" disabled="#{!identity.loggedIn}"/>
