@@ -1,0 +1,54 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/layout/template.xhtml">
+
+    <ui:define name="sitemap">
+        <ui:include src="../include/userContentSiteMap.xhtml"/>
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam validator="#{userManager.validateUserId}" name="username" value="#{username}" required="true" requiredMessage="Автор с таким ником не найден" />
+            <f:event type="preRenderView" listener="#{contentManager.endConversation()}" />
+            <f:event type="preRenderView" listener="#{contentManager.viewByUsername(username)}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ui:include src="/include/navTree.xhtml"/>
+        <ui:include src="/include/topUsersPart.xhtml"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:outputStylesheet>
+            .label {
+                font-weight: bold;
+            }
+            .rf-dg, .rf-dg-c{
+                border:none;
+            }
+            .pbody {
+                width: 200px;
+            }
+        </h:outputStylesheet>
+        <h:form>
+            <rich:panel header="Жанр:#{contentManager.selectedGenre.title}" styleClass="box-standard box">
+                <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="5" elements="15" width="600px" border="0">
+                    <ui:include src="../include/contentPart.xhtml"/>
+                </rich:dataGrid>
+                <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
+                <rich:panel styleClass="box-standard box" rendered="#{empty contentManager.contentList}">
+                    <h:outputText value="Список пока пуст." styleClass="archived"/>
+                </rich:panel>
+            </rich:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+

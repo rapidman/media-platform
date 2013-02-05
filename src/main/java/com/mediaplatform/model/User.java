@@ -208,6 +208,15 @@ public class User extends AbstractEntity {
         this.userMessages = userMessages;
     }
 
+    @Transient
+    public int getRate(){
+        int rate = 0;
+        for(Content content:getContents()){
+            rate+=content.getRate();
+        }
+        return rate;
+    }
+
     @Override
     public String toString() {
         return "User(" + username + ")";

@@ -19,4 +19,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user_message")
 @Veto
 public class UserMessage extends AbstractContent{
+    public UserMessage(){
+        super(EntityType.USER_MESSAGE);
+    }
 }

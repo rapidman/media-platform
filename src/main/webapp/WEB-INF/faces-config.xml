@@ -132,6 +132,13 @@
             <redirect/>
         </navigation-case>
 
+         <navigation-case>
+            <from-outcome>user-content</from-outcome>
+            <if>#{true}</if>
+            <to-view-id>/content/viewUserContent.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
         <navigation-case>
             <from-outcome>full-search</from-outcome>
             <if>#{true}</if>

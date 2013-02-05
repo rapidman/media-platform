@@ -6,5 +6,5 @@ package com.mediaplatform.model;
  * Time: 8:20 PM
  */
 public enum EntityType {
-    GENRE, CONTENT, LIVE_STREAM, EVENT, COMMENT, USER, USER_INFO
+    GENRE, CONTENT, LIVE_STREAM, EVENT, COMMENT, USER, USER_MESSAGE, USER_INFO
 }

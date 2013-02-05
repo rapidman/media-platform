@@ -13,13 +13,15 @@ import java.util.List;
  */
 public abstract class AbstractUserManager extends AbstractManager{
 
-    protected void update(User user) {
+    public void update(User user) {
         appEm.merge(user);
     }
 
     public User findByUsername(String userName) {
         try {
-            return (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();
+            User result = (User) appEm.createQuery("select u from User u where u.username = :username").setParameter("username", userName).getSingleResult();
+            result.getUserMessages().size();
+            return result;
         } catch (NoResultException e) {
             return null;
         }
@@ -40,7 +42,7 @@ public abstract class AbstractUserManager extends AbstractManager{
         return appCacheBean.getTopUsers();
     }
 
-    protected List<User> findUsers(SortOrder nameOrder, SortOrder contentCount, SortOrder rateOrder) {
+    public List<User> findUsers(SortOrder nameOrder, SortOrder contentCount, SortOrder rateOrder) {
         StringBuffer sb = new StringBuffer();
         boolean hasOrder = setOrder("name", nameOrder, sb);
         if(hasOrder && hasOrder(contentCount)) sb.append(",");

@@ -41,21 +41,24 @@ public class UserMessageManager extends AbstractManager implements Serializable{
         appEm.persist(currentMessage);
         selectedUser.getUserMessages().add(currentMessage);
         userManager.update(selectedUser);
-        messages = null;
+        refresh();
         currentMessage = null;
     }
 
     @TransactionAttribute
     @User
-    public void delete(Comment comment){
-        comment = appEm.find(Comment.class, comment.getId());
-        appEm.remove(comment);
-        messages.info("Сообщение добавлено.");
+    public void delete(UserMessage msg){
+        msg = appEm.find(UserMessage.class, msg.getId());
+        com.mediaplatform.model.User user = userManager.getSelectedUser();
+        user.getUserMessages().remove(msg);
+        userManager.update(user);
+        appEm.remove(msg);
+        messages.info("Сообщение удалено.");
         refresh();
     }
 
     private void refresh() {
-        messages = null;
+        userMessages = null;
     }
 
 

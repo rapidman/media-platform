@@ -61,6 +61,11 @@
         <view-id>/account/viewTopUserList.xhtml</view-id>
     </url-mapping>
 
+    <url-mapping id="user-content">
+        <pattern value="/user-content/#{username}"></pattern>
+        <view-id>/content/viewUserContent.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="conversation_ended">
         <pattern value="/conversation_ended"></pattern>
         <view-id>/conversation_ended.xhtml</view-id>

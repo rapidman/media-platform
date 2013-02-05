@@ -12,15 +12,19 @@
         <td valign="top" rowspan="2" class="bordered">#{st.index + 1}.</td>
         <td valign="top" rowspan="2" class="bordered"><h:graphicImage value="#{empty user.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(user.avatar, 'rc23x23.jpg')}" /></td>
         <td valign="top" colspan="3">
-            <h:link id="viewUser" value="#{user.name}" outcome="user" style="white-space: nowrap;">
+            <h:link value="#{user.name}" outcome="user" style="white-space: nowrap;">
                 <f:param name="id" value="#{user.username}"/>
             </h:link>
         </td>
     </tr>
     <tr>
-        <td align="center" valign="top" class="bordered">Статьи: <h:outputText value="#{user.postCount}" /></td>
+        <td align="center" valign="top" class="bordered">
+            <h:link value="Статьи: #{user.postCount}" outcome="user-content" style="white-space: nowrap;">
+                <f:param name="username" value="#{user.username}"/>
+            </h:link>
+        </td>
         <td class="bordered">|</td>
-        <td align="center" valign="top" class="bordered">Рэйтинг: <h:outputText value="#{user.postCount}"/></td>
+        <td align="center" valign="top" class="bordered">Рэйтинг: <h:outputText value="#{user.rate}"/></td>
     </tr>
 
 </ui:composition>

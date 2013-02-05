@@ -8,33 +8,31 @@
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:cc="http://java.sun.com/jsf/composite">
 
-    <h:panelGrid columns="2" width="480px" columnClasses="firstCol,secondCol">
-        <h:graphicImage value="#{viewHelper.getImgUrlByStr(msg.author.avatar, 'rc48x48.jpg')}"/>
-        <h:panelGrid columns="1" width="100%">
 
-            <h:panelGroup layout="block">
-                <h:panelGroup layout="block" style="float: left;">
-                    <h:link id="viewUser" value="#{msg.author.name}" outcome="user"
-                            style="white-space: nowrap;">
-                        <f:param name="id" value="#{msg.author.username}"/>
-                    </h:link>
-                    |
-                    <h:outputText value="#{msg.createDateTime}">
-                        <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
-                    </h:outputText>
-                </h:panelGroup>
-                <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(msg.author)}">
-                    <a4j:commandLink action="#{userManager.delete(msg)}"
-                                     render="messageGrid">Удалить X</a4j:commandLink>
-                </h:panelGroup>
+    <rich:panel styleClass="userMsgPanel">
+        <f:facet name="header">
+            <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(msg.author)}">
+                <a4j:commandLink styleClass="delReply" style="text-decoration: none;" action="#{userMessageManager.delete(msg)}"
+                                 render="messageGrid">Удалить <h:graphicImage value="/images/icon-clear.png"/></a4j:commandLink>
             </h:panelGroup>
-            <h:panelGroup layout="block">
-                <hr/>
-                <br/>
+        </f:facet>
 
-                <p><h:outputText value="#{msg.description}"></h:outputText></p>
+        <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -10px;" columnClasses="firstInnerReply,">
+            <h:graphicImage value="#{empty msg.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(msg.author.avatar, 'rc23x23.jpg')}"/>
+            <h:panelGroup>
+                <h:link value="#{msg.author.name}" outcome="user"
+                        style="white-space: nowrap;">
+                    <f:param name="id" value="#{msg.author.username}"/>
+                </h:link>
+                |
+                <h:outputText value="#{msg.createDateTime}">
+                    <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                </h:outputText>
             </h:panelGroup>
         </h:panelGrid>
-    </h:panelGrid>
-
+        <br/>
+        <p>
+            <h:outputText value="#{msg.description}"></h:outputText>
+        </p>
+    </rich:panel>
 </ui:composition>

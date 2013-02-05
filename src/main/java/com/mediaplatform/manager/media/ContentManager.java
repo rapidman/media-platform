@@ -94,6 +94,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     private List<Content> authorTopContentList;
     private List<Content> contentList;
+    private com.mediaplatform.model.User selectedUser;
 
 
     public Content getSelectedContent() {
@@ -128,11 +129,6 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public List<Content> getContentList() {
-        if (selectedGenre == null) return new ArrayList<Content>();
-        if(contentList == null){
-            contentList = new ArrayList<Content>(selectedGenre.getContentList());
-            fillChildrensContent(contentList, selectedGenre.getChildren());
-        }
         return contentList;
     }
 
@@ -144,17 +140,24 @@ public class ContentManager extends AbstractContentManager implements Serializab
         }
     }
 
-    public String viewByGenreId(String genreIdStr) {
+    public void viewByGenreId(String genreIdStr) {
         Long genreId = Long.parseLong(genreIdStr);
         ConversationUtils.safeBegin(conversation);
 
         TwoTuple<Genre, List<Content>> result = catalogManager.getCatalogContentList(genreId);
         selectedGenre = result.first;
         selectGenreEventEvent.fire(new SelectGenreEvent(selectedGenre.getId(), getExpandedCatalogIds()));
-        contentList = null;
-        return "/view-content-list";
+        contentList = new ArrayList<Content>(selectedGenre.getContentList());
+        fillChildrensContent(contentList, selectedGenre.getChildren());
     }
 
+    public void viewByUsername(String username) {
+        ConversationUtils.safeBegin(conversation);
+        selectedUser = userManagerInstance.get().findByUsername(username);
+        contentList = appEm.createQuery("select c from Content c, User u where c.author.id=u.id and c.moderationStatus= :moderationStatus and u.username= :username").
+                setParameter("username", username).
+                setParameter("moderationStatus", ModerationStatus.ALLOWED).getResultList();
+    }
 
     @com.mediaplatform.security.User
     public void add() {
@@ -322,6 +325,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
     @Admin
     public void publish() {
         publish(true);
+    }
+
+    public com.mediaplatform.model.User getSelectedUser() {
+        return selectedUser;
     }
 
     public List<Content> getLatestContentList() {

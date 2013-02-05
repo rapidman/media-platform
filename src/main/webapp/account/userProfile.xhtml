@@ -86,7 +86,7 @@
             <br/>
             <h:form id="userProfileForm">
                 <rich:collapsiblePanel header="Смена пароля" switchType="ajax" immediate="true" expanded="false"
-                                       rendered="#{userManager.canEdit}">
+                                       rendered="#{userManager.canEdit}" styleClass="box-standard box">
                     <h:panelGrid columns="2" rendered="#{userManager.canEdit}">
                         <h:outputLabel for="currentPassword"
                                        rendered="#{!empty userManager.selectedUser.password}">Текущий пароль:</h:outputLabel>
@@ -119,14 +119,19 @@
         </rich:panel>
 
         <h:outputStylesheet>
-            .firstCol{
+            .firstCol {
                 width: 50px;
                 text-align: left;
             }
-            .secondCol{
+
+            .secondCol {
                 width: 100%;
             }
 
+            .userMsgPanel .rf-p-hdr  {
+                background: transparent none repeat-x top left;
+                border: 0px;
+            }
         </h:outputStylesheet>
         <h:form>
             <rich:collapsiblePanel header="Оставить сообщение" expanded="false" switchType="client">

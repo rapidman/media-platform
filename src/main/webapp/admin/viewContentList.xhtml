@@ -30,17 +30,21 @@
         </h:outputStylesheet>
         <rich:panel header="Поиск постов на модерации" styleClass="box-standard box">
             <h:form>
-                <h:panelGrid columns="2">
-                    <h:outputLabel for="statuses">Статусы модерации:</h:outputLabel>
-                    <h:selectManyListbox id="statuses" value="#{adminContentManager.selectedModerationStatuses}">
-                        <f:selectItems value="#{adminContentManager.moderationStatuses}"/>
-                    </h:selectManyListbox>
-                </h:panelGrid>
+                <fieldset>
+                    <legend style="font-weight: bold;">Поиск</legend>
+                    <h:panelGrid columns="2" columnClasses="top,top">
+                        <h:outputLabel for="statuses">Статусы модерации:</h:outputLabel>
+                        <h:selectManyListbox id="statuses" value="#{adminContentManager.selectedModerationStatuses}">
+                            <f:selectItems value="#{adminContentManager.moderationStatuses}"/>
+                        </h:selectManyListbox>
+                    </h:panelGrid>
+                    <h:commandButton action="#{adminContentManager.show}" value="Искать"/>
+                </fieldset>
 
-                <h:commandButton action="#{adminContentManager.show}" value="Поиск"/>
+                <br/>
 
-                <rich:dataGrid id="contentGrid" value="#{adminContentManager.contentList}" var="content" columns="3"
-                               elements="9" width="600px" border="0">
+                <rich:dataGrid id="contentGrid" value="#{adminContentManager.contentList}" var="content" columns="5"
+                               elements="15" width="600px" border="0">
                     <ui:include src="../include/contentPart.xhtml"/>
                 </rich:dataGrid>
                 <rich:dataScroller for="contentGrid" renderIfSinglePage="false"/>

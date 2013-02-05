@@ -163,7 +163,7 @@ public class UserManager extends AbstractUserManager{
         boolean ok = FacesUtil.validateRequired(facesContext, obj, "Не задан ник пользователя");
         if (ok) {
             if (findByUsername(String.valueOf(obj)) == null) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Контент с указанным '" + obj + "' ИД не найден.", null));
+                FacesUtil.addError(null, "Пользователь с ником '" + obj + "' не найден.");
                 ok = false;
             }
         }
