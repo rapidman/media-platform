@@ -6,9 +6,9 @@
 
     <name>MediaPlatform</name>
 
-    <lifecycle>
-        <phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>
-    </lifecycle>
+    <!--<lifecycle>-->
+        <!--<phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>-->
+    <!--</lifecycle>-->
 
     <navigation-rule>
         <from-view-id>*</from-view-id>

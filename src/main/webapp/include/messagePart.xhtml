@@ -17,7 +17,7 @@
             </h:panelGroup>
         </f:facet>
 
-        <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -10px;" columnClasses="firstInnerReply,">
+        <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -15px;" columnClasses="firstInnerReply,">
             <h:graphicImage value="#{empty msg.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(msg.author.avatar, 'rc23x23.jpg')}"/>
             <h:panelGroup>
                 <h:link value="#{msg.author.name}" outcome="user"

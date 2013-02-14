@@ -91,12 +91,16 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public List<Content> findLatestList(int maxResult) {
-        return findPopularList(maxResult);
+        if(appCacheBean.getLatestContents()== null){
+            appCacheBean.setLatestContents(appEm.createQuery("select c from Content c order by c.createDateTime desc").setMaxResults(maxResult).getResultList());
+        }
+        return appCacheBean.getLatestContents();
+
     }
 
     public List<Content> findPopularList(int maxResult) {
         if(appCacheBean.getPopularContents() == null){
-            appCacheBean.setPopularContents(appEm.createQuery("select c from Content c order by c.id desc").setMaxResults(maxResult).getResultList());
+            appCacheBean.setPopularContents(appEm.createQuery("select c from Content c order by c.rate desc").setMaxResults(maxResult).getResultList());
         }
         return appCacheBean.getPopularContents();
     }

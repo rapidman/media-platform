@@ -25,6 +25,7 @@ public class AppCacheBean {
     private List<User> topUsers;
     private List<User> allUsers;
     private List<Content> popularContents;
+    private List<Content> latestContents;
 
     public List<User> getTopUsers() {
         if(topUsers == null){
@@ -53,16 +54,27 @@ public class AppCacheBean {
         return popularContents;
     }
 
+    public List<Content> getLatestContents() {
+        return latestContents;
+    }
+
+    public void setLatestContents(List<Content> latestContents) {
+        this.latestContents = latestContents;
+    }
+
     public void observeCatalogDelete(@Observes DeleteCatalogEvent deleteEvent) {
         popularContents = null;
+        latestContents = null;
     }
 
     public void observeContentDelete(@Observes DeleteContentEvent deleteEvent) {
         popularContents = null;
+        latestContents = null;
     }
 
     public void observeContentCreate(@Observes CreateContentEvent createEvent) {
         popularContents = null;
+        latestContents = null;
     }
 
     public void observeDeleteUser(@Observes User deletedUser){

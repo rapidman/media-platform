@@ -20,6 +20,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
@@ -34,12 +35,9 @@ import java.util.List;
  * Date: 12/23/12
  * Time: 9:13 PM
  */
-@Stateful
-@ConversationScoped
+@ViewScoped
 @Named
 public class UserManager extends AbstractUserManager{
-    @Inject
-    protected Conversation conversation;
 
     @Inject
     private Instance<CurrentUserManager> currentUserManager;
@@ -73,7 +71,7 @@ public class UserManager extends AbstractUserManager{
     @Inject
     private Event<User> updateEvent;
 
-    private SortOrder nameOrder = SortOrder.unsorted;
+    private SortOrder nameOrder = SortOrder.ascending;
 
     private SortOrder contentCountOrder = SortOrder.unsorted;
 
@@ -103,6 +101,17 @@ public class UserManager extends AbstractUserManager{
         }
     }
 
+    public void sortByRate() {
+        sortedTopUsers = null;
+        nameOrder = SortOrder.unsorted;
+        contentCountOrder = SortOrder.unsorted;
+        if (rateOrder.equals(SortOrder.ascending)) {
+            setRateOrder(SortOrder.descending);
+        } else {
+            setRateOrder(SortOrder.ascending);
+        }
+    }
+
     @com.mediaplatform.security.User
     public void save() {
         if (!checkRightsToEdit()) return;
@@ -112,13 +121,12 @@ public class UserManager extends AbstractUserManager{
                             selectedUser.getEntityType()),
                     avatar,
                     DataType.AVATAR);
-            appEm.persist(avatar);
+            appEm.persist(avatarEntry);
             selectedUser.setAvatar(avatarEntry);
         }
         update(selectedUser);
         currentUserManager.get().updateCurrentUser(selectedUser);
         messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен.");
-        ConversationUtils.safeEnd(conversation);
         updateEvent.fire(selectedUser);
         avatar = null;
     }
@@ -136,13 +144,11 @@ public class UserManager extends AbstractUserManager{
         if (!checkRightsToEdit()) return;
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
-        ConversationUtils.safeEnd(conversation);
         refresh();
         deleteEvent.fire(user);
     }
 
     public void show() {
-        ConversationUtils.safeBegin(conversation);
         refresh();
     }
 
@@ -151,7 +157,6 @@ public class UserManager extends AbstractUserManager{
         refresh();
         this.selectedUser = findByUsername(userName);
         if (!checkRightsForView()) return;
-        ConversationUtils.safeBegin(conversation);
     }
 
     public void validateUserId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
@@ -267,12 +272,12 @@ public class UserManager extends AbstractUserManager{
         this.imgFileUploadBean = imgFileUploadBean;
     }
 
-    public Conversation getConversation() {
-        return conversation;
-    }
-
     public SortOrder getNameOrder() {
         return nameOrder;
+    }
+
+    public  String getNameOrderSign(){
+        return SortOrder.unsorted == nameOrder ? "&uarr;&darr;" : SortOrder.ascending == nameOrder ? "&uarr;" : "&darr;";
     }
 
     public void setNameOrder(SortOrder nameOrder) {
@@ -283,12 +288,20 @@ public class UserManager extends AbstractUserManager{
         return contentCountOrder;
     }
 
+    public String getContentCountOrderSign(){
+        return SortOrder.unsorted == contentCountOrder ? "&uarr;&darr;" : SortOrder.ascending == contentCountOrder ? "&uarr;" : "&darr;";
+    }
+
     public void setContentCountOrder(SortOrder contentCountOrder) {
         this.contentCountOrder = contentCountOrder;
     }
 
     public SortOrder getRateOrder() {
         return rateOrder;
+    }
+
+    public String getRateOrderSign(){
+        return SortOrder.unsorted == rateOrder ? "&uarr;&darr;" : SortOrder.ascending == rateOrder ? "&uarr;" : "&darr;";
     }
 
     public void setRateOrder(SortOrder rateOrder) {

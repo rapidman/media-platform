@@ -46,9 +46,16 @@ public abstract class AbstractUserManager extends AbstractManager{
         StringBuffer sb = new StringBuffer();
         boolean hasOrder = setOrder("name", nameOrder, sb);
         if(hasOrder && hasOrder(contentCount)) sb.append(",");
-        setOrder("u.contents.size", contentCount, sb);
+        hasOrder = setOrder("contentSize", contentCount, sb);
+        if(hasOrder && hasOrder(rateOrder)) sb.append(",");
+        setOrder("rate", rateOrder, sb);
         String orderBy = sb.length() > 0 ? " order by " + sb.toString() : "";
-        List<User> result = appEm.createQuery("select u from User u where u.admin = false " + orderBy).getResultList();
+        List<User> result = appEm.createNativeQuery("select * from (\n" +
+                "  select u.*, sum(case when c.moderationstatus = 1 then 1 else 0 end) as contentSize, sum(case when c.moderationstatus = 1 then c.rate else 0 end) as rate \n" +
+                "  from platform_user u left outer join content c on c.author_id=u.id\n" +
+                "  where u.admin=false\n" +
+                "  group by u.id\n" +
+                ") u" + orderBy, User.class).getResultList();
         for(User u:result){
             u.getContents().size();
         }

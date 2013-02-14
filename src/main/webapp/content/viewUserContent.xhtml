@@ -41,6 +41,9 @@
             <rich:panel header="Жанр:#{contentManager.selectedGenre.title}" styleClass="box-standard box">
                 <rich:dataGrid id="contentGrid" value="#{contentManager.contentList}" var="content" columns="5" elements="15" width="600px" border="0">
                     <ui:include src="../include/contentPart.xhtml"/>
+                    <f:facet name="footer">
+                        <rich:dataScroller for="contentGrid"/>
+                    </f:facet>
                 </rich:dataGrid>
                 <rich:dataScroller for="contentGrid" renderIfSinglePage="false" />
                 <rich:panel styleClass="box-standard box" rendered="#{empty contentManager.contentList}">

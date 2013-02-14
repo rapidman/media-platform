@@ -161,11 +161,6 @@ public class User extends AbstractEntity {
         this.admin = admin;
     }
 
-    @Transient
-    public int getPostCount(){
-        return getContents().size();
-    }
-
     @Lob
     @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
     @Boost(3)
@@ -206,6 +201,17 @@ public class User extends AbstractEntity {
 
     public void setUserMessages(List<UserMessage> userMessages) {
         this.userMessages = userMessages;
+    }
+
+    @Transient
+    public int getPostCount(){
+        int size = 0;
+        for(Content content:getContents()){
+            if(ModerationStatus.ALLOWED == content.getModerationStatus()){
+                size++;
+            }
+        }
+        return size;
     }
 
     @Transient

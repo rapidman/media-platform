@@ -19,7 +19,7 @@
     <ui:define name="content">
         <rich:panel header="Список пользователей" styleClass="box-standard box">
             <h:form>
-                <rich:dataTable value="#{userManager.sortedTopUserList}" var="user" id="topUsersTable" rows="2">
+                <rich:dataTable value="#{userManager.sortedTopUserList}" var="user" id="topUsersTable" rows="15">
                     <rich:column>
                         <f:facet name="header">
                             Аватар
@@ -28,23 +28,31 @@
                     </rich:column>
                     <rich:column sortBy="#{user.name}" id="name" sortOrder="#{userManager.nameOrder}">
                         <f:facet name="header">
-                            <a4j:commandLink value="Сортировать по имени" render="table" action="#{userManager.sortByName}" />
+                            <a4j:commandLink render="topUsersTable" action="#{userManager.sortByName}">
+                                <h:outputText value="Сортировать по имени #{userManager.nameOrderSign}" escape="false"/>
+                            </a4j:commandLink>
                         </f:facet>
                         <h:link value="#{user.name}" outcome="user" style="white-space: nowrap;">
                             <f:param name="id" value="#{user.username}"/>
                         </h:link>
                     </rich:column>
-                    <rich:column sortBy="#{user.postCount}" id="postCount" sortOrder="#{userManager.contentCountOrder}">
+                    <rich:column sortBy="#{user.postCount}" id="postCount" sortOrder="#{userManager.contentCountOrder}" style="text-align: center;">
                         <f:facet name="header">
-                            <a4j:commandLink value="Сортировать по кол-ву постов" render="table" action="#{userManager.sortByPostCount}" />
+                            <a4j:commandLink render="topUsersTable" action="#{userManager.sortByPostCount}">
+                                <h:outputText value="Сортировать по кол-ву постов #{userManager.contentCountOrderSign}" escape="false"/>
+                            </a4j:commandLink>
                         </f:facet>
-                        <h:outputText value="#{user.postCount}" />
+                        <h:link value="#{user.postCount}" outcome="user-content" style="white-space: nowrap;">
+                            <f:param name="username" value="#{user.username}"/>
+                        </h:link>
                     </rich:column>
-                    <rich:column sortBy="#{user.postCount}" id="rate" sortOrder="#{userManager.contentCountOrder}">
+                    <rich:column sortBy="#{user.rate}" id="rate" sortOrder="#{userManager.rateOrder}" style="text-align: center;">
                         <f:facet name="header">
-                            <a4j:commandLink value="Сортировать по рэйту" render="table" action="#{userManager.sortByPostCount}" />
+                            <a4j:commandLink render="topUsersTable" action="#{userManager.sortByRate}">
+                                <h:outputText value="Сортировать по рэйту #{userManager.rateOrderSign}" escape="false"/>
+                            </a4j:commandLink>
                         </f:facet>
-                        <h:outputText value="#{user.postCount}" />
+                        <h:outputText value="#{user.rate}" />
                     </rich:column>
                     <f:facet name="footer">
                         <rich:dataScroller for="topUsersTable"/>
