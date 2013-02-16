@@ -25,9 +25,13 @@
         <view-id>/admin/viewContentList.xhtml</view-id>
     </url-mapping>
 
-
     <url-mapping id="vod">
         <pattern value="/vod/#{id}"></pattern>
+        <view-id>/content/viewVideoOnDemand.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="vod-by-id">
+        <pattern value="/vod/#{contentManager.selectedContent.id}"></pattern>
         <view-id>/content/viewVideoOnDemand.xhtml</view-id>
     </url-mapping>
 

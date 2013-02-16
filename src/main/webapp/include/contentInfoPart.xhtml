@@ -69,7 +69,7 @@
             </h:panelGroup>
 
             <h:panelGroup rendered="#{userManager.checkCanEdit(contentManager.selectedContent.author)}">
-                <h:commandLink styleClass="ui-clickable" action="#{contentManager.editContent(contentManager.selectedContent.id)}" value="Редактировать"/>
+                <h:commandLink styleClass="ui-clickable" action="#{contentManager.editContent(contentManager.selectedContent.id, 'vod-by-id')}" value="Редактировать"/>
             </h:panelGroup>
         </h:panelGrid>
     </h:form>

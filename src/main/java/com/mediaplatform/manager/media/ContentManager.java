@@ -15,13 +15,17 @@ import org.jboss.solder.servlet.http.RequestParam;
 
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
+import javax.el.ValueExpression;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -95,6 +99,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private List<Content> authorTopContentList;
     private List<Content> contentList;
     private com.mediaplatform.model.User selectedUser;
+    private String outcome;
 
 
     public Content getSelectedContent() {
@@ -170,11 +175,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
-        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Content ID not defined");
+        boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Не указан видео ID");
         if (ok) {
             Long id = Long.parseLong(String.valueOf(obj));
             if (getContentById(id) == null) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Content with ID '" + id + "' not found", null));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Контент с ID '" + id + "' не найден", null));
                 ok = false;
             }
         }
@@ -184,13 +189,21 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     @com.mediaplatform.security.User
-    public void editContent(Long id) {
+    public String editContent(Long id) {
+        return editContent(id, null);
+    }
+
+    @com.mediaplatform.security.User
+    public String editContent(Long id, String outcome) {
         view(id);
         if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
-            return;
+            return outcome;
         }
         ConversationUtils.safeBegin(conversation);
+        this.outcome = outcome;
+
+        return "edit-content";
     }
 
     @TransactionAttribute
@@ -218,11 +231,11 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     @com.mediaplatform.security.User
     @TransactionAttribute
-    public void saveOrUpdate() {
+    public String saveOrUpdate() {
         boolean edit = selectedContent.getId() != null;
         if (edit && !Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
-            return;
+            return outcome;
         }
         boolean ok = true;
         if(!edit && cover == null){
@@ -233,7 +246,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
             FacesUtil.addError(null, "Добавьте пожалуйста видео.");
             ok = false;
         }
-        if(!ok) return;
+        if(!ok) return null;
+        selectedContent.setModerationStatus(ModerationStatus.WAITING_FOR_MODERATION);
         super.saveOrUpdate(selectedContent, selectedGenre, videoFile, cover);
         if (edit) {
             messages.info("Обновленно успешно! После модерации пост будет доступен другим пользователям.");
@@ -248,6 +262,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
         imgFileUploadBean.clearUploadData();
         videoFile = null;
         cover = null;
+        if(outcome == null) return null;
+        return "pretty:" + outcome;
     }
 
     @com.mediaplatform.security.User

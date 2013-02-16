@@ -63,4 +63,7 @@ public class ViewHelper implements Serializable {
         return "Ваша страница";
     }
 
+    public String constructOutcome(String str, Long id){
+        return str + id;
+    }
 }

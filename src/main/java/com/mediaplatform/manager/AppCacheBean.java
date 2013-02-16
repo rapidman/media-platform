@@ -89,7 +89,11 @@ public class AppCacheBean {
         refreshUsers();
     }
 
-    public void observeUpdateUser(@Observes UpdateContentEvent updateContentEvent){
+    public void observeUpdateContent(@Observes UpdateContentEvent updateContentEvent){
+        refreshUsers();
+    }
+
+    public void observeUpdateCatalog(@Observes UpdateCatalogEvent updateCatalogEvent){
         refreshUsers();
     }
 

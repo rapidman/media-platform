@@ -7,7 +7,7 @@
     <name>MediaPlatform</name>
 
     <lifecycle>
-        <phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>
+        <phase-listener>com.ocpsoft.pretty.faces.event.MultiPageMessagesSupport</phase-listener>
     </lifecycle>
 
     <navigation-rule>
@@ -70,16 +70,16 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{contentManager.editContent(content.id)}</from-action>
+            <from-outcome>edit-content</from-outcome>
             <if>#{true}</if>
             <to-view-id>/content/editContent.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{contentManager.editContent(contentManager.selectedContent.id)}</from-action>
+            <from-outcome>vod</from-outcome>
             <if>#{true}</if>
-            <to-view-id>/content/editContent.xhtml</to-view-id>
+            <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 
@@ -106,13 +106,6 @@
 
         <navigation-case>
             <from-action>#{contentManager.viewVideoOnDemand(content.id)}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <navigation-case>
-            <from-outcome>vod</from-outcome>
             <if>#{true}</if>
             <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
             <redirect/>
