@@ -5,6 +5,7 @@ import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -91,5 +92,15 @@ public class Genre extends AbstractEntity implements HtmlContainer{
 
     public void setIcon(FileEntry icon) {
         this.icon = icon;
+    }
+
+    public List<Content> getContentListByStatus(ModerationStatus moderationStatus) {
+        List<Content> result = new ArrayList<Content>();
+        for(Content content:getContentList()){
+            if(moderationStatus == content.getModerationStatus()){
+                result.add(content);
+            }
+        }
+        return result;
     }
 }

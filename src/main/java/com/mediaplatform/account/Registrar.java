@@ -84,16 +84,6 @@ public class Registrar {
         return registrationInvalid;
     }
 
-    /**
-     * This method just shows another approach to adding a status message.
-     * <p>
-     * Invoked by:
-     * </p>
-     * <p/>
-     * <pre>
-     * &lt;f:event type="preRenderView" listener="#{registrar.notifyIfRegistrationIsInvalid}"/>
-     * </pre>
-     */
     public void notifyIfRegistrationIsInvalid() {
         if (facesContext.isValidationFailed() || registrationInvalid) {
             messages.warn(new DefaultBundleKey("registration_invalid")).defaults(

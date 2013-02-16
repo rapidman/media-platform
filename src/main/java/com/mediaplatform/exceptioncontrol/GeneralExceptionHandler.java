@@ -27,6 +27,7 @@ import org.jboss.solder.exception.control.HandlesExceptions;
 
 import javax.enterprise.context.NonexistentConversationException;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewExpiredException;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.IOException;
@@ -55,6 +56,11 @@ public class GeneralExceptionHandler {
         }
         event.handled();
         logger.error(event.getException());
+        if(ViewExpiredException.class.isInstance(event.getException())){
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Превышено время ожидания, операция отменена.", null));
+            FacesUtil.redirectToHomePage();
+            return;
+        }
         FacesUtil.redirect("error");
     }
 

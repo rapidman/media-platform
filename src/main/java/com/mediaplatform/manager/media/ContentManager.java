@@ -135,7 +135,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     private void fillChildrensContent(List<Content> contentList, List<Genre> children) {
         for(Genre child:children){
             Genre genre = catalogManager.getById(child.getId());
-            contentList.addAll(genre.getContentList());
+            contentList.addAll(genre.getContentListByStatus(ModerationStatus.ALLOWED));
             fillChildrensContent(contentList, genre.getChildren());
         }
     }
@@ -154,10 +154,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
     public void viewByUsername(String username) {
         ConversationUtils.safeBegin(conversation);
         selectedUser = userManagerInstance.get().findByUsername(username);
-        contentList = appEm.createQuery("select c from Content c, User u where c.author.id=u.id and c.moderationStatus= :moderationStatus and u.username= :username").
-                setParameter("username", username).
-                setParameter("moderationStatus", ModerationStatus.ALLOWED).getResultList();
+        contentList = findByUserName(username);
     }
+
 
     @com.mediaplatform.security.User
     public void add() {
@@ -288,6 +287,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedContent.setModerationStatus(ModerationStatus.ALLOWED);
         update(selectedContent);
         messages.info("Статус модерации изменен на Принято.");
+        updateCatalogEvent.fire(new UpdateCatalogEvent(selectedContent.getGenre().getId()));
     }
 
     @Admin
@@ -296,6 +296,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedContent.setModerationStatus(ModerationStatus.DISALLOWED);
         update(selectedContent);
         messages.info("Статус модерации изменен Отклонено.");
+        updateCatalogEvent.fire(new UpdateCatalogEvent(selectedContent.getGenre().getId()));
     }
 
     //TODO redirect to list view

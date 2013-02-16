@@ -15,22 +15,24 @@
     </cc:interface>
 
     <cc:implementation>
-
-        <div class="entry" id="#{cc.clientId}">
+        <h:panelGrid columns="3" columnClasses="firstCol,secondCol,thirdCol">
             <h:outputLabel id="label" for="" value="#{cc.attrs.label}:"
-                           styleClass="#{cc.attrs.invalid ? 'label errors' : 'label'}">
+                           styleClass="label">
                 <h:panelGroup styleClass="required" rendered="#{cc.attrs.required}">*</h:panelGroup>
             </h:outputLabel>
-         <span class="#{cc.attrs.invalid ? 'input errors' : 'input'}">
-            <cc:insertChildren/>
-         </span>
-            <h:panelGroup rendered="#{cc.attrs.invalid}">
-                <c:forEach var="i" begin="1" end="#{cc.attrs.inputs}">
-                    <h:message id="message#{i}" for="" styleClass="error errors"/>
-                </c:forEach>
-            </h:panelGroup>
-        </div>
 
+            <h:panelGroup styleClass="input">
+                <cc:insertChildren/>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <h:panelGroup rendered="#{cc.attrs.invalid}">
+                    <c:forEach var="i" begin="1" end="#{cc.attrs.inputs}">
+                        <h:message id="message#{i}" for="" styleClass="error errors" />
+                    </c:forEach>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGrid>
     </cc:implementation>
 
 </ui:composition>

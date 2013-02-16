@@ -120,7 +120,6 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
         } catch (Exception e) {
             log.error(e);
         }
-
         messages.error(new DefaultBundleKey("identity_loginFailed")).defaults("Invalid username or password");
         setStatus(AuthenticationStatus.FAILURE);
 

@@ -3,6 +3,7 @@ package com.mediaplatform.jsf;
 import com.google.common.collect.Iterators;
 import com.mediaplatform.model.Genre;
 import com.mediaplatform.model.FileEntry;
+import com.mediaplatform.model.ModerationStatus;
 
 import javax.swing.tree.TreeNode;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class CatalogTreeNode extends NamedNode implements TreeNode {
         for(Genre child: genre.getChildren()){
             childCatalogs.add(new CatalogTreeNode(child, this, expandedIds));
         }
-        childrenSize+= genre.getContentList().size();
+        childrenSize+= genre.getContentListByStatus(ModerationStatus.ALLOWED).size();
         if(parent != null){
             parent.addChildrenSize(childrenSize);
         }

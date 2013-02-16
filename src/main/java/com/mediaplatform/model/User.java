@@ -31,14 +31,6 @@ import org.hibernate.search.annotations.*;
 import org.hibernate.validator.constraints.Email;
 import org.jboss.solder.core.Veto;
 
-/**
- * <p>
- * <strong>User</strong> is the model/entity class that represents a customer who may book a hotel.
- * </p>
- *
- * @author Gavin King
- * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
- */
 @Cacheable
 @Entity
 @Table(name = "platform_user", uniqueConstraints = @UniqueConstraint(columnNames={"username"}))
@@ -58,6 +50,7 @@ public class User extends AbstractEntity {
     private Gender gender;
     //сообщения для этого юзера
     private List<UserMessage> userMessages;
+    private BannedUser bannedUser;
 
     public User() {
         super(EntityType.USER);
@@ -99,7 +92,7 @@ public class User extends AbstractEntity {
 
     @NotNull
     @Size(min = 3, max = 15)
-    @Pattern(regexp = "^\\w*$", message = "not a valid username")
+    @Pattern(regexp = "^\\w*$")
     public String getUsername() {
         return username;
     }
@@ -203,6 +196,15 @@ public class User extends AbstractEntity {
         this.userMessages = userMessages;
     }
 
+    @OneToOne
+    public BannedUser getBannedUser() {
+        return bannedUser;
+    }
+
+    public void setBannedUser(BannedUser bannedUser) {
+        this.bannedUser = bannedUser;
+    }
+
     @Transient
     public int getPostCount(){
         int size = 0;
@@ -221,6 +223,11 @@ public class User extends AbstractEntity {
             rate+=content.getRate();
         }
         return rate;
+    }
+
+    @Transient
+    public String getBanMessage(){
+        return bannedUser == null ? "" : bannedUser.getBanMessage();
     }
 
     @Override

@@ -25,6 +25,7 @@ import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
 import com.mediaplatform.i18n.DefaultBundleKey;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.faces.validation.InputField;
 import org.jboss.seam.international.status.builder.BundleTemplateMessage;
 
@@ -47,7 +48,7 @@ public class ConfirmPasswordValidator implements Validator {
     private String confirmPassword;
 
     public void validate(final FacesContext ctx, final UIComponent form, final Object components) throws ValidatorException {
-        if (newPassword == null || confirmPassword == null) {
+        if (StringUtils.isBlank(newPassword) || StringUtils.isBlank(confirmPassword)) {
             return;
         }
 

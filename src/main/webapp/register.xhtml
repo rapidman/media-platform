@@ -5,6 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:s="http://jboss.org/seam/faces"
+                xmlns:rich="http://richfaces.org/rich"
                 xmlns:p="http://java.sun.com/jsf/composite/components/property"
                 template="/WEB-INF/layout/template.xhtml">
 
@@ -17,52 +18,45 @@
     </ui:define>
 
     <ui:define name="content">
+        <style type="text/css">
+            .label{
+                display: block; width: 120px;
+            }
+        </style>
 
-        <div class="section">
-            <h1>Регистрация</h1>
-        </div>
-
-        <div class="section">
-
+        <rich:panel header="Регистрация" styleClass="box-standard box" style="width:600px">
             <h:form id="regForm" prependId="false">
+                <p:input id="name" label="Полное имя">
+                    <h:inputText id="input" value="#{newUser.name}" label="Имя"/>
+                </p:input>
 
-                <fieldset>
-                    <p:input id="name" label="Полное имя">
-                        <h:inputText id="input" value="#{newUser.name}"/>
-                    </p:input>
+                <p:input id="username" label="Ник">
+                    <h:inputText id="input" value="#{newUser.username}" binding="#{registrar.usernameInput}" label="Ник"/>
+                </p:input>
 
-                    <p:input id="username" label="Ник">
-                        <h:inputText id="input" value="#{newUser.username}"
-                                     binding="#{registrar.usernameInput}"/>
-                    </p:input>
+                <p:input id="email" label="Емайл">
+                    <h:inputText id="input" value="#{newUser.email}" label="Емайл"/>
+                </p:input>
 
-                    <p:input id="email" label="Емайл">
-                        <h:inputText id="input" value="#{newUser.email}"/>
-                    </p:input>
+                <p:input id="password" label="Пароль">
+                    <h:inputSecret id="input" value="#{newUser.password}" redisplay="true" label="Пароль"/>
+                </p:input>
 
-                    <p:input id="password" label="Пароль">
-                        <h:inputSecret id="input" value="#{newUser.password}" redisplay="true"/>
-                    </p:input>
+                <p:input id="confirmPassword" label="Подтвердите пароль">
+                    <h:inputSecret id="input" value="#{registrar.confirmPassword}" redisplay="true" label="Подтверждение"/>
+                </p:input>
 
-                    <p:input id="confirmPassword" label="Подтвердите пароль">
-                        <h:inputSecret id="input" value="#{registrar.confirmPassword}" redisplay="true"/>
-                    </p:input>
+                <h:panelGrid columns="2">
+                    <h:commandButton id="register" value="Регистрировать" action="#{registrar.register}"/>
 
-                    <div class="buttonBox">
-                        <h:commandButton id="register" value="Регистрировать" action="#{registrar.register}"/>
-                        #{' '}
-                        <h:button id="cancel" value="Отменить" outcome="/home.xhtml"/>
-                    </div>
-
-                </fieldset>
+                    <h:button id="cancel" value="Отменить" outcome="/home.xhtml"/>
+                </h:panelGrid>
 
                 <s:validateForm id="passwordCheck" validatorId="confirmPassword"
                                 fields="newPassword=password:input confirmPassword=confirmPassword:input"/>
 
             </h:form>
-
-        </div>
-
+        </rich:panel>
     </ui:define>
 
     <ui:define name="sidebar">

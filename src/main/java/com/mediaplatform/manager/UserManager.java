@@ -8,26 +8,21 @@ import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
+import com.mediaplatform.security.Admin;
 import com.mediaplatform.security.Restrictions;
-import com.mediaplatform.util.ConversationUtils;
 import com.mediaplatform.util.ViewHelper;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.richfaces.component.SortOrder;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,6 +74,10 @@ public class UserManager extends AbstractUserManager{
 
     private List<User> sortedTopUsers;
 
+    private String banReason;
+
+    private int banDaysCount;
+
     public void sortByName() {
         sortedTopUsers = null;
         contentCountOrder = SortOrder.unsorted;
@@ -113,8 +112,13 @@ public class UserManager extends AbstractUserManager{
     }
 
     @com.mediaplatform.security.User
-    public void save() {
-        if (!checkRightsToEdit()) return;
+    public String save() {
+       return save("");
+    }
+
+    @com.mediaplatform.security.User
+    public String save(String outcome) {
+        if (!checkRightsToEdit()) return null;
         if (avatar != null) {
             FileEntry avatarEntry = fileStorageManager.get().saveFile(
                     new ParentRef(selectedUser.getId(),
@@ -124,11 +128,15 @@ public class UserManager extends AbstractUserManager{
             appEm.persist(avatarEntry);
             selectedUser.setAvatar(avatarEntry);
         }
+        if(banDaysCount > 0){
+            ban(selectedUser);
+        }
         update(selectedUser);
         currentUserManager.get().updateCurrentUser(selectedUser);
         messages.info(new DefaultBundleKey("account_saved")).defaults("Аккаунт обновлен.");
         updateEvent.fire(selectedUser);
         avatar = null;
+        return outcome;
     }
 
     @com.mediaplatform.security.User
@@ -139,14 +147,39 @@ public class UserManager extends AbstractUserManager{
         messages.info(new DefaultBundleKey("account_password_changed")).defaults("Пароль изменен.");
     }
 
-    @com.mediaplatform.security.User
+    @Admin
     public void remove(User currentUser) {
-        if (!checkRightsToEdit()) return;
         User user = findByUsername(currentUser.getUsername());
         appEm.remove(user);
         refresh();
         deleteEvent.fire(user);
     }
+
+    @Admin
+    public void edit(User user){
+        selectedUser = getById(user.getId());
+    }
+
+    @Admin
+    public void ban(User user){
+        BannedUser bannedUser = getBannedUserByUserId(user.getId());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, banDaysCount);
+        Date banTo = cal.getTime();
+        if(bannedUser == null){
+            bannedUser = new BannedUser(user, banReason, new Date(), banTo);
+            appEm.persist(bannedUser);
+        }else{
+            bannedUser.setBannedFrom(new Date());
+            bannedUser.setReason(banReason);
+            bannedUser.setBannedTo(banTo);
+            appEm.merge(bannedUser);
+        }
+        user.setBannedUser(bannedUser);
+        update(user);
+        messages.info("Пользователь " + user.getName() + " забанен на " + banDaysCount);
+    }
+
 
     public void show() {
         refresh();
@@ -240,7 +273,7 @@ public class UserManager extends AbstractUserManager{
     }
 
     public boolean checkAdmin(){
-        return Restrictions.checkAdmin(identity);
+        return identity.isLoggedIn() && Restrictions.checkAdmin(identity);
     }
 
     public List<User> getSortedTopUserList(){
@@ -310,6 +343,22 @@ public class UserManager extends AbstractUserManager{
 
     public Gender[] getGenderValues() {
        return Gender.values();
+    }
+
+    public String getBanReason() {
+        return banReason;
+    }
+
+    public void setBanReason(String banReason) {
+        this.banReason = banReason;
+    }
+
+    public int getBanDaysCount() {
+        return banDaysCount;
+    }
+
+    public void setBanDaysCount(int banDaysCount) {
+        this.banDaysCount = banDaysCount;
     }
 }
 

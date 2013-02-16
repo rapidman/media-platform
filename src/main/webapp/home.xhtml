@@ -20,7 +20,7 @@
             }
 
         </h:outputStylesheet>
-        <rich:panel header="Live Видео" styleClass="box-standard box">
+        <rich:panel header="Live Видео" styleClass="box-standard box" rendered="#{!empty mainPageManager.publishedLiveStreams}">
             <h:form rendered="#{mainPageManager.publishedLiveStreams.size() > 0}">
                 <rich:dataGrid id="liveContentGrid" value="#{mainPageManager.publishedLiveStreams}"  var="stream" columns="5" elements="5" width="600px" border="0" style="border:0px;">
                     <ui:include src="include/streamPart.xhtml"/>

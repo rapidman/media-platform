@@ -2,19 +2,16 @@ package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.manager.AntiSamyBean;
-import com.mediaplatform.manager.HtmlTextHelper;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.*;
-import com.mediaplatform.model.User;
-import com.mediaplatform.security.*;
 
-import javax.ejb.TransactionAttribute;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.List;
 
-import static com.mediaplatform.web.NotificationListenerServlet.*;
+import static com.mediaplatform.web.NotificationListenerServlet.CONTENT_NAME_PARAM_NAME;
+import static com.mediaplatform.web.NotificationListenerServlet.UNAME_PARAM_NAME;
 
 /**
  * User: timur
@@ -92,17 +89,29 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     public List<Content> findLatestList(int maxResult) {
         if(appCacheBean.getLatestContents()== null){
-            appCacheBean.setLatestContents(appEm.createQuery("select c from Content c order by c.createDateTime desc").setMaxResults(maxResult).getResultList());
+            appCacheBean.setLatestContents(find(maxResult, "c.createDateTime desc"));
         }
         return appCacheBean.getLatestContents();
 
     }
 
+    private List<Content> find(int maxResult, String order) {
+        return appEm.createQuery("select c from Content c where c.moderationStatus= :moderationStatus  order by " + order).
+                setParameter("moderationStatus", ModerationStatus.ALLOWED).
+                setMaxResults(maxResult).getResultList();
+    }
+
     public List<Content> findPopularList(int maxResult) {
         if(appCacheBean.getPopularContents() == null){
-            appCacheBean.setPopularContents(appEm.createQuery("select c from Content c order by c.rate desc").setMaxResults(maxResult).getResultList());
+            appCacheBean.setLatestContents(find(maxResult, "c.rate desc"));
         }
         return appCacheBean.getPopularContents();
+    }
+
+    public List findByUserName(String username) {
+        return appEm.createQuery("select c from Content c, User u where c.author.id=u.id and c.moderationStatus= :moderationStatus and u.username= :username").
+                setParameter("username", username).
+                setParameter("moderationStatus", ModerationStatus.ALLOWED).getResultList();
     }
 
     public Content findContentByFileName(String name) {

@@ -6,9 +6,9 @@
 
     <name>MediaPlatform</name>
 
-    <!--<lifecycle>-->
-        <!--<phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>-->
-    <!--</lifecycle>-->
+    <lifecycle>
+        <phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>
+    </lifecycle>
 
     <navigation-rule>
         <from-view-id>*</from-view-id>
@@ -176,6 +176,13 @@
         </navigation-case>
 
         <navigation-case>
+            <from-outcome>admin-userlist-save</from-outcome>
+            <if>#{true}</if>
+            <to-view-id>/account/viewUserList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
             <from-outcome>live-list</from-outcome>
             <if>#{true}</if>
             <to-view-id>/content/viewLiveStreamList.xhtml</to-view-id>
@@ -216,6 +223,8 @@
             <var>messages</var>
         </resource-bundle>
         <message-bundle>messages</message-bundle>
+
+        <view-handler>com.mediaplatform.jsf.CustomViewHandler</view-handler>
     </application>
 
 

@@ -11,7 +11,7 @@
 
     <ui:define name="content">
         <div align="left">
-            <rich:panel header="Авторизация" styleClass="box-standard box">
+            <rich:panel header="Авторизация" styleClass="box-standard box" style="width:400px">
                 <h:form id="login">
                     <h:panelGrid columns="3">
                         <h:outputLabel for="username" value="#{bundles.messages.home_usernameLabel}"
@@ -27,30 +27,13 @@
                         <h:panelGroup/>
                     </h:panelGrid>
 
-
-                    <div class="buttonBox">
+                    <h:panelGrid columns="4">
                         <h:commandButton id="login" action="#{identity.login}" value="#{bundles.messages.home_loginAction}"/>
-                    </div>
-
-                    <h:panelGrid columns="2">
                         <h:commandLink action="#{twitterBean.login}"><h:graphicImage url="/images/social/twitter_icon4.jpg" height="16" width="16"/></h:commandLink>
                         <h:commandLink action="#{facebookBean.login}"><h:graphicImage url="/images/social/facebookicon.png" height="16" width="16"/></h:commandLink>
+                        <h:link id="register" outcome="/register.xhtml" value="#{bundles.messages.home_registerAction}"/>
                     </h:panelGrid>
 
-                    <div align="center">
-                        <div class="notes" align="left">
-                            <h:link id="register" outcome="/register.xhtml"
-                                    value="#{bundles.messages.home_registerAction}"/>
-                        </div>
-
-                        <div class="subnotes" align="left">
-                            #{bundles.messages.home_useDemoAccount}
-                            <ul>
-                                <li>admin/admin</li>
-                                <li>shane/brisbane</li>
-                            </ul>
-                        </div>
-                    </div>
                 </h:form>
             </rich:panel>
         </div>

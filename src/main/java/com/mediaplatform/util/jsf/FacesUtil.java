@@ -41,6 +41,7 @@ public class FacesUtil {
     public static void redirect(String page) {
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
+            if(facesContext == null) return;
             ExternalContext externalContext = facesContext.getExternalContext();
             FacesUtil.saveMessages(facesContext);
             String redirect = externalContext.getRequestContextPath() + "/" + page;

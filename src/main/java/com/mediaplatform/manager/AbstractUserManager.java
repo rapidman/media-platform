@@ -1,5 +1,6 @@
 package com.mediaplatform.manager;
 
+import com.mediaplatform.model.BannedUser;
 import com.mediaplatform.model.User;
 import org.richfaces.component.SortOrder;
 
@@ -60,6 +61,14 @@ public abstract class AbstractUserManager extends AbstractManager{
             u.getContents().size();
         }
         return result;
+    }
+
+    public BannedUser getBannedUserByUserId(Long userId) {
+        try {
+            return (BannedUser) appEm.createQuery("select bu from BannedUser bu where bu.user.id = :userId").setParameter("userId", userId).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     private boolean setOrder(String field, SortOrder order, StringBuffer sb) {
