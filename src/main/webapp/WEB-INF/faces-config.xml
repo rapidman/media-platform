@@ -33,12 +33,7 @@
             <to-view-id>/login.xhtml</to-view-id>
         </navigation-case>
 
-        <navigation-case>
-            <from-outcome>denied</from-outcome>
-            <if>#{identity.loggedIn}</if>
-            <to-view-id>/home.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
+
 
         <navigation-case>
             <from-action>#{catalogManager.editCatalog(node.id)}</from-action>
@@ -204,6 +199,19 @@
         <navigation-case>
             <from-action>#{registrar.register}</from-action>
             <if>#{registrar.registered}</if>
+            <to-view-id>/home.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <from-view-id>/denied.xhtml</from-view-id>
+
+        <navigation-case>
+            <from-action>#{identity.login}</from-action>
+            <if>#{identity.loggedIn}</if>
             <to-view-id>/home.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
