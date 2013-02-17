@@ -177,7 +177,19 @@ public class UserManager extends AbstractUserManager{
         }
         user.setBannedUser(bannedUser);
         update(user);
-        messages.info("Пользователь " + user.getName() + " забанен на " + banDaysCount);
+        updateEvent.fire(user);
+        messages.info("Пользователь " + user.getName() + " забанен на " + banDaysCount + " дн.");
+    }
+
+    @Admin
+    public void unban(User user){
+        BannedUser bannedUser = getBannedUserByUserId(user.getId());
+        bannedUser.setBannedFrom(null);
+        bannedUser.setReason(null);
+        bannedUser.setBannedTo(null);
+        appEm.merge(bannedUser);
+        updateEvent.fire(user);
+        messages.info("Пользователь " + user.getName() + " разбанен.");
     }
 
 

@@ -139,7 +139,7 @@
                 <h:panelGrid columns="1">
                     <h:inputTextarea id="desc" value="#{userMessageManager.currentMessage.description}" cols="100"
                                      rows="5"/>
-                    <a4j:commandButton action="#{userMessageManager.addMessage}" execute="@form" value="Написать" disabled="#{!identity.loggedIn or userManager.owner}"
+                    <a4j:commandButton action="#{userMessageManager.addMessage}" execute="@form" value="Написать" rendered="#{identity.loggedIn and !userManager.owner}"
                                        render="messageGrid,desc"/>
 
                 </h:panelGrid>

@@ -60,11 +60,11 @@ public abstract class AbstractContentManager extends AbstractManager {
             genre.getContentList().add(content);
             appEm.merge(genre);
         }
-        if(video != null && video.getId() < 0){
+        if(video != null && video.getParentRef().getId() < 0){
             video.setParentRef(new ParentRef(content.getId(), content.getEntityType()));
             appEm.merge(video);
         }
-        if(cover != null && cover.getId() < 0){
+        if(cover != null && cover.getParentRef().getId() < 0){
             cover.setParentRef(new ParentRef(content.getId(), content.getEntityType()));
             appEm.merge(cover);
         }
@@ -103,7 +103,7 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     public List<Content> findPopularList(int maxResult) {
         if(appCacheBean.getPopularContents() == null){
-            appCacheBean.setLatestContents(find(maxResult, "c.rate desc"));
+            appCacheBean.setPopularContents(find(maxResult, "c.rate desc"));
         }
         return appCacheBean.getPopularContents();
     }

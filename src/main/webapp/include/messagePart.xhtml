@@ -11,7 +11,7 @@
 
     <rich:panel styleClass="userMsgPanel">
         <f:facet name="header">
-            <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkCanEdit(msg.author)}">
+            <h:panelGroup layout="block" style="float: right;" rendered="#{userManager.checkOwner(msg.author) or userManager.checkCanEdit(msg.author)}">
                 <a4j:commandLink styleClass="delReply" style="text-decoration: none;" action="#{userMessageManager.delete(msg)}"
                                  render="messageGrid">Удалить <h:graphicImage value="/images/icon-clear.png"/></a4j:commandLink>
             </h:panelGroup>

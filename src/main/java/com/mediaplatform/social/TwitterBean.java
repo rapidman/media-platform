@@ -31,7 +31,6 @@ import java.io.Serializable;
  */
 @Named("twitterBean")
 @SessionScoped
-@Twitter
 public class TwitterBean extends AbstractSocialBean {
     @Inject
     @Twitter
@@ -83,5 +82,9 @@ public class TwitterBean extends AbstractSocialBean {
 
     public TwitterService getService() {
         return service;
+    }
+
+    public void reset(){
+        twUser = null;
     }
 }

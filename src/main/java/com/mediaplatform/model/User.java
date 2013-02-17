@@ -72,6 +72,7 @@ public class User extends AbstractEntity {
     @Field(index= Index.YES, analyze= Analyze.YES, store= Store.NO)
     @NotNull
     @Size(min = 1, max = 100)
+    @Boost(2)
     public String getName() {
         return name;
     }

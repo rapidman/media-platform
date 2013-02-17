@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.hibernate.search.annotations.Indexed;
 import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "comment")
 @Veto
+@Indexed
 public class Comment extends AbstractContent{
     private Content content;
     private List<Comment> replies;

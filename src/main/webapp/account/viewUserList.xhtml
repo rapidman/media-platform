@@ -70,11 +70,14 @@
                         <h:outputText value="Ник"/>
                         <h:outputText value="#{userManager.selectedUser.username}"/>
 
-                        <h:outputText id="banMsg" value="#{userManager.selectedUser.banMessage}" rendered="#{!empty userManager.selectedUser.bannedUser}"/>
-                        <a4j:commandButton id="banLink" rendered="#{!empty userManager.selectedUser.bannedUser}" value="Разбанить" action="#{userManager.ban(userManager.selectedUser)}" render="banMsg,banLink" execute="@this"/>
+                        <h:outputText id="banMsg" value="#{userManager.selectedUser.banMessage}" rendered="#{!empty userManager.selectedUser.bannedUser and !empty userManager.selectedUser.bannedUser.bannedTo}"/>
+                        <a4j:commandButton id="banLink"
+                                           rendered="#{!empty userManager.selectedUser.bannedUser and !empty userManager.selectedUser.bannedUser.bannedTo}"
+                                           value="Разбанить" action="#{userManager.unban(userManager.selectedUser)}" render="usersTable,globalMessages" execute="userEditPane"
+                                           oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('userEditPane')}.hide();}"/>
 
-                        <h:outputText value="Забанить" rendered="#{empty userManager.selectedUser.bannedUser}"/>
-                        <h:panelGrid columns="2" rendered="#{empty userManager.selectedUser.bannedUser}">
+                        <h:outputText value="Забанить" rendered="#{empty userManager.selectedUser.bannedUser or empty userManager.selectedUser.bannedUser.bannedTo}"/>
+                        <h:panelGrid columns="2" rendered="#{empty userManager.selectedUser.bannedUser or empty userManager.selectedUser.bannedUser.bannedTo}">
                             <h:panelGrid columns="1">
                                 <h:outputText value="Причина:"/>
                                 <h:inputTextarea value="${userManager.banReason}"/>

@@ -8,6 +8,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import com.mediaplatform.model.User;
+import com.mediaplatform.security.Authenticated;
 
 import java.io.Serializable;
 

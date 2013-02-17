@@ -25,13 +25,14 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-import com.mediaplatform.account.Authenticated;
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.manager.UserManager;
+import com.mediaplatform.model.BannedUser;
 import com.mediaplatform.model.User;
+import com.mediaplatform.social.FacebookBean;
+import com.mediaplatform.social.TwitterBean;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Authenticator;
@@ -43,6 +44,9 @@ import org.jboss.seam.social.twitter.model.TwitterProfile;
 import org.jboss.solder.logging.Logger;
 import org.picketlink.idm.impl.api.PasswordCredential;
 import org.picketlink.idm.impl.api.model.SimpleUser;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Stateful
 @LocalBean
@@ -70,15 +74,20 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     private TwitterProfile twUser;
 
     @Inject
+    private TwitterBean twitterBean;
+
+    @Inject
     @Named("fbUser")
     private UserProfile fbUser;
+
+    @Inject
+    private FacebookBean facebookBean;
 
     @Inject
     private Identity identity;
 
     @Inject
     private Instance<UserManager> userManagerInstance;
-
 
     @Inject
     private FacesContext facesContext;
@@ -88,19 +97,20 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     public void authenticate() {
         User user;
         try {
+            boolean ok = false;
             if(twUser != null){
                 log.info("Logging in " + twUser.getScreenName());
                 user = userManagerInstance.get().findByUsername(twUser.getScreenName());
                 if(user != null){
                     authenticate(user);
-                    return;
+                    ok = true;
                 }
             }else if(fbUser != null){
                 log.info("Logging in " + fbUser.getId());
                 user = userManagerInstance.get().findByUsername(fbUser.getId());
                 if(user != null){
                     authenticate(user);
-                    return;
+                    ok = true;
                 }
             }else{
                 log.info("Logging in " + credentials.getUsername());
@@ -114,23 +124,40 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
                     if("admin".equals(user.getUsername())){
                         identity.addRole("admin", "USERS", "GROUP");
                     }
-                    return;
+                    ok = true;
                 }
+            }
+            if(ok){
+
+                return;
             }
         } catch (Exception e) {
             log.error(e);
         }
         messages.error(new DefaultBundleKey("identity_loginFailed")).defaults("Invalid username or password");
         setStatus(AuthenticationStatus.FAILURE);
-
+        reset();
     }
 
     public void authenticate(User user) {
+        BannedUser banedUser = user.getBannedUser();
+        if(banedUser != null && banedUser.getBannedTo() != null && banedUser.getBannedTo().after(new Date())){
+            FacesUtil.redirectToDeniedPage();
+            FacesUtil.addError(null, banedUser.getBanMessage());
+//            messages.info(new DefaultBundleKey("identity_user_banned"), banedUser.getBanMessage());
+            reset();
+            return;
+        }
         loginEventSrc.fire(user);
         messages.info(new DefaultBundleKey("identity_loggedIn"), user.getName()).defaults("You're signed in as {0}")
                 .params(user.getName());
         setStatus(AuthenticationStatus.SUCCESS);
         setUser(new SimpleUser(user.getUsername()));
+    }
+
+    private void reset() {
+        facebookBean.reset();
+        twitterBean.reset();
     }
 
     public void checkAuthenticated(){

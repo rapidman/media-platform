@@ -25,7 +25,7 @@ import java.io.Serializable;
  * Date: 12/16/12
  * Time: 4:34 PM
  */
-@Named
+@Named("facebookBean")
 @SessionScoped
 public class FacebookBean extends AbstractSocialBean {
 
@@ -79,6 +79,10 @@ public class FacebookBean extends AbstractSocialBean {
     @Override
     protected void initAccessToken() {
         service.initAccessToken();
+    }
+
+    public void reset(){
+        fbUser = null;
     }
 
 }

@@ -74,6 +74,7 @@ public class BannedUser extends AbstractEntity {
 
     @Transient
     public String getBanMessage() {
+        if(getBannedTo() == null) return "";
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         sb.append("Забанен с ").append(sdf.format(getBannedFrom())).append(" по " + sdf.format(getBannedTo())).append(".");

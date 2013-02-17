@@ -7,7 +7,7 @@
     <name>MediaPlatform</name>
 
     <lifecycle>
-        <phase-listener>com.ocpsoft.pretty.faces.event.MultiPageMessagesSupport</phase-listener>
+        <phase-listener>com.mediaplatform.util.jsf.MultiPageMessagesSupport</phase-listener>
     </lifecycle>
 
     <navigation-rule>
@@ -29,15 +29,15 @@
 
         <navigation-case>
             <from-action>#{identity.login}</from-action>
-            <if>#{identity.loggedIn}</if>
-            <to-view-id>/home.xhtml</to-view-id>
-            <redirect/>
+            <from-outcome>failed</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{identity.login}</from-action>
-            <from-outcome>failed</from-outcome>
-            <to-view-id>/login.xhtml</to-view-id>
+            <from-outcome>denied</from-outcome>
+            <if>#{identity.loggedIn}</if>
+            <to-view-id>/home.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
 
         <navigation-case>

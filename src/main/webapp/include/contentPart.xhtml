@@ -18,9 +18,9 @@
                         <h:panelGroup>
                             <h:link id="viewContent" value="#{viewHelper.viewTitle(content.title)}" outcome="vod" style="white-space: nowrap;">
                                 <f:param name="id" value="#{content.id}"/>
-                                <rich:contextMenu mode="server" target="viewContent" rendered="#{identity.loggedIn and userManager.checkCanEdit(currentUser)}" direction="topRight">
+                                <rich:contextMenu mode="server" target="viewContent" rendered="#{identity.loggedIn and userManager.checkCanEdit(content.author)}" direction="topRight">
                                     <rich:menuItem label="Edit" render="popupContent" action="#{contentManager.editContent(content.id)}"
-                                                   rendered="#{identity.loggedIn and userManager.checkCanEdit(currentUser)}"
+                                                   rendered="#{identity.loggedIn and userManager.checkCanEdit(content.author)}"
                                                    mode="server" icon="/images/icons/edit.gif" />
                                 </rich:contextMenu>
                             </h:link>

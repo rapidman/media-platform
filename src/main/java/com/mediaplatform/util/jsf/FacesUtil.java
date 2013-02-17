@@ -46,8 +46,8 @@ public class FacesUtil {
             FacesUtil.saveMessages(facesContext);
             String redirect = externalContext.getRequestContextPath() + "/" + page;
             externalContext.redirect(redirect);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

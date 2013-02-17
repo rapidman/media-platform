@@ -1,10 +1,9 @@
 package com.mediaplatform.util;
 
-import com.mediaplatform.model.User;
+import com.mediaplatform.model.*;
 import org.apache.commons.lang.StringUtils;
 import com.mediaplatform.manager.ConfigBean;
 import com.mediaplatform.manager.file.FileStorageManager;
-import com.mediaplatform.model.FileEntry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -66,4 +65,17 @@ public class ViewHelper implements Serializable {
     public String constructOutcome(String str, Long id){
         return str + id;
     }
+
+    public boolean isContent(AbstractEntity entity){
+        return Content.class.isInstance(entity);
+    }
+
+    public boolean isUser(AbstractEntity entity){
+        return User.class.isInstance(entity);
+    }
+
+    public boolean isComment(AbstractEntity entity){
+        return Comment.class.isInstance(entity);
+    }
+
 }

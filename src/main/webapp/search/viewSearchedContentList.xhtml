@@ -47,16 +47,48 @@
             </rich:panel>
 
             <h:form>
-                <h:panelGrid columns="2" rendered="#{!empty contentSearchManager.contentList}">
+                <h:panelGrid columns="2" rendered="#{!empty contentSearchManager.searchResultList}">
                     <h:outputText value="Результаты поиска по запросу '#{contentSearchManager.query}':" style="font: larger;font-weight: bold;"/>
                     <h:panelGroup>
                         <hr/>
                     </h:panelGroup>
                 </h:panelGrid>
 
-                <rich:dataGrid id="searchContentGrid" value="#{contentSearchManager.contentList}" var="content"
+                <rich:dataGrid id="searchContentGrid" value="#{contentSearchManager.searchResultList}" var="result"
                                columns="3" elements="9" width="600px" border="0">
-                    <ui:include src="../include/contentPart.xhtml"/>
+                    <h:panelGroup layout="block" rendered="#{viewHelper.isContent(result)}">
+                        <ui:include src="../include/contentPart.xhtml">
+                            <ui:param name="content" value="#{result}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" rendered="#{viewHelper.isUser(result)}">
+                        <h:panelGroup>
+                            <h:outputText value="Пользователь: "/>
+                            <h:link value="#{result.name}" outcome="user" style="white-space: nowrap;">
+                                <f:param name="id" value="#{result.username}"/>
+                            </h:link>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" rendered="#{viewHelper.isComment(result)}">
+                        <h:panelGrid columns="2" width="450px" style="position: relative; margin-top: -10px;" columnClasses="firstInnerReply,">
+                            <h:graphicImage value="#{empty result.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(result.author.avatar, 'rc23x23.jpg')}"/>
+                            <h:panelGroup>
+                                <h:link value="#{result.author.name}" outcome="user" style="white-space: nowrap;">
+                                    <f:param name="id" value="#{result.author.username}"/>
+                                </h:link>
+                                |
+                                <h:outputText value="#{result.createDateTime}">
+                                    <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                                </h:outputText>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <br/>
+                        <p>
+                            <h:link value="#{viewHelper.viewDescription(result.description)}" outcome="vod" style="white-space: nowrap;">
+                                <f:param name="id" value="#{result.content.id}"/>
+                            </h:link>
+                        </p>
+                    </h:panelGroup>
                 </rich:dataGrid>
                 <rich:dataScroller for="searchContentGrid" renderIfSinglePage="false"/>
                 <br/>

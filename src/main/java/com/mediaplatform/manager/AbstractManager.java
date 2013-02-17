@@ -1,12 +1,11 @@
 package com.mediaplatform.manager;
 
-import com.mediaplatform.account.Authenticated;
 import com.mediaplatform.model.User;
+import com.mediaplatform.security.Authenticated;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Identity;
 import org.jboss.solder.logging.Logger;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
