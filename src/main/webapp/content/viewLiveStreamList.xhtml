@@ -54,22 +54,17 @@
                         <h:selectBooleanCheckbox value="#{stream.published}">
                             <a4j:ajax event="valueChange" execute="@this"
                                       listener="#{liveStreamManager.publish(stream)}"
-                                      render="liveStreamsTable,globalMessages"/>
+                                      render="liveStreamsTable,globalMessages">
+                            </a4j:ajax>
                             <rich:tooltip id="tt1" styleClass="tooltip" layout="block">
                                 <span style="white-space: nowrap">#{stream.published ? 'Uncheck checkbox to drop stream' : 'Check checkbox to publish stream'}</span>
                             </rich:tooltip>
                         </h:selectBooleanCheckbox>
                     </rich:column>
                     <rich:column>
-                        <a4j:commandLink styleClass="no-decor" execute="@this" render="liveStreamConfirmPane"
-                                         actionListener="#{liveStreamManager.edit(stream)}"
-                                         oncomplete="#{rich:component('liveStreamConfirmPane')}.show()">
+                        <a4j:commandLink styleClass="no-decor" execute="@this" render="liveStreamsTable,globalMessages"
+                                         actionListener="#{liveStreamManager.remove(stream)}">
                             <h:graphicImage value="/images/icons/delete.gif" alt="delete"/>
-                        </a4j:commandLink>
-                        <a4j:commandLink styleClass="no-decor" render="liveStreamEditPane" execute="@this"
-                                         actionListener="#{liveStreamManager.edit(stream)}"
-                                         oncomplete="#{rich:component('liveStreamEditPane')}.show()">
-                            <h:graphicImage value="/images/icons/edit.gif" alt="edit"/>
                         </a4j:commandLink>
                     </rich:column>
                     <f:facet name="footer">
@@ -77,18 +72,16 @@
                     </f:facet>
                 </rich:dataTable>
 
-                <h:panelGrid columns="1">
-                    <a4j:commandButton value="Add" execute="@this" oncomplete="#{rich:component('liveStreamEditPane')}.show()"
-                                       actionListener="#{liveStreamManager.add}" render="liveStreamEditPane"/>
-                </h:panelGrid>
+
 
                 <rich:popupPanel id="liveStreamConfirmPane" autosized="true" domElementAtztachment="parent">
-                    Are you sure you want to delete the #{liveStreamManager.currentStream.source}?
+                    Вы уверены, что хотите удалить #{liveStreamManager.currentStream.source}?
                     <a4j:commandButton value="Cancel" onclick="#{rich:component('liveStreamConfirmPane')}.hide(); return false;"/>
                     <a4j:commandButton value="Delete"
                                        action="#{liveStreamManager.remove(liveStreamManager.currentStream)}"
                                        render="liveStreamsTable,globalMessages" execute="liveStreamConfirmPane"
                                        oncomplete="#{rich:component('liveStreamConfirmPane')}.hide();">
+                        <a4j:param value="#{liveStreamManager.conversation.id}" name="cid"/>
                     </a4j:commandButton>
                 </rich:popupPanel>
 
@@ -112,7 +105,9 @@
                     </f:facet>
                     <a4j:commandButton value="Save" action="#{liveStreamManager.saveOrCreate}"
                                        render="liveStreamsTable,globalMessages" execute="liveStreamEditPane"
-                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('liveStreamEditPane')}.hide();}"/>
+                                       oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('liveStreamEditPane')}.hide();}">
+                        <a4j:param value="#{liveStreamManager.conversation.id}" name="cid"/>
+                    </a4j:commandButton>
 
                 </rich:popupPanel>
             </h:form>

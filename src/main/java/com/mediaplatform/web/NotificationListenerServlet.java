@@ -58,6 +58,8 @@ public class NotificationListenerServlet extends HttpServlet {
 
     //TODO authentication checking
     protected void process(HttpServletRequest req){
+        String uri = req.getRequestURI();
+        System.out.println(uri);
         EventType type = EventType.valueOf(req.getParameter(CALL_PARAM_NAME));
         String addr = req.getParameter(ADDR_PARAM_NAME);
         String app = req.getParameter(APP_PARAM_NAME);

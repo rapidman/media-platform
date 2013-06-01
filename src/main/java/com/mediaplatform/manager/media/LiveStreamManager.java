@@ -9,6 +9,7 @@ import com.mediaplatform.util.RunShellCmdHelper;
 import com.mediaplatform.util.jsf.FacesUtil;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
@@ -32,9 +33,7 @@ public class LiveStreamManager extends AbstractContentManager {
     private AntiSamyBean antiSamyBean;
 
     public List<LiveStream> getLiveStreams(){
-        if(liveStreams == null){
-            liveStreams = appEm.createQuery("select s from LiveStream s").getResultList();
-        }
+        liveStreams = appEm.createQuery("select s from LiveStream s").getResultList();
         return liveStreams;
     }
 
@@ -58,6 +57,7 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     @Admin
+    @TransactionAttribute
     public void edit(LiveStream stream){
         ConversationUtils.safeBegin(conversation);
         this.currentStream = stream;
@@ -82,6 +82,7 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     @Admin
+    @TransactionAttribute
     public void saveOrCreate(){
         antiSamyBean.prepare(currentStream);
         if(currentStream.getId() == null){
@@ -94,6 +95,7 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     @Admin
+    @TransactionAttribute
     public void remove(LiveStream stream){
         appEm.remove(appEm.find(LiveStream.class, stream.getId()));
         ConversationUtils.safeEnd(conversation);
@@ -106,6 +108,7 @@ public class LiveStreamManager extends AbstractContentManager {
     }
 
     @Admin
+    @TransactionAttribute
     public void publish(LiveStream stream){
         appEm.merge(stream);
         this.currentStream = stream;

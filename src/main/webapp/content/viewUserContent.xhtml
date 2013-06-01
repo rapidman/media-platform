@@ -14,8 +14,7 @@
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam validator="#{userManager.validateUserId}" name="username" value="#{username}" required="true" requiredMessage="Автор с таким ником не найден" />
-            <f:event type="preRenderView" listener="#{contentManager.endConversation()}" />
+            <f:viewParam validator="#{userManager.validateUserId}" name="username" value="#{username}"/>
             <f:event type="preRenderView" listener="#{contentManager.viewByUsername(username)}" />
         </f:metadata>
     </ui:define>
