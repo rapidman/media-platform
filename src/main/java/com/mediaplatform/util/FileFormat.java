@@ -15,6 +15,8 @@ public enum FileFormat {
     PDF("pdf", "application/pdf"),
     AVI("avi", "video/msvideo"),
     FLV("flv", "video/x-flv"),
+    MOV("mov", "video/quicktime"),
+    MKV("mov", "video/x-matroska"),
     MP4("mp4", "video/mp4"),
     MP3("mp3", "audio/mp3"),
     WEBM("webm", "video/webm"),

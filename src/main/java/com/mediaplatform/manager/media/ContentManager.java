@@ -339,6 +339,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     public void publish(boolean highQuality) {
         String absFilePath = fileStorageManager.get().getMediaFileUrl(selectedContent.getMediaFile(), true);
         LiveStream liveStream = new LiveStream(absFilePath, selectedContent.getMediaFile().getName(), selectedContent.getDescription(), true);
+        liveStream.setAuthor(currentUser);
         appEm.persist(liveStream);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
         messages.info("Published successfull!");

@@ -13,7 +13,7 @@
             <h:link id="viewStream" value="#{viewHelper.viewTitle(stream.title)}" outcome="live" style="white-space: nowrap;">
                 <f:param name="id" value="#{stream.id}"/>
             </h:link>
-            <h:outputText value="#{viewHelper.viewDescription(stream.description)}" />
+            <h:outputText value="#{viewHelper.viewDescription(stream.description)}" escape="false"/>
         </h:panelGrid>
     </rich:panel>
 
