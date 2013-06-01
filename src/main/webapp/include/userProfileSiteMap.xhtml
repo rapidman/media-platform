@@ -11,11 +11,11 @@
     <h:panelGrid columns="5">
         <h:link value="#{bundles.messages.template_linkHome}" outcome="/" style="white-space: nowrap;"/>
         <h:panelGroup>&rarr;</h:panelGroup>
-        <h:link value="#{contentManager.selectedUser.name}" outcome="user" style="white-space: nowrap;">
-            <f:param name="id" value="#{contentManager.selectedUser.username}"/>
+        <h:link value="Статьи: #{userManager.selectedUser.postCount}" outcome="user-content" style="white-space: nowrap;">
+            <f:param name="username" value="#{userManager.selectedUser.username}"/>
         </h:link>
         <h:panelGroup>&rarr;</h:panelGroup>
-        <h:outputText value="Добавленное видео"/>
+        <h:outputText value="Профиль пользователя"/>
     </h:panelGrid>
 
 </ui:composition>

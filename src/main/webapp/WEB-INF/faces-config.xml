@@ -100,13 +100,6 @@
         </navigation-case>
 
         <navigation-case>
-            <from-action>#{contentManager.viewVideoOnDemand(content.id)}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/content/viewVideoOnDemand.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-
-        <navigation-case>
             <from-outcome>user</from-outcome>
             <if>#{true}</if>
             <to-view-id>/account/userProfile.xhtml</to-view-id>

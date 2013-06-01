@@ -90,8 +90,15 @@
                             </h:form>
                         </rich:toolbarGroup>
 
+                        <rich:toolbarGroup location="right">
+                            <h:link value="" onclick="#{rich:component('aboutPopup')}.show(); return false;">
+                                О сайте
+                            </h:link>
+                        </rich:toolbarGroup>
+
                         <rich:toolbarGroup location="right" rendered="#{identity.loggedIn}">
-                            <pretty:link mappingId="logout">#{bundles.messages.template_linkLogout}</pretty:link>
+                            <!--<pretty:link mappingId="logout">#{bundles.messages.template_linkLogout}</pretty:link>-->
+                            <h:form><h:commandLink action="#{identity.logout}" value="#{bundles.messages.template_linkLogout}"/></h:form>
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="right" rendered="#{facesContext.application.projectStage == 'Development'}">
@@ -157,6 +164,21 @@
                         </div>
                     </h:form>
                 </rich:popupPanel>
+                <rich:popupPanel id="aboutPopup" modal="false" autosized="true" resizeable="false">
+                    <f:facet name="header">
+                        <h:outputText value="О сайте" />
+                    </f:facet>
+                    <f:facet name="controls">
+                        <h:outputLink value="#" onclick="#{rich:component('aboutPopup')}.hide(); return false;">
+                            X
+                        </h:outputLink>
+                    </f:facet>
+                    <p>Сайт предназначен для просмотра и публикации видео контента. Опубликованное видео доступно только после модерации.</p>
+
+                    <p>
+                        О всех ошибках просьба сообщать в <a href="mailto:rapidman.stv@gmail.com"> техническую поддержку.</a>
+                    </p>
+                </rich:popupPanel>
             </div>
             <div id="container" align="left" style="height: 100%">
                 <table cellpadding="5px" width="100%" style="height: 100%">
@@ -184,12 +206,9 @@
             <div class="push"></div>
         </div>
         <div id="footer" align="center" class="footer">
-            Media Platform &copy;   <br/>
-            #{bundles.messages.template_createdWith}<br/>
-            #{bundles.messages.template_projectStage}: #{initParam['javax.faces.PROJECT_STAGE']}
-            #{' | '}
-            #{bundles.messages.template_currentConversation}:
-            #{conversation.transient ? 'transient' : 'long-running, id: '.concat(conversation.id)}
+            Томский Видеоблог &copy;   <br/>
+            Создано с использованием Seam 3.0, CDI 1.0, EJB 3.1, JSF 2.0, Bean Validation 1.0 и PrettyFaces<br/>
+            Сайт разработан ИП Саидов Т.В. | <a href="mailto:rapidman.stv@gmail.com">Отправить письмо в тех. поддержку</a>
         </div>
 
     </h:body>

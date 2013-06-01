@@ -10,6 +10,8 @@ import org.jboss.seam.faces.context.conversation.End;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.SessionScoped;
@@ -76,6 +78,7 @@ public class CatalogTreeBean implements Serializable {
         return selectedNode != null && selectedNode.equals(other);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeGenreSelect(@Observes SelectGenreEvent selectGenreEvent) {
         Set<Long> expandedIds = selectGenreEvent.getExpandedCatalogIds();
         fillExpandedIds(rootNodes, expandedIds);
@@ -83,12 +86,14 @@ public class CatalogTreeBean implements Serializable {
         selectedNode = getTreeNodeById(selectGenreEvent.getGenreId(), rootNodes);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeCatalogUpdate(@Observes UpdateCatalogEvent updateEvent) {
         Set<Long> expandedIds = new HashSet<Long>();
         fillExpandedIds(rootNodes, expandedIds);
         refreshTree(expandedIds);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeCatalogDelete(@Observes DeleteCatalogEvent deleteEvent) {
         Set<Long> expandedIds = new HashSet<Long>();
         fillExpandedIds(rootNodes, expandedIds);
@@ -96,10 +101,12 @@ public class CatalogTreeBean implements Serializable {
         refreshTree(expandedIds);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeContentDelete(@Observes DeleteContentEvent deleteEvent) {
         refreshTree(deleteEvent.getExpandedCatalogIds());
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeContentCreate(@Observes CreateContentEvent createEvent) {
         refreshTree(createEvent.getExpandedCatalogIds());
     }

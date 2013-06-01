@@ -174,6 +174,10 @@ public class ContentManager extends AbstractContentManager implements Serializab
         view(Long.parseLong(id));
     }
 
+    public int getTestId(){
+        return 34;
+    }
+
     public void validateContentId(javax.faces.context.FacesContext facesContext, javax.faces.component.UIComponent uiComponent, java.lang.Object obj) {
         boolean ok = FacesUtil.validateLong(facesContext, uiComponent, obj, "Не указан видео ID");
         if (ok) {
@@ -262,8 +266,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
         imgFileUploadBean.clearUploadData();
         videoFile = null;
         cover = null;
+        conversation.end();
         if(outcome == null) return null;
-        return "pretty:" + outcome;
+        return outcome;
     }
 
     @com.mediaplatform.security.User
@@ -400,7 +405,7 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     public boolean canRate() {
-        if (!identity.isLoggedIn()) return false;
+        if (selectedContent == null || identity == null || !identity.isLoggedIn()) return false;
         if (selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
         return true;
     }

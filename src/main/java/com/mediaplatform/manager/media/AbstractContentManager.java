@@ -88,9 +88,9 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public List<Content> findLatestList(int maxResult) {
-        if(appCacheBean.getLatestContents()== null){
+//        if(appCacheBean.getLatestContents()== null){
             appCacheBean.setLatestContents(find(maxResult, "c.createDateTime desc"));
-        }
+//        }
         return appCacheBean.getLatestContents();
 
     }
@@ -102,9 +102,9 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public List<Content> findPopularList(int maxResult) {
-        if(appCacheBean.getPopularContents() == null){
+//        if(appCacheBean.getPopularContents() == null){
             appCacheBean.setPopularContents(find(maxResult, "c.rate desc"));
-        }
+//        }
         return appCacheBean.getPopularContents();
     }
 

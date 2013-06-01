@@ -133,6 +133,10 @@ public class ApplicationInitializer {
                                         new TwoTuple<Genre, List<Content>>(
                                                 new Genre("ВИДЕО", "Любительское видео"),
                                                 new ArrayList<Content>()
+                                        ),
+                                        new TwoTuple<Genre, List<Content>>(
+                                                new Genre("ВИДЕО-КЛИПЫ", "Музыкальные видео клипы"),
+                                                new ArrayList<Content>()
                                         )
                                 )
                         );
