@@ -134,12 +134,6 @@
             <redirect/>
         </navigation-case>
 
-        <navigation-case>
-            <from-action>#{contentManager.delete}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/content/viewContentList.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
         <!-- content actions end-->
 
         <navigation-case>

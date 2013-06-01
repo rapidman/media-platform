@@ -84,6 +84,7 @@ public class NotificationListenerServlet extends HttpServlet {
         if(EventType.publish_done == type){
             LiveStream liveStream = (LiveStream) entityManager.createQuery("select s from LiveStream s where s.title = :streamName").setParameter("streamName", contentName).getSingleResult();
             liveStream.setPublished(false);
+            entityManager.merge(liveStream);
         }
     }
 }

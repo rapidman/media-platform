@@ -131,10 +131,7 @@ public class CatalogManager extends AbstractCatalogManager {
         deleteEvent.fire(new DeleteCatalogEvent(selectedGenre.getId()));
         this.selectedGenre = null;
         messages.info("Удалено успешно");
-
-        if (!conversation.isTransient()) {
-            conversation.end();
-        }
+        ConversationUtils.safeEnd(conversation);
         fileUploadBean.clearUploadData();
     }
 

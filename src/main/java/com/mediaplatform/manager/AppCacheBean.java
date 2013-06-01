@@ -5,6 +5,8 @@ import com.mediaplatform.model.Content;
 import com.mediaplatform.model.User;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
@@ -62,37 +64,45 @@ public class AppCacheBean {
         this.latestContents = latestContents;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeCatalogDelete(@Observes DeleteCatalogEvent deleteEvent) {
         popularContents = null;
         latestContents = null;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeContentDelete(@Observes DeleteContentEvent deleteEvent) {
         popularContents = null;
         latestContents = null;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeContentCreate(@Observes CreateContentEvent createEvent) {
         popularContents = null;
         latestContents = null;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeDeleteUser(@Observes User deletedUser){
         refreshUsers();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeUpdateUser(@Observes User updatedUser){
         refreshUsers();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeUpdateUser(@Observes CreateContentEvent createContentEvent){
         refreshUsers();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeUpdateContent(@Observes UpdateContentEvent updateContentEvent){
         refreshUsers();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void observeUpdateCatalog(@Observes UpdateCatalogEvent updateCatalogEvent){
         refreshUsers();
     }

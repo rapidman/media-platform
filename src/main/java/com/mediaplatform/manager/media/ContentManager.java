@@ -4,28 +4,22 @@ import com.mediaplatform.event.*;
 import com.mediaplatform.jsf.fileupload.FileAcceptor;
 import com.mediaplatform.jsf.fileupload.FileUploadBean;
 import com.mediaplatform.jsf.fileupload.UploadedFile;
-import com.mediaplatform.manager.AntiSamyBean;
 import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
-import com.mediaplatform.security.*;
-import com.mediaplatform.security.User;
+import com.mediaplatform.security.Admin;
+import com.mediaplatform.security.Restrictions;
 import com.mediaplatform.util.*;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.jboss.solder.servlet.http.RequestParam;
 
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
-import javax.el.ValueExpression;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -266,17 +260,20 @@ public class ContentManager extends AbstractContentManager implements Serializab
         imgFileUploadBean.clearUploadData();
         videoFile = null;
         cover = null;
-        conversation.end();
-        if(outcome == null) return null;
-        return outcome;
+        String redirectUrl = navigationBean.getContentAfterEdit(selectedContent.getId());
+        ConversationUtils.safeEnd(conversation);
+        if(outcome != null) return outcome;
+        return redirectUrl;
     }
 
     @com.mediaplatform.security.User
     @TransactionAttribute
-    public void delete() {
+    public String delete() {
+        String redirectUrl = navigationBean.getContentList(selectedContent.getGenre().getId());
         if (!Restrictions.isAdminOrOwner(identity, currentUser, selectedContent.getAuthor())) {
             FacesUtil.redirectToDeniedPage();
-            return;
+            ConversationUtils.safeEnd(conversation);
+            return redirectUrl;
         }
         DeleteContentEvent event = new DeleteContentEvent(selectedContent.getId(), getExpandedCatalogIds());
         super.delete(selectedContent);
@@ -286,6 +283,8 @@ public class ContentManager extends AbstractContentManager implements Serializab
         selectedGenre = catalogManager.getById(selectedGenre.getId());
         fileUploadBean.clearUploadData();
         imgFileUploadBean.clearUploadData();
+        ConversationUtils.safeEnd(conversation);
+        return redirectUrl;
     }
 
     @com.mediaplatform.security.User
@@ -336,18 +335,20 @@ public class ContentManager extends AbstractContentManager implements Serializab
     }
 
     @Admin
-    public void publish(boolean highQuality) {
+    public String publish(boolean highQuality) {
         String absFilePath = fileStorageManager.get().getMediaFileUrl(selectedContent.getMediaFile(), true);
         LiveStream liveStream = new LiveStream(absFilePath, selectedContent.getMediaFile().getName(), selectedContent.getDescription(), true);
         liveStream.setAuthor(currentUser);
         appEm.persist(liveStream);
         RunShellCmdHelper.publish(absFilePath, selectedContent.getMediaFile().getName(), highQuality ? RtmpPublishFormat.FLV_HIGH : RtmpPublishFormat.FLV_LOW);
-        messages.info("Published successfull!");
+        messages.info("Видео опубликовано!");
+        ConversationUtils.safeEnd(conversation);
+        return navigationBean.getLiveStreamList();
     }
 
     @Admin
-    public void publish() {
-        publish(true);
+    public String publish() {
+        return publish(true);
     }
 
     public com.mediaplatform.model.User getSelectedUser() {

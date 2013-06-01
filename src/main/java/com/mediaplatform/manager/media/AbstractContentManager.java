@@ -2,6 +2,7 @@ package com.mediaplatform.manager.media;
 
 import com.mediaplatform.manager.AbstractManager;
 import com.mediaplatform.manager.AntiSamyBean;
+import com.mediaplatform.manager.NavigationBean;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.*;
 
@@ -28,6 +29,9 @@ public abstract class AbstractContentManager extends AbstractManager {
 
     @Inject
     private AntiSamyBean antiSamyBean;
+
+    @Inject
+    protected NavigationBean navigationBean;
 
     public Content getContentById(Long id) {
         return appEm.find(Content.class, id);

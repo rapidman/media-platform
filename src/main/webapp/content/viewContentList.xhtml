@@ -14,8 +14,7 @@
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam validator="#{contentManager.validateGenreId}" name="id" value="#{id}" required="true" requiredMessage="Жанр с таким ИД не найден" />
-            <f:event type="preRenderView" listener="#{contentManager.endConversation()}" />
+            <f:viewParam validator="#{contentManager.validateGenreId}" name="id" value="#{id}" />
             <f:event type="preRenderView" listener="#{contentManager.viewByGenreId(id)}" />
         </f:metadata>
     </ui:define>
