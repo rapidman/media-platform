@@ -408,7 +408,12 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     public boolean canRate() {
         if (selectedContent == null || identity == null || !identity.isLoggedIn()) return false;
-        if (selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
+        try {
+            if (selectedContent.getContentRates().contains(new RateInfo(currentUser.getId(), false))) return false;
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return false;
+        }
         return true;
     }
 

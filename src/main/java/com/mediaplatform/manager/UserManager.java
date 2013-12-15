@@ -192,6 +192,10 @@ public class UserManager extends AbstractUserManager{
         messages.info("Пользователь " + user.getName() + " разбанен.");
     }
 
+    public void clearUploadedImage(){
+        if(imgFileUploadBean != null) imgFileUploadBean.clearUploadData();
+        avatar = null;
+    }
 
     public void show() {
         refresh();

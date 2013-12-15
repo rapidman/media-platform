@@ -26,141 +26,158 @@
                 vertical-align: top;
                 width: 100px;
             }
-        </h:outputStylesheet>
-        <rich:panel
-                header="#{!userManager.isOwner() ? viewHelper.userProfileHeader(userManager.selectedUser) : viewHelper.userOwnerProfileHeader(userManager.selectedUser)}" styleClass="box-standard box">
-            <h:form>
-                <h:panelGrid columns="2" columnClasses="top,">
-                    <h:outputLabel for="name">Полное имя:</h:outputLabel>
-                    <h:inputText id="name" value="#{userManager.selectedUser.name}" rendered="#{userManager.canEdit}"/>
-                    <h:outputText value="#{userManager.selectedUser.name}" rendered="#{!userManager.canEdit}"/>
-
-                    <h:outputLabel for="username">Ник:</h:outputLabel>
-                    <h:outputText id="username" value="#{userManager.selectedUser.username}"/>
-
-                    <h:outputLabel for="gender">Пол:</h:outputLabel>
-                    <h:outputText id="gender" value="#{userManager.selectedUser.gender.label}"
-                                  rendered="#{!userManager.canEdit}"/>
-                    <h:selectOneMenu value="#{userManager.selectedUser.gender}" rendered="#{userManager.canEdit}">
-                        <f:selectItems value="#{userManager.genderValues}" var="g" itemValue="#{g.name}"
-                                       itemLabel="#{g.label}"/>
-                    </h:selectOneMenu>
-
-                    <h:outputLabel for="regDate">Дата регистрации:</h:outputLabel>
-                    <h:outputText id="regDate" value="#{userManager.selectedUser.createDate}">
-                        <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
-                    </h:outputText>
-
-
-                    <h:outputLabel for="email">Емайл:</h:outputLabel>
-                    <h:outputText id="email" value="#{userManager.selectedUser.email}"/>
-
-                    <h:outputLabel>Кратко о себе:</h:outputLabel>
-                    <h:outputText value="#{userManager.selectedUser.description}" rendered="#{!userManager.canEdit}"/>
-                    <h:inputTextarea value="#{userManager.selectedUser.description}" rendered="#{userManager.canEdit}"
-                                     cols="100" rows="8"/>
-                </h:panelGrid>
-
-
-                <h:panelGrid columns="1">
-                    <h:panelGrid columns="2" columnClasses="top,">
-                        <h:outputText value="Аватар:"/>
-                        <h:graphicImage value="#{userManager.getAvatarUrl('rc50x50.jpg')}"
-                                        rendered="#{!empty userManager.selectedUser.avatar}"/>
-                        <h:graphicImage value="#{viewHelper.getDefaultAvatar('rc50x50.jpg')}"
-                                        rendered="#{empty userManager.selectedUser.avatar}"/>
-                    </h:panelGrid>
-                    <rich:fileUpload fileUploadListener="#{userManager.imgFileUploadBean.listener}"
-                                     rendered="#{userManager.canEdit}"
-                                     id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Аватар"
-                                     addLabel="#{empty userManager.selectedUser.avatar ? 'Добавить' : 'Сменить'}"
-                                     clearAllLabel="Очистить все" clearLabel="Очистить" uploadLabel="Загрузить"
-                                     ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');"
-                                     maxFilesQuantity="1" style="height: 100px;">
-                        <a4j:param value="#{userManager.conversation.id}" name="cid"/>
-                    </rich:fileUpload>
-                </h:panelGrid>
-
-                <h:panelGroup rendered="#{userManager.canEdit}">
-                    <h:commandButton id="Save" value="Сохранить" action="#{userManager.save}"/>
-                </h:panelGroup>
-            </h:form>
-
-            <br/>
-            <h:form id="userProfileForm">
-                <rich:collapsiblePanel header="Смена пароля" switchType="ajax" immediate="true" expanded="false"
-                                       rendered="#{userManager.canEdit}" styleClass="box-standard box">
-                    <h:panelGrid columns="2" rendered="#{userManager.canEdit}">
-                        <h:outputLabel for="currentPassword"
-                                       rendered="#{!empty userManager.selectedUser.password}">Текущий пароль:</h:outputLabel>
-                        <h:panelGroup rendered="#{!empty userManager.selectedUser.password}">
-                            <h:inputSecret id="currentPassword" value="#{userManager.selectedUser.password}">
-                                <f:validator validatorId="currentPassword"/>
-                            </h:inputSecret>
-                            <h:message for="currentPassword"/>
-                        </h:panelGroup>
-
-                        <h:outputLabel for="newPassword">Новый пароль:</h:outputLabel>
-                        <h:panelGroup>
-                            <h:inputSecret id="newPassword" value="#{passwordManager.newPassword}"/>
-                            <h:message for="newPassword" errorClass="errors"/>
-                        </h:panelGroup>
-
-                        <h:outputLabel for="confirmPassword">Подтвердить пароль:</h:outputLabel>
-                        <h:panelGroup>
-                            <h:inputSecret id="confirmPassword" value="#{passwordManager.confirmPassword}"/>
-                            <h:message for="confirmPassword" errorClass="errors"/>
-                        </h:panelGroup>
-                    </h:panelGrid>
-                    <s:validateForm id="passwordCheck" validatorId="confirmPassword"
-                                    fields="newPassword=userProfileForm:newPassword confirmPassword=userProfileForm:confirmPassword"/>
-                    <h:panelGroup rendered="#{userManager.canEdit}">
-                        <h:commandButton id="Save" value="Сохранить" action="#{userManager.changePassword}"/>
-                    </h:panelGroup>
-                </rich:collapsiblePanel>
-            </h:form>
-        </rich:panel>
-
-        <h:outputStylesheet>
-            .firstCol {
-                width: 50px;
-                text-align: left;
-            }
-
-            .secondCol {
-                width: 100%;
-            }
-
-            .userMsgPanel .rf-p-hdr  {
-                background: transparent none repeat-x top left;
-                border: 0px;
+            .alignTop {
+                vertical-align: top;
             }
         </h:outputStylesheet>
-        <h:form>
-            <rich:collapsiblePanel header="Оставить сообщение" expanded="false" switchType="client">
-                <h:inputHidden value="#{commentManager.contentId}"/>
-                <h:panelGrid columns="1">
-                    <h:inputTextarea id="desc" value="#{userMessageManager.currentMessage.description}" cols="100"
-                                     rows="5"/>
-                    <a4j:commandButton action="#{userMessageManager.addMessage}" execute="@form" value="Написать" rendered="#{identity.loggedIn and !userManager.owner}"
-                                       render="messageGrid,desc"/>
 
-                </h:panelGrid>
+        <rich:tabPanel switchType="client">
+            <rich:tab header="Личные данные">
+                <rich:panel
+                        header="#{!userManager.isOwner() ? viewHelper.userProfileHeader(userManager.selectedUser) : viewHelper.userOwnerProfileHeader(userManager.selectedUser)}" styleClass="box-standard box">
+                    <h:form id="userProfileForm">
+                        <h:panelGrid columns="2" columnClasses="top,">
+                            <h:outputLabel for="name">Полное имя:</h:outputLabel>
+                            <h:inputText id="name" value="#{userManager.selectedUser.name}" rendered="#{userManager.canEdit}" style="width: 450px"/>
+                            <h:outputText value="#{userManager.selectedUser.name}" rendered="#{!userManager.canEdit}"/>
 
-                <rich:tooltip styleClass="tooltip" layout="block" showDelay="500" rendered="#{!identity.loggedIn}">
-                    <span style="white-space: nowrap"><h:outputText value="Для того чтобы оставлять сообщения требуется авторизация на сайте." escape="false"/></span>
-                </rich:tooltip>
-            </rich:collapsiblePanel>
-        </h:form>
-        <h:form rendered="#{identity.loggedIn}">
-            <rich:dataGrid id="messageGrid" value="#{userMessageManager.userMessages}" var="msg" columns="1"
-                           elements="9" width="100%" border="0">
-                <ui:include src="../include/messagePart.xhtml">
-                    <ui:param name="msg" value="#{msg}"/>
-                </ui:include>
-            </rich:dataGrid>
-            <rich:dataScroller for="messageGrid" renderIfSinglePage="false"/>
-        </h:form>
+                            <h:outputLabel for="username">Ник:</h:outputLabel>
+                            <h:outputText id="username" value="#{userManager.selectedUser.username}"/>
+
+                            <h:outputLabel for="gender">Пол:</h:outputLabel>
+                            <h:outputText id="gender" value="#{userManager.selectedUser.gender.label}"
+                                          rendered="#{!userManager.canEdit}"/>
+                            <h:selectOneMenu value="#{userManager.selectedUser.gender}" rendered="#{userManager.canEdit}">
+                                <f:selectItems value="#{userManager.genderValues}" var="g" itemValue="#{g.name}"
+                                               itemLabel="#{g.label}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel for="regDate">Дата регистрации:</h:outputLabel>
+                            <h:outputText id="regDate" value="#{userManager.selectedUser.createDate}">
+                                <f:convertDateTime pattern="dd.MM.yy HH:mm"/>
+                            </h:outputText>
+
+
+                            <h:outputLabel for="email">Емайл:</h:outputLabel>
+                            <h:outputText id="email" value="#{userManager.selectedUser.email}"/>
+
+                            <h:outputLabel>Кратко о себе:</h:outputLabel>
+                            <h:outputText value="#{userManager.selectedUser.description}" rendered="#{!userManager.canEdit}"/>
+                            <h:inputTextarea value="#{userManager.selectedUser.description}" rendered="#{userManager.canEdit}"
+                                             cols="96" rows="4"/>
+
+                            <h:outputText value="Аватар:"/>
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop" cellpadding="0" cellspacing="0">
+                                <h:graphicImage value="#{userManager.getAvatarUrl('rc50x50.jpg')}"
+                                                rendered="#{!empty userManager.selectedUser.avatar}"/>
+                                <h:graphicImage value="#{viewHelper.getDefaultAvatar('rc50x50.jpg')}"
+                                                rendered="#{empty userManager.selectedUser.avatar}"/>
+
+                                <rich:fileUpload fileUploadListener="#{userManager.imgFileUploadBean.listener}"
+                                                 onclear="clearFiles();"
+                                                 rendered="#{userManager.canEdit}"
+                                                 id="imgUpload" acceptedTypes="jpg, gif, png, bmp" title="Аватар"
+                                                 addLabel="#{empty userManager.selectedUser.avatar ? 'Добавить' : 'Сменить'}"
+                                                 clearAllLabel="Очистить все" clearLabel="Очистить" uploadLabel="Загрузить"
+                                                 ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');"
+                                                 maxFilesQuantity="1" style="height: 100px; margin-left: 5px">
+                                    <a4j:param value="#{userManager.conversation.id}" name="cid"/>
+                                </rich:fileUpload>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+
+                        <a4j:jsFunction name="clearFiles" render="@none" action="#{userManager.clearUploadedImage}"/>
+
+                        <h:panelGroup rendered="#{userManager.canEdit}" id="saveUploadBtn">
+                            <h:commandButton id="Save" value="Сохранить" action="#{userManager.save}"/>
+                        </h:panelGroup>
+
+                    </h:form>
+
+                    <br/>
+
+                </rich:panel>
+            </rich:tab>
+            <rich:tab header="Сменить пароль" rendered="#{userManager.canEdit}">
+                <h:form id="userProfileChangePassForm">
+                    <rich:panel  styleClass="box-standard box">
+                        <h:panelGrid columns="2" rendered="#{userManager.canEdit}">
+                            <h:outputLabel for="currentPassword"
+                                           rendered="#{!empty userManager.selectedUser.password}">Текущий пароль:</h:outputLabel>
+                            <h:panelGroup rendered="#{!empty userManager.selectedUser.password}">
+                                <h:inputSecret id="currentPassword" value="#{userManager.selectedUser.password}">
+                                    <f:validator validatorId="currentPassword"/>
+                                </h:inputSecret>
+                                <h:message for="currentPassword"/>
+                            </h:panelGroup>
+
+                            <h:outputLabel for="newPassword">Новый пароль:</h:outputLabel>
+                            <h:panelGroup>
+                                <h:inputSecret id="newPassword" value="#{passwordManager.newPassword}"/>
+                                <h:message for="newPassword" errorClass="errors"/>
+                            </h:panelGroup>
+
+                            <h:outputLabel for="confirmPassword">Подтвердить пароль:</h:outputLabel>
+                            <h:panelGroup>
+                                <h:inputSecret id="confirmPassword" value="#{passwordManager.confirmPassword}"/>
+                                <h:message for="confirmPassword" errorClass="errors"/>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <s:validateForm id="passwordCheck" validatorId="confirmPassword"
+                                        fields="newPassword=userProfileChangePassForm:newPassword confirmPassword=userProfileChangePassForm:confirmPassword"/>
+                        <h:panelGroup rendered="#{userManager.canEdit}">
+                            <h:commandButton id="Save" value="Сохранить" action="#{userManager.changePassword}"/>
+                        </h:panelGroup>
+                    </rich:panel>
+                </h:form>
+            </rich:tab>
+            <rich:tab header="Сообщения">
+                <h:outputStylesheet>
+                    .firstCol {
+                        width: 50px;
+                        text-align: left;
+                    }
+
+                    .secondCol {
+                        width: 100%;
+                    }
+
+                    .userMsgPanel .rf-p-hdr  {
+                        background: transparent none repeat-x top left;
+                        border: 0px;
+                    }
+                </h:outputStylesheet>
+                <h:form>
+                    <rich:panel styleClass="box-standard box">
+                        <h:inputHidden value="#{commentManager.contentId}"/>
+                        <h:panelGrid columns="1" rendered="#{identity.loggedIn}">
+                            <h:inputTextarea id="desc" value="#{userMessageManager.currentMessage.description}" cols="100"
+                                             rows="5"/>
+                            <a4j:commandButton action="#{userMessageManager.addMessage}" execute="@form" value="Написать"
+                                               render="messageGrid,desc"/>
+
+                        </h:panelGrid>
+
+                        <rich:tooltip styleClass="tooltip" layout="block" showDelay="500" rendered="#{!identity.loggedIn}">
+                            <span style="white-space: nowrap"><h:outputText value="Для того чтобы оставлять сообщения требуется авторизация на сайте." escape="false"/></span>
+                        </rich:tooltip>
+                    </rich:panel>
+                </h:form>
+                <h:form rendered="#{identity.loggedIn}">
+                    <rich:dataGrid id="messageGrid" value="#{userMessageManager.userMessages}" var="msg" columns="1"
+                                   elements="9" width="100%" border="0">
+                        <ui:include src="../include/messagePart.xhtml">
+                            <ui:param name="msg" value="#{msg}"/>
+                        </ui:include>
+                    </rich:dataGrid>
+                    <rich:dataScroller for="messageGrid" renderIfSinglePage="false"/>
+                </h:form>
+            </rich:tab>
+        </rich:tabPanel>
+
+
+
     </ui:define>
 
 </ui:composition>
