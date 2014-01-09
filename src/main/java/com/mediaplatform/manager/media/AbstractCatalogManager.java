@@ -23,8 +23,7 @@ public class AbstractCatalogManager extends AbstractManager {
     protected Conversation conversation;
 
     public List<Genre> getRootCatalogs(){
-        String hql = "select distinct c from Genre c left join fetch c.children where c.parent is null order by c.id";
-        return appEm.createQuery(hql).getResultList();
+        return appEm.createNamedQuery("Genre.findRootCatalogs").getResultList();
     }
 
     public Genre getById(Long id){
@@ -68,8 +67,6 @@ public class AbstractCatalogManager extends AbstractManager {
             addContent(genre.getChildren(), contentList);
         }
     }
-
-
 
     public Conversation getConversation() {
         return conversation;

@@ -27,7 +27,7 @@
     </h:outputStylesheet>
     <h:form>
         <h:panelGrid columns="3" columnClasses="firstCntCol,secondCntCol,thirdCntCol">
-            <h:graphicImage value="#{empty comment.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(comment.author.avatar, 'rc23x23.jpg')}"/>
+            <h:graphicImage value="#{empty contentManager.selectedContent.author.avatar ? viewHelper.getDefaultAvatar('rc23x23.gif') : viewHelper.getImgUrlByStr(contentManager.selectedContent.author.avatar, 'rc23x23.jpg')}"/>
 
             <h:panelGroup>
                 <h:link id="viewUser" value="#{contentManager.selectedContent.author.name}" outcome="user"

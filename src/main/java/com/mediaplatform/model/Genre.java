@@ -5,7 +5,6 @@ import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,7 +15,16 @@ import java.util.List;
 @Cacheable
 @Entity
 @Table(name = "genre")
-@Veto
+@NamedQueries(
+        {@NamedQuery
+                (name = "Genre.findRootCatalogs",
+                        query = "select distinct c from Genre c left join fetch c.children where c.parent is null order by c.id",
+                        hints = {
+                                @QueryHint(name ="org.hibernate.cacheable", value="true"),
+                                @QueryHint(name = "org.hibernate.cacheRegion", value = "local-query")
+                        }
+                )
+        })
 public class Genre extends AbstractEntity implements HtmlContainer{
     private String title;
     private String description;

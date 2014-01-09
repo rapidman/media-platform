@@ -7,8 +7,8 @@
     <connection-url>jdbc:postgresql://localhost:5432/media_platform</connection-url>
     <driver>postgresql</driver>
     <security>
-        <user-name>happy</user-name>
-        <password>secret</password>
+        <user-name>postgres</user-name>
+        <password>postgres</password>
     </security>
 </datasource>
 
@@ -17,3 +17,6 @@
 </driver>
 
 3.добавить jndi-name java:jboss/infinispan/hibernate в настройках кэша в консоли jboss.
+
+
+http://smidth.ru/blog/miscellaneous/installing-nginx-rtmp/

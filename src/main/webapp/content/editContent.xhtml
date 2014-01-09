@@ -17,11 +17,17 @@
     </ui:define>
 
     <ui:define name="content">
+        <h:outputStylesheet>
+            .panelMargin{
+                margin-left: 0px; margin-right: 0px;
+            }
+        </h:outputStylesheet>
+        <a4j:queue id="editContentQueue"/>
         <rich:panel header="#{contentManager.header}" styleClass="box-standard box">
             <h:form id="editContentForm">
                 <h:panelGrid columns="3">
                     <h:outputText value="Название:"/>
-                    <h:inputText id="title" required="true"
+                    <h:inputText id="title" required="true" style="width: 200px"
                                  value="#{contentManager.selectedContent.title}" validatorMessage="Ввведите название">
                         <f:validateLength minimum="1" for="title" />
                         <rich:validator />
@@ -36,7 +42,7 @@
                     <rich:message for="shortDescription" ajaxRendered="false"/>
                 </h:panelGrid>
 
-                <h:panelGroup>
+                <h:panelGrid>
                     <h:outputLabel>Описание:</h:outputLabel>
                     <rich:editor id="editor" value="#{contentManager.selectedContent.description}" style="margin-bottom: 1em">
                         <f:facet name="config">
@@ -57,13 +63,13 @@
                             { name: 'tools', items : [ 'Maximize' ] }
                             ]
                         </f:facet>
-                        <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
-                        <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
+                        <a4j:ajax event="change" render="panel" status="panelUpdateStatus" queueId="editContentQueue" />
+                        <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus" queueId="editContentQueue">
                             <a4j:attachQueue requestDelay="1000" />
                         </a4j:ajax>
                     </rich:editor>
 
-                    <rich:panel id="panel" styleClass="box-standard box">
+                    <rich:panel id="panel" styleClass="box-standard box panelMargin">
                         <f:facet name="header">
                             Предварительный просмотр
                             <a4j:status name="panelUpdateStatus">
@@ -74,64 +80,63 @@
                         </f:facet>
                         <h:outputText escape="false" value="#{contentManager.selectedContent.description}" />
                     </rich:panel>
-                </h:panelGroup>
+                </h:panelGrid>
 
-                    <h:panelGrid columns="1">
+                <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
+                    <h:panelGrid columns="1" columnClasses="top">
                         <h:panelGroup>
-                            <fieldset>
-                            <h:panelGrid columns="2" columnClasses="top">
-                                <h:commandButton value="Сохранить" action="#{contentManager.saveOrUpdate}" />
-                                <h:button onclick="viewGenre('#{contentManager.selectedGenre.id}'); return false;" value="Закрыть"/>
-                            </h:panelGrid>
-
-
-                            <h:panelGrid columns="5" rendered="#{!empty contentManager.selectedContent.id}" columnClasses="top">
-                                <h:panelGroup rendered="#{empty contentManager.selectedContent.mediaFile}"/>
-                                <h:link id="viewContent" value="Смотреть (VOD)" outcome="vod" style="white-space: nowrap;" rendered="#{!empty contentManager.selectedContent.mediaFile}">
-                                    <f:param name="id" value="#{contentManager.selectedContent.id}"/>
-                                </h:link>
-                                <h:commandButton value="Опубликовать с высоким качеством" action="#{contentManager.publish(true)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                                <h:commandButton value="Опубликовать с низким качеством" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
-                                <h:commandButton value="Удалить" >
-                                    <rich:componentControl target="popup" operation="show" />
-                                </h:commandButton>
-                                <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
-                            </h:panelGrid>
-                            </fieldset>
+                            <h:outputText value="Обложка:"/>
+                            <h:graphicImage value="#{contentManager.getCoverUrl('rc94x147.jpg')}" />
                         </h:panelGroup>
-
-                        <h:panelGrid columns="1" columnClasses="top">
-                            <h:panelGroup>
-                                <h:outputText value="Обложка:"/>
-                                <h:graphicImage value="#{contentManager.getCoverUrl('rc94x147.jpg')}" />
-                            </h:panelGroup>
-                            <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload"
-                                             acceptedTypes="jpg, gif, png, bmp" title="Обложка"
-                                             addLabel="#{empty contentManager.selectedContent.cover ? 'Добавить обложку' : 'Сменить обложку'}"
-                                             clearAllLabel="Очистить все"
-                                             clearLabel="Очистить"
-                                             uploadLabel="Загрузить"
-                                             ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');"
-                                             maxFilesQuantity="1"
-                                             style="height: 100px;">
-                            </rich:fileUpload>
-                        </h:panelGrid>
-
-                        <h:panelGrid columns="1" columnClasses="top">
-                            <h:panelGroup>
-                                <h:outputText value="Видео файл:"/>
-                                <h:outputText value="#{contentManager.videoUrl}" rendered="#{!empty contentManager.videoUrl}"/>
-                            </h:panelGroup>
-                            <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4,mp3" title="Видео файл" style="height: 100px;" data=""
-                                             addLabel="#{empty contentManager.selectedContent.mediaFile ? 'Добавить видео' : 'Сменить видео'}" clearAllLabel="Очистить все" clearLabel="Очистить"  uploadLabel="Загрузить"
-                                             ontyperejected="alert('Разрешены только flv,mp4,mp3 файлы');" maxFilesQuantity="1">
-                                <f:facet name="label">
-                                    <h:outputText value="Загружено с {_KB}KB по {KB}KB --- {mm}:{ss}" />
-                                </f:facet>
-                            </rich:fileUpload>
-                        </h:panelGrid>
+                        <rich:fileUpload fileUploadListener="#{contentManager.imgFileUploadBean.listener}" id="imgUpload"
+                                         acceptedTypes="jpg, gif, png, bmp" title="Обложка"
+                                         addLabel="#{empty contentManager.selectedContent.cover ? 'Добавить обложку' : 'Сменить обложку'}"
+                                         clearAllLabel="Очистить все"
+                                         clearLabel="Очистить"
+                                         uploadLabel="Загрузить"
+                                         ontyperejected="alert('Разрешены только JPG, GIF, PNG и BMP файлы');"
+                                         maxFilesQuantity="1"
+                                         style="height: 100px;">
+                        </rich:fileUpload>
                     </h:panelGrid>
+
+                    <h:panelGrid columns="1" columnClasses="top">
+                        <h:panelGroup>
+                            <h:outputText value="Видео файл:"/>
+                            <h:outputText value="#{contentManager.videoUrl}" rendered="#{!empty contentManager.videoUrl}"/>
+                        </h:panelGroup>
+                        <rich:fileUpload fileUploadListener="#{contentManager.fileUploadBean.listener}" id="upload" acceptedTypes="flv,mp4,mp3" title="Видео файл" style="height: 100px;" data=""
+                                         addLabel="#{empty contentManager.selectedContent.mediaFile ? 'Добавить видео' : 'Сменить видео'}" clearAllLabel="Очистить все" clearLabel="Очистить"  uploadLabel="Загрузить"
+                                         ontyperejected="alert('Разрешены только flv,mp4,mp3 файлы');" maxFilesQuantity="1">
+                            <f:facet name="label">
+                                <h:outputText value="Загружено с {_KB}KB по {KB}KB --- {mm}:{ss}" />
+                            </f:facet>
+                        </rich:fileUpload>
+                    </h:panelGrid>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                    <h:panelGrid columns="2" columnClasses="top">
+                        <h:commandButton value="Сохранить" action="#{contentManager.saveOrUpdate}" />
+                        <h:button onclick="viewGenre('#{contentManager.selectedGenre.id}'); return false;" value="Закрыть"/>
+                    </h:panelGrid>
+
+
+                    <h:panelGrid columns="5" rendered="#{!empty contentManager.selectedContent.id}" columnClasses="top">
+                        <h:panelGroup rendered="#{empty contentManager.selectedContent.mediaFile}"/>
+                        <h:link id="viewContent" value="Смотреть (VOD)" outcome="vod" style="white-space: nowrap;" rendered="#{!empty contentManager.selectedContent.mediaFile}">
+                            <f:param name="id" value="#{contentManager.selectedContent.id}"/>
+                        </h:link>
+                        <h:commandButton value="Опубликовать с высоким качеством" action="#{contentManager.publish(true)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
+                        <h:commandButton value="Опубликовать с низким качеством" action="#{contentManager.publish(false)}" disabled="#{empty contentManager.selectedContent.mediaFile}"/>
+                        <h:commandButton value="Удалить" >
+                            <rich:componentControl target="popup" operation="show" />
+                        </h:commandButton>
+                        <h:commandButton id="delBtn" action="#{contentManager.delete}" style="display: none;"/>
+                    </h:panelGrid>
+                </h:panelGrid>
             </h:form>
+
             <h:form>
                 <h:panelGroup rendered="#{userManager.checkAdmin}">
                     <fieldset>

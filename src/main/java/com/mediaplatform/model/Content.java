@@ -1,5 +1,6 @@
 package com.mediaplatform.model;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.*;
 import org.jboss.solder.core.Veto;
@@ -17,8 +18,17 @@ import java.util.List;
 @Cacheable
 @Entity
 @Table(name = "content")
-@Veto
 @Indexed
+@NamedQueries(
+        {@NamedQuery
+                (name = "UsersContent.findAllExceptSelectedContent",
+                 query = "select c from Content c where c.author.id= :userId and c.id <> :currentContentId order by c.rate desc",
+                 hints = {
+                         @QueryHint(name ="org.hibernate.cacheable", value="true"),
+                         @QueryHint(name = "org.hibernate.cacheRegion", value = "local-query")
+                 }
+                )
+        })
 public class Content extends AbstractContent{
     private Genre genre;
     private FileEntry mediaFile;

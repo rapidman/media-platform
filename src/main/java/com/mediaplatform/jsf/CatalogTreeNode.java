@@ -33,7 +33,7 @@ public class CatalogTreeNode extends NamedNode implements TreeNode {
         for(Genre child: genre.getChildren()){
             childCatalogs.add(new CatalogTreeNode(child, this, expandedIds));
         }
-        childrenSize+= genre.getContentListByStatus(ModerationStatus.ALLOWED).size();
+//        childrenSize+= genre.getContentListByStatus(ModerationStatus.ALLOWED).size();
         if(parent != null){
             parent.addChildrenSize(childrenSize);
         }

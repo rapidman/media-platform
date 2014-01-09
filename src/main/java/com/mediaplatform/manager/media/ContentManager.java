@@ -20,6 +20,7 @@ import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -365,8 +366,9 @@ public class ContentManager extends AbstractContentManager implements Serializab
 
     public List<Content> getAuthorTopContentList() {
         if (authorTopContentList == null) {
-            authorTopContentList = appEm.createQuery("select c from Content c where c.author.id= :userId and c.id <> :currentContentId order by c.rate desc").
-                    setParameter("userId", selectedContent.getAuthor().getId()).
+            Query q = appEm.createNamedQuery("UsersContent.findAllExceptSelectedContent");
+//            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            authorTopContentList = q.setParameter("userId", selectedContent.getAuthor().getId()).
                     setParameter("currentContentId", selectedContent.getId()).getResultList();
 
         }
