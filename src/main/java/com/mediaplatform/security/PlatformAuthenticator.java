@@ -16,13 +16,12 @@
  */
 package com.mediaplatform.security;
 
+import com.mediaplatform.account.UserSession;
 import com.mediaplatform.i18n.DefaultBundleKey;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.BannedUser;
 import com.mediaplatform.model.User;
-import com.mediaplatform.social.FacebookProfileWrapper;
 import com.mediaplatform.social.SocialClient;
-import com.mediaplatform.social.TwitterProfileWrapper;
 import com.mediaplatform.util.jsf.FacesUtil;
 import org.agorava.facebook.model.FacebookProfile;
 import org.agorava.twitter.model.TwitterProfile;
@@ -64,14 +63,6 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     private Event<User> loginEventSrc;
 
     @Inject
-    @Named("twUser")
-    private TwitterProfileWrapper twUser;
-
-    @Inject
-    @Named("fbUser")
-    private FacebookProfileWrapper fbUser;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -83,20 +74,25 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     @Inject
     private SocialClient socialClient;
 
+    @Inject
+    private UserSession userSession;
+
     public void authenticate() {
         User user;
         try {
             boolean ok = false;
+            TwitterProfile twUser = userSession.getTwUser();
+            FacebookProfile fbUser = userSession.getFbUser();
             if(twUser != null){
-                log.info("Logging in " + twUser.getTwUser().getScreenName());
-                user = userManagerInstance.get().findByUsername(twUser.getTwUser().getId());
+                log.info("Logging in " + twUser.getScreenName());
+                user = userManagerInstance.get().findByUsername(twUser.getId());
                 if(user != null){
                     authenticate(user);
                     ok = true;
                 }
             }else if(fbUser != null){
-                log.info("Logging in " + fbUser.getFbUser().getId());
-                user = userManagerInstance.get().findByUsername(fbUser.getFbUser().getId());
+                log.info("Logging in " + fbUser.getId());
+                user = userManagerInstance.get().findByUsername(fbUser.getId());
                 if(user != null){
                     authenticate(user);
                     ok = true;

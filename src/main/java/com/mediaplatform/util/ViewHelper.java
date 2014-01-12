@@ -1,15 +1,15 @@
 package com.mediaplatform.util;
 
+import com.mediaplatform.account.UserSession;
+import com.mediaplatform.manager.ConfigBean;
+import com.mediaplatform.manager.file.FileStorageManager;
 import com.mediaplatform.model.*;
-import com.mediaplatform.social.FacebookProfileWrapper;
-import com.mediaplatform.social.TwitterProfileWrapper;
+import com.mediaplatform.social.SocialClient;
 import org.agorava.facebook.model.FacebookProfile;
 import org.agorava.twitter.model.TwitterProfile;
 import org.apache.commons.lang.StringUtils;
-import com.mediaplatform.manager.ConfigBean;
-import com.mediaplatform.manager.file.FileStorageManager;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,7 +20,7 @@ import java.io.Serializable;
  * Date: 12/2/12
  * Time: 11:20 AM
  */
-@SessionScoped
+@RequestScoped
 @Named
 public class ViewHelper implements Serializable {
     @Inject
@@ -30,12 +30,7 @@ public class ViewHelper implements Serializable {
     private ConfigBean configBean;
 
     @Inject
-    @Named("twUser")
-    private TwitterProfileWrapper twUser;
-
-    @Inject
-    @Named("fbUser")
-    private FacebookProfileWrapper fbUser;
+    private UserSession userSession;
 
     private static final int MAX_TITLE_LENGTH = 40;
     private static final int MAX_DESC_LENGTH = 80;
@@ -53,10 +48,8 @@ public class ViewHelper implements Serializable {
     }
 
     public String getAvatar(User user, String dimen){
-        if(twUser != null && !StringUtils.isBlank(twUser.getTwUser().getProfileImageUrl())){
-            return twUser.getTwUser().getProfileImageUrl();
-        }else if(fbUser != null && !StringUtils.isBlank(fbUser.getFbUser().getProfileImageUrl())){
-            return fbUser.getFbUser().getProfileImageUrl();
+        if(!StringUtils.isBlank(userSession.getUserProfileImageUrl())){
+            return userSession.getUserProfileImageUrl();
         }
         if(user.getAvatar() != null){
             return getImgUrlByStr(user.getAvatar(), dimen);

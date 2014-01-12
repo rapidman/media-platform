@@ -1,5 +1,7 @@
 package com.mediaplatform.account;
 
+import org.agorava.facebook.model.FacebookProfile;
+import org.agorava.twitter.model.TwitterProfile;
 import org.jboss.seam.security.events.LoggedInEvent;
 import org.jboss.seam.security.events.LoginFailedEvent;
 
@@ -16,6 +18,11 @@ import javax.enterprise.inject.Model;
 @Model
 public class UserSession {
     private boolean loginFailed = false;
+    private FacebookProfile fbUser;
+
+    private TwitterProfile twUser;
+
+    private String userProfileImageUrl;
 
     public boolean isLoginFailed() {
         return loginFailed;
@@ -33,4 +40,35 @@ public class UserSession {
         loginFailed = false;
     }
 
+    public FacebookProfile getFbUser() {
+        return fbUser;
+    }
+
+    public void setFbUser(FacebookProfile fbUser) {
+        this.fbUser = fbUser;
+        userProfileImageUrl = fbUser.getProfileImageUrl();
+    }
+
+    public TwitterProfile getTwUser() {
+        return twUser;
+    }
+
+    public void setTwUser(TwitterProfile twUser) {
+        this.twUser = twUser;
+        userProfileImageUrl = twUser.getProfileImageUrl();
+    }
+
+    public void clearSocial() {
+        twUser = null;
+        fbUser = null;
+        userProfileImageUrl = null;
+    }
+
+    public String getUserProfileImageUrl() {
+        return userProfileImageUrl;
+    }
+
+    public void setUserProfileImageUrl(String userProfileImageUrl) {
+        this.userProfileImageUrl = userProfileImageUrl;
+    }
 }

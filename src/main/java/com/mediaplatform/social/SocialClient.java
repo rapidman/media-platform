@@ -16,10 +16,10 @@
 
 package com.mediaplatform.social;
 
+import com.mediaplatform.account.UserSession;
 import com.mediaplatform.manager.UserManager;
 import com.mediaplatform.model.User;
 import com.mediaplatform.model.UserInfo;
-import com.mediaplatform.util.jsf.FacesUtil;
 import org.agorava.AgoravaContext;
 import org.agorava.api.oauth.OAuthSession;
 import org.agorava.api.service.OAuthLifeCycleService;
@@ -33,6 +33,8 @@ import org.agorava.twitter.model.TwitterProfile;
 import org.jboss.seam.international.status.Messages;
 import org.jboss.seam.security.Identity;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
@@ -68,14 +70,10 @@ public class SocialClient implements Serializable {
     @Inject
     @Facebook
     private Instance<UserService> userService;
-    @Produces
-    @SessionScoped
-    @Named("fbUser")
-    private FacebookProfileWrapper fbUser;
-    @Produces
-    @SessionScoped
-    @Named("twUser")
-    private TwitterProfileWrapper twUser;
+
+    @Inject
+    private UserSession userSession;
+
     private String Status;
     private String selectedService;
 
@@ -114,8 +112,7 @@ public class SocialClient implements Serializable {
 
     public void resetConnection() {
         lifeCycleService.killCurrentSession();
-        twUser = null;
-        fbUser = null;
+        userSession.clearSocial();
     }
 
     /**
@@ -139,9 +136,9 @@ public class SocialClient implements Serializable {
     public void afterLogin() {
         if (getCurrentSession() != null && getCurrentSession().isConnected()) {
             if (getCurrentSession().getServiceName().equals("Twitter")) {
-                twUser = new TwitterProfileWrapper(twUserService.get().getUserProfile());
+                userSession.setTwUser(twUserService.get().getUserProfile());
             } else if (getCurrentSession().getServiceName().equals("Facebook")) {
-                fbUser = new FacebookProfileWrapper(userService.get().getUserProfile());
+                userSession.setFbUser(userService.get().getUserProfile());
             }
 
             UserProfile userProfile = getCurrentSession().getUserProfile();
@@ -153,9 +150,9 @@ public class SocialClient implements Serializable {
 
                 UserInfo userInfo = null;
                 if (getCurrentSession().getServiceName().equals("Twitter")) {
-                    userInfo = new UserInfo(twUser.getTwUser());
+                    userInfo = new UserInfo(userSession.getTwUser());
                 } else if (getCurrentSession().getServiceName().equals("Facebook")) {
-                    userInfo = new UserInfo(fbUser.getFbUser());
+                    userInfo = new UserInfo(userSession.getFbUser());
                 }
                 appEm.persist(userInfo);
                 appEm.persist(user);
