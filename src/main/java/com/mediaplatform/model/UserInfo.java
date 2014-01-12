@@ -1,11 +1,11 @@
 package com.mediaplatform.model;
 
-import org.jboss.seam.social.UserProfile;
-import org.jboss.seam.social.twitter.model.TwitterProfile;
+import org.agorava.facebook.model.FacebookProfile;
+import org.agorava.spi.UserProfile;
+import org.agorava.twitter.model.TwitterProfile;
 import org.jboss.solder.core.Veto;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -33,20 +33,20 @@ public class UserInfo extends AbstractEntity {
         super(EntityType.USER_INFO);
     }
 
-    public UserInfo(TwitterProfile twUser) {
+    public UserInfo(TwitterProfile profile) {
         this();
         socialNetType = SocialNetType.TW;
-        this.screenName = twUser.getScreenName();
-        this.url = twUser.getUrl();
-        this.profileImageUrl = twUser.getProfileImageUrl();
-        this.profileUrl = twUser.getProfileUrl();
-        this.description = twUser.getDescription();
-        this.location = twUser.getLocation();
+        this.screenName = profile.getScreenName();
+        this.url = profile.getUrl();
+        this.profileImageUrl = profile.getProfileImageUrl();
+        this.profileUrl = profile.getProfileUrl();
+        this.description = profile.getDescription();
+        this.location = profile.getLocation();
         this.createdDate = new Date();
-        this.language = twUser.getLanguage();
+        this.language = profile.getLanguage();
     }
 
-    public UserInfo(UserProfile fbUser) {
+    public UserInfo(FacebookProfile fbUser) {
         this();
         socialNetType = SocialNetType.TW;
         this.screenName = fbUser.getFullName();

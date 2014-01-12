@@ -27,8 +27,26 @@ import java.util.List;
                          @QueryHint(name ="org.hibernate.cacheable", value="true"),
                          @QueryHint(name = "org.hibernate.cacheRegion", value = "local-query")
                  }
+                ),
+
+        @NamedQuery
+               (name = "Content.findPopular",
+                query = "select c from Content c where c.moderationStatus= :moderationStatus  order by c.rate desc",
+                hints = {
+                        @QueryHint(name ="org.hibernate.cacheable", value="true"),
+                        @QueryHint(name = "org.hibernate.cacheRegion", value = "local-query")
+                }
+               ),
+        @NamedQuery
+                (name = "Content.findLatest",
+                        query = "select c from Content c where c.moderationStatus= :moderationStatus  order by c.createDateTime desc",
+                        hints = {
+                                @QueryHint(name ="org.hibernate.cacheable", value="true"),
+                                @QueryHint(name = "org.hibernate.cacheRegion", value = "local-query")
+                        }
                 )
-        })
+        }
+)
 public class Content extends AbstractContent{
     private Genre genre;
     private FileEntry mediaFile;

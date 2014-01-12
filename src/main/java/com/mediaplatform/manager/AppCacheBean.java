@@ -26,8 +26,6 @@ import java.util.Set;
 public class AppCacheBean {
     private List<User> topUsers;
     private List<User> allUsers;
-    private List<Content> popularContents;
-    private List<Content> latestContents;
 
     public List<User> getTopUsers() {
         if(topUsers == null){
@@ -46,40 +44,6 @@ public class AppCacheBean {
 
     public List<User> getAllUsers() {
         return allUsers;
-    }
-
-    public void setPopularContents(List<Content> popularContents) {
-        this.popularContents = popularContents;
-    }
-
-    public List<Content> getPopularContents() {
-        return popularContents;
-    }
-
-    public List<Content> getLatestContents() {
-        return latestContents;
-    }
-
-    public void setLatestContents(List<Content> latestContents) {
-        this.latestContents = latestContents;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void observeCatalogDelete(@Observes DeleteCatalogEvent deleteEvent) {
-        popularContents = null;
-        latestContents = null;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void observeContentDelete(@Observes DeleteContentEvent deleteEvent) {
-        popularContents = null;
-        latestContents = null;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void observeContentCreate(@Observes CreateContentEvent createEvent) {
-        popularContents = null;
-        latestContents = null;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)

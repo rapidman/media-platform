@@ -12,7 +12,8 @@
     -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>SystemTest</param-value>
+        <!--<param-value>SystemTest</param-value>-->
+        <param-value>Production</param-value>
     </context-param>
 
     <!-- richfaces -->
@@ -36,10 +37,6 @@
         <param-name>org.ajax4jsf.handleViewExpiredOnClient</param-name>
         <param-value>true</param-value>
     </context-param>
-    <!--<context-param>-->
-        <!--<param-name>javax.faces.PROJECT_STAGE</param-name>-->
-        <!--<param-value>${javax.faces.PROJECT_STAGE}</param-value>-->
-    <!--</context-param>-->
     <context-param>
         <param-name>org.richfaces.resourceOptimization.enabled</param-name>
         <param-value>true</param-value>
@@ -48,6 +45,10 @@
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
         <!--<param-value>client</param-value>-->
+    </context-param>
+    <context-param>
+        <param-name>org.ajax4jsf.DEFAULT_EXPIRE</param-name>
+        <param-value>86400</param-value>
     </context-param>
 
     <session-config>

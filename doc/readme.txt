@@ -20,3 +20,6 @@
 
 
 http://smidth.ru/blog/miscellaneous/installing-nginx-rtmp/
+
+echo -n | openssl s_client -connect api.twitter.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > twitter.cert
+sudo keytool -import -alias api.twitter.com -file /home/timur/Downloads/twitter.cert -keystore cacerts -storepass changeit

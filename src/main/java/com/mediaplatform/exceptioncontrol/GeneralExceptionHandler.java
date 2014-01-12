@@ -41,13 +41,10 @@ public class GeneralExceptionHandler {
     private FacesContext facesContext;
 
     @Inject
-    private Logger logger;
-
-    @Inject
     private Identity identity;
 
     public void printExceptionMessage(@Handles CaughtException<Throwable> event, Logger log) {
-            log.info("Exception logged by seam-catch catcher: " + event.getException().getMessage());
+        log.error("Exception logged by seam-catch catcher", event.getException());
         if (event.getException().getMessage() != null &&
                 (event.getException().getMessage().indexOf("WELD-001303 No active contexts for scope type javax.enterprise.context.ConversationScoped") != -1 ||
                 event.getException().getMessage().indexOf("WELD-000321 No conversation found to restore for id") != -1)) {
@@ -55,7 +52,7 @@ public class GeneralExceptionHandler {
             return;
         }
         event.handled();
-        logger.error(event.getException());
+        log.error(event.getException());
         if(ViewExpiredException.class.isInstance(event.getException())){
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Превышено время ожидания, операция отменена.", null));
             FacesUtil.redirectToHomePage();
@@ -75,9 +72,8 @@ public class GeneralExceptionHandler {
         FacesUtil.redirectToDeniedPage();
     }
 
-    public void onNonexistentConversation(
-            @Handles CaughtException<NonexistentConversationException> evt) {
-        logger.error("NonexistentConversationException!\n" + evt.getException().getMessage(), evt.getException());
+    public void onNonexistentConversation(@Handles CaughtException<NonexistentConversationException> evt, Logger log) {
+        log.error("NonexistentConversationException!\n" + evt.getException().getMessage(), evt.getException());
         evt.handled();
         FacesUtil.redirectToEndConversation();
     }

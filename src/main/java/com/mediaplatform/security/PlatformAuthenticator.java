@@ -16,6 +16,25 @@
  */
 package com.mediaplatform.security;
 
+import com.mediaplatform.i18n.DefaultBundleKey;
+import com.mediaplatform.manager.UserManager;
+import com.mediaplatform.model.BannedUser;
+import com.mediaplatform.model.User;
+import com.mediaplatform.social.FacebookProfileWrapper;
+import com.mediaplatform.social.SocialClient;
+import com.mediaplatform.social.TwitterProfileWrapper;
+import com.mediaplatform.util.jsf.FacesUtil;
+import org.agorava.facebook.model.FacebookProfile;
+import org.agorava.twitter.model.TwitterProfile;
+import org.jboss.seam.international.status.Messages;
+import org.jboss.seam.security.Authenticator;
+import org.jboss.seam.security.BaseAuthenticator;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
+import org.jboss.solder.logging.Logger;
+import org.picketlink.idm.impl.api.PasswordCredential;
+import org.picketlink.idm.impl.api.model.SimpleUser;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
 import javax.enterprise.event.Event;
@@ -24,28 +43,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import com.mediaplatform.i18n.DefaultBundleKey;
-import com.mediaplatform.manager.UserManager;
-import com.mediaplatform.model.BannedUser;
-import com.mediaplatform.model.User;
-import com.mediaplatform.social.FacebookBean;
-import com.mediaplatform.social.TwitterBean;
-import com.mediaplatform.util.jsf.FacesUtil;
-import org.jboss.seam.international.status.Messages;
-import org.jboss.seam.security.Authenticator;
-import org.jboss.seam.security.BaseAuthenticator;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.social.UserProfile;
-import org.jboss.seam.social.twitter.model.TwitterProfile;
-import org.jboss.solder.logging.Logger;
-import org.picketlink.idm.impl.api.PasswordCredential;
-import org.picketlink.idm.impl.api.model.SimpleUser;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Stateful
@@ -55,9 +52,6 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
 
     @Inject
     private Logger log;
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Inject
     private Credentials credentials;
@@ -71,17 +65,11 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
 
     @Inject
     @Named("twUser")
-    private TwitterProfile twUser;
-
-    @Inject
-    private TwitterBean twitterBean;
+    private TwitterProfileWrapper twUser;
 
     @Inject
     @Named("fbUser")
-    private UserProfile fbUser;
-
-    @Inject
-    private FacebookBean facebookBean;
+    private FacebookProfileWrapper fbUser;
 
     @Inject
     private Identity identity;
@@ -92,22 +80,23 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     @Inject
     private FacesContext facesContext;
 
-
+    @Inject
+    private SocialClient socialClient;
 
     public void authenticate() {
         User user;
         try {
             boolean ok = false;
             if(twUser != null){
-                log.info("Logging in " + twUser.getScreenName());
-                user = userManagerInstance.get().findByUsername(twUser.getScreenName());
+                log.info("Logging in " + twUser.getTwUser().getScreenName());
+                user = userManagerInstance.get().findByUsername(twUser.getTwUser().getId());
                 if(user != null){
                     authenticate(user);
                     ok = true;
                 }
             }else if(fbUser != null){
-                log.info("Logging in " + fbUser.getId());
-                user = userManagerInstance.get().findByUsername(fbUser.getId());
+                log.info("Logging in " + fbUser.getFbUser().getId());
+                user = userManagerInstance.get().findByUsername(fbUser.getFbUser().getId());
                 if(user != null){
                     authenticate(user);
                     ok = true;
@@ -128,7 +117,6 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
                 }
             }
             if(ok){
-
                 return;
             }
         } catch (Exception e) {
@@ -156,8 +144,7 @@ public class PlatformAuthenticator extends BaseAuthenticator implements Authenti
     }
 
     private void reset() {
-        facebookBean.reset();
-        twitterBean.reset();
+        socialClient.resetConnection();
     }
 
     public void checkAuthenticated(){

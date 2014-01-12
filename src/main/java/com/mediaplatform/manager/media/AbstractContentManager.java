@@ -92,24 +92,13 @@ public abstract class AbstractContentManager extends AbstractManager {
     }
 
     public List<Content> findLatestList(int maxResult) {
-//        if(appCacheBean.getLatestContents()== null){
-            appCacheBean.setLatestContents(find(maxResult, "c.createDateTime desc"));
-//        }
-        return appCacheBean.getLatestContents();
-
-    }
-
-    private List<Content> find(int maxResult, String order) {
-        return appEm.createQuery("select c from Content c where c.moderationStatus= :moderationStatus  order by " + order).
-                setParameter("moderationStatus", ModerationStatus.ALLOWED).
+        return appEm.createNamedQuery("Content.findLatest").setParameter("moderationStatus", ModerationStatus.ALLOWED).
                 setMaxResults(maxResult).getResultList();
     }
 
     public List<Content> findPopularList(int maxResult) {
-//        if(appCacheBean.getPopularContents() == null){
-            appCacheBean.setPopularContents(find(maxResult, "c.rate desc"));
-//        }
-        return appCacheBean.getPopularContents();
+        return appEm.createNamedQuery("Content.findPopular").setParameter("moderationStatus", ModerationStatus.ALLOWED).
+                setMaxResults(maxResult).getResultList();
     }
 
     public List findByUserName(String username) {

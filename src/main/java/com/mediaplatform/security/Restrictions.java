@@ -2,7 +2,6 @@ package com.mediaplatform.security;
 
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.Secures;
-import org.jboss.seam.social.Current;
 
 public class Restrictions {
     public @Secures @Admin boolean isAdmin(Identity identity) {

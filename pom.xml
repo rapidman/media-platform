@@ -14,8 +14,9 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
---> 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jboss.seam</groupId>
@@ -32,7 +33,9 @@
         <hibernate-search.version>4.1.1.Final</hibernate-search.version>
         <hibernate.version>4.2.0.Final</hibernate.version>
         <seam.version>3.1.0.Final</seam.version>
+        <seam-social.version>3.1.0.Final</seam-social.version>
         <org.richfaces.bom.version>4.2.3.Final</org.richfaces.bom.version>
+        <version.agoravamodule>0.7.0</version.agoravamodule>
     </properties>
 
     <repositories>
@@ -41,27 +44,39 @@
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
         <!--<repository>-->
-            <!--<id>JBoss</id>-->
-            <!--<name>Maven JBoss Nexus</name>-->
-            <!--<layout>default</layout>-->
-            <!--<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
+        <!--<id>JBoss</id>-->
+        <!--<name>Maven JBoss Nexus</name>-->
+        <!--<layout>default</layout>-->
+        <!--<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
         <!--</repository>-->
         <!--<repository>-->
-            <!--<id>maven2</id>-->
-            <!--<name>Maven central</name>-->
-            <!--<layout>default</layout>-->
-            <!--<url>http://repo1.maven.org/maven2/</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
+        <!--<id>maven2</id>-->
+        <!--<name>Maven central</name>-->
+        <!--<layout>default</layout>-->
+        <!--<url>http://repo1.maven.org/maven2/</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>false</enabled>-->
+        <!--</snapshots>-->
         <!--</repository>-->
         <repository>
             <id>com.springsource.repository.bundles.external</id>
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+        <repository>
+            <id>agorava-snapshot-repo</id>
+            <name>Agorava Snapshot Repository</name>
+            <url>http://repository-agorava.forge.cloudbees.com/snapshot/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -80,6 +95,13 @@
                 <version>${org.richfaces.bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.agorava</groupId>
+                <artifactId>agorava-bom</artifactId>
+                <version>${version.agoravamodule}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -112,58 +134,83 @@
             </exclusions>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-search</artifactId>-->
-            <!--<version>${hibernate-search.version}</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-search</artifactId>-->
+        <!--<version>${hibernate-search.version}</version>-->
         <!--</dependency>-->
-    
+
         <dependency>
             <groupId>org.jboss.seam.faces</groupId>
             <artifactId>seam-faces</artifactId>
-            <scope>compile</scope><!-- Temporary workaround for GLASSFISH-17184 -->
+            <scope>compile</scope>
+            <!-- Temporary workaround for GLASSFISH-17184 -->
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.seam.international</groupId>
             <artifactId>seam-international</artifactId>
         </dependency>
-        
-        <dependency>
-           <groupId>org.jboss.seam.security</groupId>
-           <artifactId>seam-security</artifactId>
-           <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-           <groupId>org.jboss.seam.transaction</groupId>
-           <artifactId>seam-transaction</artifactId>
-           <scope>compile</scope>
-        </dependency>
 
         <dependency>
-            <groupId>org.jboss.seam.social</groupId>
-            <artifactId>seam-social-api</artifactId>
-            <version>${seam.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.seam.social</groupId>
-            <artifactId>seam-social</artifactId>
-            <version>${seam.version}</version>
+            <groupId>org.jboss.seam.security</groupId>
+            <artifactId>seam-security</artifactId>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.seam.social</groupId>
-            <artifactId>seam-social-twitter</artifactId>
-            <version>${seam.version}</version>
+            <groupId>org.jboss.seam.transaction</groupId>
+            <artifactId>seam-transaction</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.seam.social</groupId>
-            <artifactId>seam-social-facebook</artifactId>
-            <version>${seam.version}</version>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-core-impl-cdi</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-core-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-twitter-api</artifactId>
+            <version>${version.agoravamodule}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-facebook-api</artifactId>
+            <version>${version.agoravamodule}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.agorava</groupId>-->
+            <!--<artifactId>agorava-linkedin-api</artifactId>-->
+            <!--<version>${version.agoravamodule}</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
+
+        <dependency>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-twitter-cdi</artifactId>
+            <version>${version.agoravamodule}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.agorava</groupId>
+            <artifactId>agorava-facebook-cdi</artifactId>
+            <version>${version.agoravamodule}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.agorava</groupId>-->
+            <!--<artifactId>agorava-linkedin-cdi</artifactId>-->
+            <!--<version>${version.agoravamodule}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -177,7 +224,7 @@
             <artifactId>picketlink-idm-core</artifactId>
             <version>1.5.0.Alpha02</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.ocpsoft</groupId>
             <artifactId>ocpsoft-pretty-time</artifactId>
@@ -189,13 +236,13 @@
             <artifactId>prettyfaces-jsf2</artifactId>
             <version>3.2.0</version>
         </dependency>
-        
+
         <dependency>
-         <groupId>commons-digester</groupId>
-         <artifactId>commons-digester</artifactId>
-         <version>2.1</version>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>2.1</version>
         </dependency>
-        
+
         <!-- Bean Validation Implementation; provides portable constraints @NotEmpty, @Email and @Url -->
         <!-- Hibernate Validator is the only JSR-303 implementation at the moment, so we can assume it's provided -->
         <!-- TODO Move Hibernate Validator to app server specific sections -->
@@ -216,7 +263,7 @@
             <artifactId>jboss-javaee-6.0</artifactId>
             <type>pom</type>
             <scope>provided</scope>
-        </dependency>   
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -320,25 +367,6 @@
             <version>1.4.3</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-ehcache</artifactId>-->
-            <!--<version>4.0.0.Final</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-jbosscache</artifactId>-->
-            <!--<version>3.6.10.Final</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate.common</groupId>-->
-            <!--<artifactId>hibernate-commons-annotations</artifactId>-->
-            <!--<version>4.0.0.Final</version>-->
-        <!--</dependency>-->
-
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search</artifactId>
@@ -349,6 +377,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>3.1.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>1.0-SP4</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -386,56 +421,56 @@
             -->
 
             <!--<plugin>-->
-                <!--<artifactId>maven-eclipse-plugin</artifactId>-->
-                <!--<version>2.8</version>-->
-                <!--<configuration>-->
-                    <!--<additionalBuildcommands>-->
-                        <!--&lt;!&ndash;-->
-                            <!--annoyingly creates a bin directory <buildCommand>-->
-                            <!--<name>org.eclipse.wst.jsdt.core.javascriptValidator</name>-->
-                            <!--</buildCommand>-->
-                        <!--&ndash;&gt;-->
-                        <!--<buildCommand>-->
-                            <!--<name>org.jboss.tools.common.verification.verifybuilder</name>-->
-                        <!--</buildCommand>-->
-                    <!--</additionalBuildcommands>-->
-                    <!--<additionalConfig>-->
-                        <!--<file>-->
-                            <!--<name>.settings/org.maven.ide.eclipse.prefs</name>-->
-                            <!--<content>eclipse.preferences.version=1-->
-                                <!--fullBuildGoals=process-test-resources-->
-                                <!--includeModules=false-->
-                                <!--resolveWorkspaceProjects=true-->
-                                <!--resourceFilterGoals=process-resources-->
-                                <!--resources\:testResources-->
-                                <!--skipCompilerPlugin=true-->
-                                <!--version=1</content>-->
-                        <!--</file>-->
-                    <!--</additionalConfig>-->
-                    <!--<additionalProjectFacets>-->
-                        <!--<jst.jsf>2.0</jst.jsf>-->
-                    <!--</additionalProjectFacets>-->
-                    <!--<additionalProjectnatures>-->
-                        <!--<projectnature>org.eclipse.wst.jsdt.core.jsNature</projectnature>-->
-                        <!--<projectnature>org.jboss.tools.jsf.jsfnature</projectnature>-->
-                    <!--</additionalProjectnatures>-->
-                    <!--<workspace>${user.home}/.eclipse/workspace</workspace>-->
-                    <!--<wtpdefaultserver>JBossAS</wtpdefaultserver>-->
-                    <!--<wtpversion>2.0</wtpversion>-->
-                    <!--&lt;!&ndash;-->
-                    <!--<downloadSources>true</downloadSources>-->
-                    <!--<downloadJavadocs>true</downloadJavadocs>-->
-                    <!--&ndash;&gt;-->
-                <!--</configuration>-->
+            <!--<artifactId>maven-eclipse-plugin</artifactId>-->
+            <!--<version>2.8</version>-->
+            <!--<configuration>-->
+            <!--<additionalBuildcommands>-->
+            <!--&lt;!&ndash;-->
+            <!--annoyingly creates a bin directory <buildCommand>-->
+            <!--<name>org.eclipse.wst.jsdt.core.javascriptValidator</name>-->
+            <!--</buildCommand>-->
+            <!--&ndash;&gt;-->
+            <!--<buildCommand>-->
+            <!--<name>org.jboss.tools.common.verification.verifybuilder</name>-->
+            <!--</buildCommand>-->
+            <!--</additionalBuildcommands>-->
+            <!--<additionalConfig>-->
+            <!--<file>-->
+            <!--<name>.settings/org.maven.ide.eclipse.prefs</name>-->
+            <!--<content>eclipse.preferences.version=1-->
+            <!--fullBuildGoals=process-test-resources-->
+            <!--includeModules=false-->
+            <!--resolveWorkspaceProjects=true-->
+            <!--resourceFilterGoals=process-resources-->
+            <!--resources\:testResources-->
+            <!--skipCompilerPlugin=true-->
+            <!--version=1</content>-->
+            <!--</file>-->
+            <!--</additionalConfig>-->
+            <!--<additionalProjectFacets>-->
+            <!--<jst.jsf>2.0</jst.jsf>-->
+            <!--</additionalProjectFacets>-->
+            <!--<additionalProjectnatures>-->
+            <!--<projectnature>org.eclipse.wst.jsdt.core.jsNature</projectnature>-->
+            <!--<projectnature>org.jboss.tools.jsf.jsfnature</projectnature>-->
+            <!--</additionalProjectnatures>-->
+            <!--<workspace>${user.home}/.eclipse/workspace</workspace>-->
+            <!--<wtpdefaultserver>JBossAS</wtpdefaultserver>-->
+            <!--<wtpversion>2.0</wtpversion>-->
+            <!--&lt;!&ndash;-->
+            <!--<downloadSources>true</downloadSources>-->
+            <!--<downloadJavadocs>true</downloadJavadocs>-->
+            <!--&ndash;&gt;-->
+            <!--</configuration>-->
             <!--</plugin>-->
-            
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
             </plugin>
-        
+
         </plugins>
     </build>
     <profiles>
@@ -455,8 +490,8 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>    
-    
+        </profile>
+
         <profile>
             <id>jbossas7</id>
             <activation>
@@ -485,10 +520,10 @@
     </profiles>
 
 
-<!--    <scm>
-        <connection>scm:git:git://github.com/seam/examples.git</connection>
-        <developerConnection>scm:git:git@github.com:seam/examples.git</developerConnection>
-        <url>http://github.com/seam</url>
-    </scm>-->
+    <!--    <scm>
+            <connection>scm:git:git://github.com/seam/examples.git</connection>
+            <developerConnection>scm:git:git@github.com:seam/examples.git</developerConnection>
+            <url>http://github.com/seam</url>
+        </scm>-->
 
 </project>

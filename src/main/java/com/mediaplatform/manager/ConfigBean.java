@@ -5,6 +5,7 @@ import org.jboss.solder.resourceLoader.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Properties;
  */
 @ApplicationScoped
 @Named
-public class ConfigBean {
+public class ConfigBean implements Serializable{
     @Inject
     @Resource("META-INF/app.properties")
     private Properties props;
